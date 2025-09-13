@@ -1,0 +1,25 @@
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Node
+node_modules/
+npm-debug.log*
+yarn.lock
+pnpm-lock.yaml
+dist/
+build/
+
+# PHP
+vendor/
+*.log
+.env
+.env.*
+
+# Front
+*.cache
+*.map
+
+# IDE
+.vscode/
+.idea/

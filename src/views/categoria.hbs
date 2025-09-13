@@ -1,0 +1,35 @@
+<form action="/categoria/agregar" method="POST">
+
+  <div>
+    <label for="Nombre">Nombre</label>
+    <input
+      type="text"
+      name="nombre"
+      placeholder="Nombre de la categoria"
+      id="nombre"
+      required
+    />
+  </div>
+
+  <div>
+    <label for="descripcion">Descripción</label>
+    <textarea
+      name="descripcion"
+      id="descripcion"
+      cols="30"
+      rows="10"
+      placeholder="Descripción"
+    ></textarea>
+  </div>
+
+  <div>
+    <label for="activa">Estado</label>
+    <select name="activa" id="activa">
+      <option value="true">Activa</option>
+      <option value="false">Inactiva</option>
+    </select>
+  </div>
+
+  <button> Guardar :D </button>
+
+</form>

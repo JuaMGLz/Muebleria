@@ -11,7 +11,12 @@ app.set("views", path.join(__dirname, "views"));
 //middlewares
 app.use(morgan("dev"));
 
+app.use(express.urlencoded({ extended: true })); // <- importante para medidas[largo]
+app.use("/images", express.static(path.join(__dirname, "images")));  // <--- para las imagenes
+
 app.use(express.urlencoded({ extended: false }));
+
+
 
 app.engine(
   ".hbs",

@@ -1,0 +1,292 @@
+<style>
+    /* Variables y estilos generales para el formulario */
+    :root {
+        --color-primary: #004d40; /* Verde oscuro */
+        --color-secondary: #ffab00; /* Naranja/dorado */
+        --color-text: #333; /* Gris oscuro */
+        --color-bg: #f9f9f9; /* Fondo claro */
+        --color-input-bg: #fff; /* Fondo del campo de entrada */
+        --color-border: #ddd; /* Borde de campo */
+        --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+        font-family: var(--font-family-primary);
+    }
+
+    /* Contenedor principal del formulario */
+    .form-container {
+        background-color: var(--color-input-bg);
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    /* Título del formulario */
+    .form-title {
+        text-align: center;
+        color: var(--color-primary);
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Grupos de campos principales */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Etiquetas */
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    /* Campos de entrada, textarea y select */
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    /* Efecto al enfocar los campos */
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 77, 64, 0.15);
+    }
+    
+    /* Contenedor para las medidas (fieldset) */
+    .form-medidas {
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-medidas legend {
+        font-weight: 600;
+        color: var(--color-text);
+        padding: 0 0.5rem;
+    }
+
+    /* Contenedor para los inputs de medidas */
+    .medidas-group {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap; /* Permite que los campos se envuelvan en pantallas pequeñas */
+    }
+
+    .medidas-group .form-group {
+        flex: 1; /* Permite que los campos se distribuyan uniformemente */
+        min-width: 150px; /* Ancho mínimo para cada campo */
+    }
+
+    /* Botón de guardar */
+    .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        background-color: var(--color-primary);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #00332e;
+        transform: translateY(-2px);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    /* Estilo del select con opciones de categorías */
+    .form-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.7rem top 50%;
+        background-size: 1.2rem;
+        cursor: pointer;
+    }
+</style>
+
+
+
+<div class="form-container">
+    <h2 class="form-title">Agregar Nuevo Producto</h2>
+    <form action="/producto/agregar" method="POST">
+
+        <div class="form-group">
+            <label for="nombreCategoria">Nombre de la categoría</label>
+            <select name="nombreCategoria" id="nombreCategoria" required>
+                <option value="" disabled selected>Selecciona una categoría</option>
+                {{#each categorias}}
+                    <option value="{{this.nombre}}">{{this.nombre}}</option>
+                {{/each}}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="nombre">Nombre del producto</label>
+            <input
+                type="text"
+                name="nombre"
+                id="nombre"
+                placeholder="Ej. Sofá de 3 plazas"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="descripcion">Descripción</label>
+            <textarea
+                name="descripcion"
+                id="descripcion"
+                rows="6"
+                placeholder="Describe las características y ventajas del producto..."
+                required
+            ></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="marca">Marca</label>
+            <input
+                type="text"
+                name="marca"
+                id="marca"
+                placeholder="Ej. Innova Living, Muebles del Valle..."
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="garantia_meses">Meses de garantía</label>
+            <input
+                type="number"
+                name="garantia_meses"
+                id="garantia_meses"
+                placeholder="12"
+                min="0"
+                step="1"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="color">Color</label>
+            <input
+                type="text"
+                name="color"
+                id="color"
+                placeholder="Ej. Café, gris, blanco..."
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="material">Material</label>
+            <input
+                type="text"
+                name="material"
+                id="material"
+                placeholder="Ej. Madera, plástico, metal..."
+                required
+            />
+        </div>
+
+        <fieldset class="form-medidas">
+            <legend>Medidas (cm)</legend>
+            <div class="medidas-group">
+                <div class="form-group">
+                    <label for="medidas-largo">Largo</label>
+                    <input
+                        type="number"
+                        id="medidas-largo"
+                        name="medidas[largo]"
+                        step="0.01"
+                        min="0"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="medidas-ancho">Ancho</label>
+                    <input
+                        type="number"
+                        id="medidas-ancho"
+                        name="medidas[ancho]"
+                        step="0.01"
+                        min="0"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="medidas-alto">Alto</label>
+                    <input
+                        type="number"
+                        id="medidas-alto"
+                        name="medidas[alto]"
+                        step="0.01"
+                        min="0"
+                        required
+                    />
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="form-group">
+            <label for="peso">Peso (kg)</label>
+            <input
+                type="number"
+                name="peso"
+                id="peso"
+                placeholder="Ej. 1.5"
+                min="0"
+                step="0.01"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="precio">Precio (MXN)</label>
+            <input
+                type="number"
+                name="precio"
+                id="precio"
+                placeholder="Ej. 1999.99"
+                min="0"
+                step="0.01"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="activa">Estado</label>
+            <select name="activa" id="activa" required>
+                <option value="true">Activa</option>
+                <option value="false">Inactiva</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-submit">Guardar</button>
+    </form>
+</div>

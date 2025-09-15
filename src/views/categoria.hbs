@@ -1,35 +1,117 @@
-<form action="/categoria/agregar" method="POST">
+<style>
+  /* Formulario */
+  .form-container {
+    background-color: var(--color-card-bg);
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    max-width: 600px;
+    margin: 2rem auto;
+  }
 
-  <div>
-    <label for="Nombre">Nombre</label>
-    <input
-      type="text"
-      name="nombre"
-      placeholder="Nombre de la categoria"
-      id="nombre"
-      required
-    />
-  </div>
+  .form-title {
+    text-align: center;
+    color: var(--color-primary);
+    font-size: 2rem;
+    margin-bottom: 2rem;
+  }
 
-  <div>
-    <label for="descripcion">Descripción</label>
-    <textarea
-      name="descripcion"
-      id="descripcion"
-      cols="30"
-      rows="10"
-      placeholder="Descripción"
-    ></textarea>
-  </div>
+  .form-group {
+    margin-bottom: 1.5rem;
+  }
 
-  <div>
-    <label for="activa">Estado</label>
-    <select name="activa" id="activa">
-      <option value="true">Activa</option>
-      <option value="false">Inactiva</option>
-    </select>
-  </div>
+  .form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+    font-weight: 600;
+    font-size: 1rem;
+  }
 
-  <button> Guardar :D </button>
+  .form-group input,
+  .form-group textarea,
+  .form-group select {
+    width: 100%;
+    padding: 0.8rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    box-sizing: border-box;
+  }
 
-</form>
+  .form-group input:focus,
+  .form-group textarea:focus,
+  .form-group select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(0, 77, 64, 0.15);
+  }
+
+  .form-group textarea {
+    resize: vertical;
+  }
+
+  /* Botón */
+  .btn-submit {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background-color: var(--color-primary);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+  }
+
+  .btn-submit:hover {
+    background-color: #00332e;
+    transform: translateY(-2px);
+  }
+
+  .btn-submit:active {
+    transform: translateY(0);
+  }
+
+</style>
+
+<div class="form-container">
+  <h2 class="form-title">Agregar Nueva Categoría</h2>
+  <form action="/categoria/agregar" method="POST">
+    <div class="form-group">
+      <label for="nombre">Nombre</label>
+      <input
+        type="text"
+        name="nombre"
+        placeholder="Nombre de la categoría"
+        id="nombre"
+        required
+      />
+    </div>
+
+    <div class="form-group">
+      <label for="descripcion">Descripción</label>
+      <textarea
+        name="descripcion"
+        id="descripcion"
+        rows="5"
+        placeholder="Describe la categoría..."
+      ></textarea>
+    </div>
+
+    <div class="form-group">
+      <label for="activa">Estado</label>
+      <select name="activa" id="activa">
+        <option value="true">Activa</option>
+        <option value="false">Inactiva</option>
+      </select>
+    </div>
+
+    <button type="submit" class="btn-submit">
+      Guardar
+    </button>
+  </form>
+</div>

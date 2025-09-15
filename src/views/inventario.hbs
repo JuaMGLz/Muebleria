@@ -1,0 +1,166 @@
+<style>
+    /* Estilos generales para el formulario de inventario */
+    :root {
+        --color-primary: #004d40; /* Verde oscuro */
+        --color-secondary: #ffab00; /* Naranja/dorado */
+        --color-text: #333; /* Gris oscuro */
+        --color-bg: #f9f9f9; /* Fondo claro */
+        --color-input-bg: #fff; /* Fondo del campo de entrada */
+        --color-border: #ddd; /* Borde de campo */
+        --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+        font-family: var(--font-family-primary);
+    }
+
+    /* Contenedor principal del formulario */
+    .form-container {
+        background-color: var(--color-input-bg);
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 2rem auto;
+    }
+
+    /* Título del formulario */
+    .form-title {
+        text-align: center;
+        color: var(--color-primary);
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Grupos de campos */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Etiquetas */
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    /* Campos de entrada, textarea y select */
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
+    }
+
+    /* Efecto al enfocar los campos */
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 77, 64, 0.15); /* Sombra para el foco */
+    }
+
+    /* Estilo del textarea */
+    .form-group textarea {
+        resize: vertical; /* Permite redimensionar verticalmente */
+    }
+
+    /* Botón de guardar */
+    .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        background-color: var(--color-primary);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #00332e; /* Color más oscuro al pasar el mouse */
+        transform: translateY(-2px); /* Pequeño efecto de elevación */
+    }
+
+    .btn-submit:active {
+        transform: translateY(0); /* Vuelve a la posición normal al hacer clic */
+    }
+
+    /* Estilo del select */
+    .form-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.7rem top 50%;
+        background-size: 1.2rem;
+        cursor: pointer;
+    }
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Agregar a Inventario</h2>
+    <form action="/inventario/agregar" method="POST">
+
+        <div class="form-group">
+            <label for="nombreProducto">Nombre del producto</label>
+            <select name="nombreProducto" id="nombreProducto" required>
+                <option value="" disabled selected>Selecciona un producto</option>
+                {{#each productos}}
+                    <option value="{{this.nombre}}">{{this.nombre}}</option>
+                {{/each}}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="stock">Stock</label>
+            <input
+                type="number"
+                name="stock"
+                id="stock"
+                placeholder="Cantidad disponible"
+                min="0"
+                step="1"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="ubicacion">Ubicación</label>
+            <textarea
+                name="ubicacion"
+                id="ubicacion"
+                rows="4"
+                placeholder="Ej. Almacén principal, Pasillo A, Estantería 3"
+                required
+            ></textarea>
+        </div>
+
+        <div class="form-group">
+            <label for="sucursal">Sucursal</label>
+            <input
+                type="text"
+                name="sucursal"
+                id="sucursal"
+                placeholder="Ej. Sucursal Centro"
+                required
+            />
+        </div>
+
+        <button type="submit" class="btn-submit">
+            Guardar
+        </button>
+
+    </form>
+</div>

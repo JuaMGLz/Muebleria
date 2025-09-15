@@ -1,13 +1,148 @@
-<html lang="en">
-  <head>
+<!DOCTYPE html>
+<html lang="es">
+<head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Plantilla</title>
-  </head>
-  <body>
+    <title>Innova Living - Muebles con Estilo</title>
+    <style>
+        /* Estilos generales */
+        :root {
+            --color-primary: #004d40; /* Verde oscuro */
+            --color-secondary: #ffab00; /* Naranja/dorado */
+            --color-text: #333; /* Gris oscuro para el texto */
+            --color-bg: #f0f2f5; /* Fondo gris claro, tipo Facebook */
+            --color-card-bg: #ffffff; /* Fondo de tarjetas */
+            --color-border: #ddd; /* Borde gris claro */
+            --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
+        }
 
-    {{> navbar}}
-    {{{body}}}
+        body {
+            font-family: var(--font-family-primary);
+            line-height: 1.6;
+            margin: 0;
+            padding: 0;
+            background-color: var(--color-bg);
+            color: var(--color-text);
+        }
 
-  </body>
+        /* Contenedor principal de la página */
+        .container {
+            display: grid;
+            grid-template-areas:
+                "header header"
+                "main sidebar";
+            grid-template-columns: 1fr 300px; /* Ancho de la barra lateral */
+            grid-gap: 20px;
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Estilos del encabezado */
+        header {
+            grid-area: header;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: var(--color-card-bg);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--color-primary);
+            margin: 0;
+        }
+
+        /* Estilos para el contenido principal (centro) */
+        main {
+            grid-area: main;
+            display: flex;
+            justify-content: center;
+            background-color: var(--color-card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            padding: 2rem;
+            min-height: 600px;
+        }
+
+        .main-content {
+            text-align: center;
+        }
+
+        .main-content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        /* Estilos del navbar (barra lateral) */
+        nav {
+            grid-area: sidebar;
+            background-color: var(--color-card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            padding: 1.5rem;
+            min-height: 600px;
+        }
+        
+        /* Estilos del navbar (lista) - AQUI EMPIEZAN LOS ESTILOS QUE MOVES */
+        .navbar-title {
+            font-size: 1.2rem;
+            color: var(--color-text);
+            margin-top: 0;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .navbar-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navbar-item {
+            margin-bottom: 1rem;
+        }
+
+        .navbar-link {
+            text-decoration: none;
+            color: var(--color-text);
+            font-weight: 500;
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .navbar-link:hover {
+            background-color: var(--color-bg);
+            color: var(--color-primary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1 class="logo">Innova Living</h1>
+    </header>
+    <div class="container">
+        <main>
+            <div class="main-content">
+                {{#if isHomePage}}
+                    <img src="/images/inicio.webp" alt="Imagen de inicio de Innova Living" />
+                {{/if}}
+                {{{body}}}
+            </div>
+        </main>
+        <nav>
+            {{> navbar}}
+        </nav>
+    </div>
+</body>
 </html>

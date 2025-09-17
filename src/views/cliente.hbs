@@ -1,0 +1,258 @@
+<style>
+    /* Variables y estilos generales para el formulario */
+    :root {
+        --color-primary: #004d40; /* Verde oscuro */
+        --color-secondary: #ffab00; /* Naranja/dorado */
+        --color-text: #333; /* Gris oscuro */
+        --color-bg: #f9f9f9; /* Fondo claro */
+        --color-input-bg: #fff; /* Fondo del campo de entrada */
+        --color-border: #ddd; /* Borde de campo */
+        --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
+    }
+
+    body {
+        font-family: var(--font-family-primary);
+    }
+
+    /* Contenedor principal del formulario */
+    .form-container {
+        background-color: var(--color-input-bg);
+        padding: 2.5rem;
+        border-radius: 12px;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 2rem auto;
+    }
+
+    /* Título del formulario */
+    .form-title {
+        text-align: center;
+        color: var(--color-primary);
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    /* Grupos de campos principales */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    /* Etiquetas */
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    /* Campos de entrada, textarea y select */
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    /* Efecto al enfocar los campos */
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px rgba(0, 77, 64, 0.15);
+    }
+    
+    /* Contenedor para las medidas (fieldset) */
+    .form-medidas {
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        padding: 1.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .form-medidas legend {
+        font-weight: 600;
+        color: var(--color-text);
+        padding: 0 0.5rem;
+    }
+
+    /* Contenedor para los inputs de medidas */
+    .medidas-group {
+        display: flex;
+        gap: 1.5rem;
+        flex-wrap: wrap; /* Permite que los campos se envuelvan en pantallas pequeñas */
+    }
+
+    .medidas-group .form-group {
+        flex: 1; /* Permite que los campos se distribuyan uniformemente */
+        min-width: 150px; /* Ancho mínimo para cada campo */
+    }
+
+    /* Botón de guardar */
+    .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        background-color: var(--color-primary);
+        color: #fff;
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+    .btn-submit:hover {
+        background-color: #00332e;
+        transform: translateY(-2px);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    /* Estilo del select con opciones de categorías */
+    .form-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.7rem top 50%;
+        background-size: 1.2rem;
+        cursor: pointer;
+    }
+</style>
+
+
+<div class="form-container">
+    <h2 class="form-title">Agregar Nuevo Cliente</h2>
+    <form action="/cliente/agregar" method="POST">
+
+        <div class="form-group">
+            <label for="nombre">Nombre</label>
+            <input
+                type="text"
+                name="nombre"
+                id="nombre"
+                placeholder="Ej. Juan Pérez"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="telefono">Teléfono</label>
+            <input
+                type="text"
+                name="telefono"
+                id="telefono"
+                placeholder="Ej. 55-1234-5678"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input
+                type="email"
+                name="email"
+                id="email"
+                placeholder="Ej. ejemplo@correo.com"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="rfc">RFC</label>
+            <input
+                type="text"
+                name="rfc"
+                id="rfc"
+                placeholder="Ej. XAXX010101000"
+                required
+            />
+        </div>
+
+        <fieldset class="form-direccion">
+            <legend>Dirección</legend>
+            <div class="direccion-group">
+                <div class="form-group">
+                    <label for="calle">Calle</label>
+                    <input
+                        type="text"
+                        name="direccion[calle]"
+                        id="calle"
+                        placeholder="Ej. Calle Falsa"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="numero">Número</label>
+                    <input
+                        type="text"
+                        name="direccion[numero]"
+                        id="numero"
+                        placeholder="Ej. 123"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="colonia">Colonia</label>
+                    <input
+                        type="text"
+                        name="direccion[colonia]"
+                        id="colonia"
+                        placeholder="Ej. Centro"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="municipio">Municipio</label>
+                    <input
+                        type="text"
+                        name="direccion[municipio]"
+                        id="municipio"
+                        placeholder="Ej. Cuauhtémoc"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="estado">Estado</label>
+                    <input
+                        type="text"
+                        name="direccion[estado]"
+                        id="estado"
+                        placeholder="Ej. Ciudad de México"
+                        required
+                    />
+                </div>
+                <div class="form-group">
+                    <label for="cp">Código Postal</label>
+                    <input
+                        type="text"
+                        name="direccion[cp]"
+                        id="cp"
+                        placeholder="Ej. 01000"
+                        required
+                    />
+                </div>
+            </div>
+        </fieldset>
+
+        <div class="form-group">
+            <label for="activo">Activo</label>
+            <select name="activo" id="activo" required>
+                <option value="true">Sí</option>
+                <option value="false">No</option>
+            </select>
+        </div>
+
+        <button type="submit" class="btn-submit">Guardar</button>
+    </form>
+</div>

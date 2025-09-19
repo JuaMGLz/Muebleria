@@ -1,113 +1,312 @@
 <style>
-    /* Estilos generales para el formulario de inventario */
-    :root {
-        --color-primary: #004d40; /* Verde oscuro */
-        --color-secondary: #ffab00; /* Naranja/dorado */
-        --color-text: #333; /* Gris oscuro */
-        --color-bg: #f9f9f9; /* Fondo claro */
-        --color-input-bg: #fff; /* Fondo del campo de entrada */
-        --color-border: #ddd; /* Borde de campo */
-        --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
-    }
+        :root {
+            --color-primary: #dc2626; /* Rojo principal (Existente) */
+            --color-primary-dark: #991b1b; /* Rojo oscuro (Existente) */
+            --color-primary-light: #fef2f2; /* Rojo muy claro (Existente) */
+            --color-secondary: #f59e0b; /* Amarillo/dorado (Existente) */
+            --color-text: #333; /* Gris oscuro para el texto */
+            --color-text-light: #6b7280; /* Gris medio */
+            --color-bg: #f0f2f5; /* Fondo gris claro */
+            --color-card-bg: #ffffff; /* Fondo de tarjetas */
+            --color-white: #ffffff;
+            --color-border: #ddd; /* Borde gris claro */
+            --color-shadow: rgba(220, 38, 38, 0.1);
+            --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    body {
-        font-family: var(--font-family-primary);
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    /* Contenedor principal del formulario */
-    .form-container {
-        background-color: var(--color-input-bg);
-        padding: 2.5rem;
-        border-radius: 12px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-        margin: 2rem auto;
-    }
+        body {
+            font-family: var(--font-family-primary);
+            background-color: var(--color-bg);
+            min-height: 100vh;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
 
-    /* Título del formulario */
-    .form-title {
-        text-align: center;
-        color: var(--color-primary);
-        font-size: 2rem;
-        margin-bottom: 2rem;
-    }
+        /* Header (Sin cambios) */
+        .header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: var(--color-white);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px var(--color-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
 
-    /* Grupos de campos */
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
+        .header-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
+        }
 
-    /* Etiquetas */
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--color-text);
-        font-weight: 600;
-        font-size: 1rem;
-    }
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: var(--color-white);
+            margin: 0;
+        }
 
-    /* Campos de entrada, textarea y select */
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        box-sizing: border-box; /* Asegura que el padding no afecte el ancho */
-    }
+        .menu-toggle {
+            position: absolute;
+            left: 2rem;
+            background: transparent;
+            border: none;
+            color: var(--color-white);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.8rem;
+        }
 
-    /* Efecto al enfocar los campos */
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-        outline: none;
-        border-color: var(--color-primary);
-        box-shadow: 0 0 0 3px rgba(0, 77, 64, 0.15); /* Sombra para el foco */
-    }
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
 
-    /* Estilo del textarea */
-    .form-group textarea {
-        resize: vertical; /* Permite redimensionar verticalmente */
-    }
+        /* Sidebar desplegable (Sin cambios) */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
+            background-color: var(--color-card-bg);
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
+        }
 
-    /* Botón de guardar */
-    .btn-submit {
-        display: block;
-        width: 100%;
-        padding: 1rem;
-        background-color: var(--color-primary);
-        color: #fff;
-        border: none;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-    }
+        .navbar.active {
+            left: 0;
+        }
 
-    .btn-submit:hover {
-        background-color: #00332e; /* Color más oscuro al pasar el mouse */
-        transform: translateY(-2px); /* Pequeño efecto de elevación */
-    }
+        .navbar-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: var(--color-white);
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
 
-    .btn-submit:active {
-        transform: translateY(0); /* Vuelve a la posición normal al hacer clic */
-    }
+        .navbar-title {
+            font-size: 1.4rem;
+            margin: 0;
+            color: var(--color-white);
+        }
 
-    /* Estilo del select */
-    .form-group select {
-        appearance: none;
-        -webkit-appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 0.7rem top 50%;
-        background-size: 1.2rem;
-        cursor: pointer;
-    }
-</style>
+        .sidebar-close {
+            background: none;
+            border: none;
+            color: var(--color-white);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .sidebar-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .navbar-nav {
+            padding: 1.5rem;
+        }
+
+        .navbar-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .navbar-item {
+            margin-bottom: 1rem;
+        }
+
+        .navbar-link {
+            text-decoration: none;
+            color: var(--color-text);
+            font-weight: 500;
+            display: block;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            transition: background-color 0.3s ease, color 0.3s ease, border-left-color 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .navbar-link:hover {
+            background-color: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            border-left-color: var(--color-primary);
+        }
+
+        .navbar-link.active {
+            color: var(--color-primary-dark);
+            background-color: var(--color-primary-light);
+            border-left-color: var(--color-primary);
+            font-weight: 600;
+        }
+        
+        /* Overlay (Sin cambios) */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Contenido principal (Sin cambios) */
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 20px;
+        }
+
+        .content {
+            background-color: var(--color-card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            padding: 2rem;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+            border-top: 4px solid var(--color-primary); /* Añadido para mantener un borde superior simple */
+        }
+        
+        /* --- ESTILOS PARA FORMULARIOS (INTEGRADOS Y ADAPTADOS) --- */
+        
+        /* Título del formulario */
+        .form-title {
+            text-align: center;
+            color: var(--color-primary); /* Adaptado al color rojo principal */
+            font-size: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Grupos de campos principales */
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        /* Etiquetas */
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        /* Campos de entrada, textarea y select */
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            box-sizing: border-box;
+        }
+
+        /* Efecto al enfocar los campos */
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-primary); /* Adaptado al color rojo principal */
+            box-shadow: 0 0 0 3px var(--color-shadow); /* Adaptado al color de sombra rojo */
+        }
+        
+        /* Contenedor para las medidas (fieldset) */
+        .form-medidas {
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .form-medidas legend {
+            font-weight: 600;
+            color: var(--color-text);
+            padding: 0 0.5rem;
+        }
+
+        /* Contenedor para los inputs de medidas */
+        .medidas-group {
+            display: flex;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .medidas-group .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        /* Botón de guardar */
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--color-primary); /* Adaptado al color rojo principal */
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover {
+            background-color: var(--color-primary-dark); /* Adaptado al rojo oscuro */
+            transform: translateY(-2px);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        /* Estilo del select con opciones de categorías */
+        .form-group select {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 0.7rem top 50%;
+            background-size: 1.2rem;
+            cursor: pointer;
+        }
+
+    </style>
 
 <div class="form-container">
     <h2 class="form-title">Agregar a Inventario</h2>

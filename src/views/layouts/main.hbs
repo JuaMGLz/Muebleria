@@ -1,110 +1,142 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innova Living - Muebles con Estilo</title>
     <style>
-        /* Estilos generales */
         :root {
-            --color-primary: #004d40; /* Verde oscuro */
-            --color-secondary: #ffab00; /* Naranja/dorado */
+            --color-primary: #dc2626; /* Rojo principal */
+            --color-primary-dark: #991b1b; /* Rojo oscuro */
+            --color-primary-light: #fef2f2; /* Rojo muy claro */
+            --color-secondary: #f59e0b; /* Amarillo/dorado */
             --color-text: #333; /* Gris oscuro para el texto */
-            --color-bg: #f0f2f5; /* Fondo gris claro, tipo Facebook */
+            --color-text-light: #6b7280; /* Gris medio */
+            --color-bg: #f0f2f5; /* Fondo gris claro */
             --color-card-bg: #ffffff; /* Fondo de tarjetas */
+            --color-white: #ffffff;
             --color-border: #ddd; /* Borde gris claro */
+            --color-shadow: rgba(220, 38, 38, 0.1);
             --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
         body {
             font-family: var(--font-family-primary);
-            line-height: 1.6;
-            margin: 0;
-            padding: 0;
             background-color: var(--color-bg);
+            min-height: 100vh;
             color: var(--color-text);
+            line-height: 1.6;
         }
 
-        /* Contenedor principal de la página */
-        .container {
-            display: grid;
-            grid-template-areas:
-                "header header"
-                "main sidebar";
-            grid-template-columns: 1fr 300px; /* Ancho de la barra lateral */
-            grid-gap: 20px;
-            padding: 20px;
-            max-width: 1400px;
-            margin: 0 auto;
+        /* Header con botón del sidebar */
+        .header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: var(--color-white);
+            padding: 1rem 2rem;
+            box-shadow: 0 4px 20px var(--color-shadow);
+            position: sticky;
+            top: 0;
+            z-index: 100;
         }
 
-        /* Estilos del encabezado */
-        header {
-            grid-area: header;
+        .header-content {
             display: flex;
             justify-content: center;
             align-items: center;
-            background-color: var(--color-card-bg);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 1rem;
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            max-width: 1400px;
+            margin: 0 auto;
+            position: relative;
         }
 
         .logo {
             font-size: 1.8rem;
             font-weight: bold;
-            color: var(--color-primary);
+            color: var(--color-white);
             margin: 0;
         }
 
-        /* Estilos para el contenido principal (centro) */
-        main {
-            grid-area: main;
-            display: flex;
-            justify-content: center;
+        .menu-toggle {
+            position: absolute;
+            left: 2rem;
+            background: transparent;
+            border: none;
+            color: var(--color-white);
+            padding: 0.5rem;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-size: 1.8rem;
+        }
+
+        .menu-toggle:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+
+        /* Sidebar desplegable */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: -350px;
+            width: 350px;
+            height: 100vh;
             background-color: var(--color-card-bg);
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-            padding: 2rem;
-            min-height: 600px;
+            box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+            transition: var(--transition);
+            z-index: 1000;
+            overflow-y: auto;
         }
 
-        .main-content {
-            text-align: center;
+        .navbar.active {
+            left: 0;
         }
 
-        .main-content img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-            margin-bottom: 20px;
-        }
-
-        /* Estilos del navbar (barra lateral) */
-        nav {
-            grid-area: sidebar;
-            background-color: var(--color-card-bg);
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        .navbar-header {
+            background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+            color: var(--color-white);
             padding: 1.5rem;
-            min-height: 600px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
-        
-        /* Estilos del navbar (lista) - AQUI EMPIEZAN LOS ESTILOS QUE MOVES */
+
         .navbar-title {
-            font-size: 1.2rem;
-            color: var(--color-text);
-            margin-top: 0;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid var(--color-border);
+            font-size: 1.4rem;
+            margin: 0;
+            color: var(--color-white);
+        }
+
+        .sidebar-close {
+            background: none;
+            border: none;
+            color: var(--color-white);
+            font-size: 1.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .sidebar-close:hover {
+            transform: rotate(90deg);
+        }
+
+        .navbar-nav {
+            padding: 1.5rem;
         }
 
         .navbar-list {
             list-style: none;
-            margin: 0;
             padding: 0;
+            margin: 0;
         }
 
         .navbar-item {
@@ -118,31 +150,233 @@
             display: block;
             padding: 0.75rem 1rem;
             border-radius: 6px;
-            transition: background-color 0.3s ease, color 0.3s ease;
+            transition: background-color 0.3s ease, color 0.3s ease, border-left-color 0.3s ease;
+            border-left: 4px solid transparent;
         }
 
         .navbar-link:hover {
-            background-color: var(--color-bg);
+            background-color: var(--color-primary-light);
+            color: var(--color-primary-dark);
+            border-left-color: var(--color-primary);
+        }
+
+        .navbar-link.active {
+            color: var(--color-primary-dark);
+            background-color: var(--color-primary-light);
+            border-left-color: var(--color-primary);
+            font-weight: 700;
+        }
+        
+        /* Overlay para cerrar sidebar */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            visibility: hidden;
+            transition: var(--transition);
+            z-index: 999;
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Contenido principal */
+        .main-container {
+            max-width: 1400px;
+            margin: 2rem auto;
+            padding: 20px;
+        }
+
+        .content {
+            background-color: var(--color-card-bg);
+            border-radius: 8px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+            padding: 2rem 4rem;
+            min-height: 600px;
+            position: relative;
+            overflow: hidden;
+            /* Si solo tiene el body, lo alineará */
+            display: flex; /* Añadido para centrar dinámicamente */
+            flex-direction: column; /* Añadido */
+            justify-content: center; /* Añadido */
+            align-items: center; /* Añadido */
+        }
+        
+        .content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+        }
+
+        .content img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .content h2 {
             color: var(--color-primary);
+            margin-bottom: 2rem;
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+        }
+
+        .content p {
+            color: var(--color-text-light);
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        /* --- ESTILOS PARA FORMULARIOS --- */
+        /* Contenedor del formulario dentro del contenido principal para limitar el ancho de los campos */
+        .form-container {
+            max-width: 500px; /* Ancho máximo para el formulario */
+            width: 100%;
+            margin: 0 auto; /* Centrar el contenedor del formulario */
+        }
+
+        .content label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--color-text);
+            text-align: left; /* Alineado a la izquierda dentro de su contenedor */
+        }
+
+        .content input[type="text"],
+        .content input[type="number"],
+        .content input[type="email"],
+        .content input[type="password"],
+        .content select,
+        .content textarea {
+            width: 100%; /* La clave para que sean anchos dentro de .form-container */
+            padding: 12px 15px;
+            margin-bottom: 1.5rem;
+            border: 1px solid var(--color-border);
+            border-radius: 6px;
+            font-size: 1rem;
+            font-family: var(--font-family-primary);
+            box-sizing: border-box;
+            background-color: #f8f9fa;
+        }
+        
+        .content input:focus,
+        .content select:focus,
+        .content textarea:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 3px var(--color-shadow);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .navbar {
+                width: 300px;
+                left: -300px;
+            }
+            .header-content {
+                padding: 0 1rem;
+            }
+            .menu-toggle {
+                left: 1rem;
+            }
+             .main-container {
+                padding: 1rem;
+                margin: 1rem auto;
+            }
+            .content {
+                padding: 2rem 1.5rem;
+            }
+            .form-container {
+                max-width: 100%; /* En móviles, el formulario ocupa todo el ancho */
+            }
         }
     </style>
 </head>
 <body>
-    <header>
-        <h1 class="logo">Innova Living</h1>
+    <header class="header">
+        <div class="header-content">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <h1 class="logo">Innova Living</h1>
+        </div>
     </header>
-    <div class="container">
-        <main>
-            <div class="main-content">
-                {{#if isHomePage}}
-                    <img src="/images/inicio.webp" alt="Imagen de inicio de Innova Living" />
-                {{/if}}
-                {{{body}}}
+
+    <nav class="navbar" id="navbar">
+        <div class="navbar-header">
+            <h2 class="navbar-title">Secciones</h2>
+            <button class="sidebar-close" onclick="toggleSidebar()">×</button>
+        </div>
+        <div class="navbar-nav">
+            <ul class="navbar-list">
+                 <li class="navbar-item"><a href="/categoria/agregar" class="navbar-link">Categorías</a></li>
+                 <li class="navbar-item"><a href="/producto/agregar" class="navbar-link">Productos</a></li>
+                 <li class="navbar-item"><a href="/inventario/agregar" class="navbar-link">Inventario</a></li>
+                 <li class="navbar-item"><a href="/plantilla" class="navbar-link active">Inicio</a></li>
+                 <li class="navbar-item"><a href="/cliente/agregar" class="navbar-link">Clientes</a></li>
+                 <li class="navbar-item"><a href="/venta/agregar" class="navbar-link">Ventas</a></li>
+                 <li class="navbar-item"><a href="/detalle/agregar" class="navbar-link">Detalles de Pedido</a></li>
+            </ul>
+        </div>
+    </nav>
+    
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+    <div class="main-container">
+        <main class="content">
+            {{#if isHomePage}}
+                <img src="/images/inicio.webp" alt="Imagen de inicio de Innova Living" />
+                <div>
+                    <h2>🏪 Sistema de Ventas</h2>
+                    
+                </div>
+            {{/if}}
+            <div class="form-container"> {{{body}}}
             </div>
         </main>
-        <nav> 
-            {{> navbar}}
-        </nav>
     </div>
+
+    <script>
+        function toggleSidebar() {
+            const sidebar = document.getElementById('navbar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('active');
+            overlay.classList.toggle('active');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.navbar-link');
+            
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                const sidebar = document.getElementById('navbar');
+                if (sidebar.classList.contains('active')) {
+                    toggleSidebar();
+                }
+            }
+        });
+    </script>
 </body>
 </html>

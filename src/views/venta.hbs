@@ -48,6 +48,11 @@
             margin: 0 auto;
             position: relative;
         }
+        #total:disabled {
+            background-color: #f0f2f5;
+            cursor: not-allowed;
+        }
+
 
         .logo {
             font-size: 1.8rem;
@@ -430,3 +435,49 @@
     </form>
 </div>
 
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Establecer la fecha actual por defecto
+        const fechaInput = document.getElementById('fecha');
+        const today = new Date().toISOString().split('T')[0];
+        fechaInput.value = today;
+
+        // Selección de los campos de entrada
+        const subtotalInput = document.getElementById('subtotal');
+        const descuentoInput = document.getElementById('descuento');
+        const impuestosInput = document.getElementById('impuestos');
+        const totalInput = document.getElementById('total');
+
+        // Función para actualizar el total
+        function actualizarTotal() {
+            const subtotal = parseFloat(subtotalInput.value) || 0;
+            const descuento = parseFloat(descuentoInput.value) || 0;
+            const impuestos = parseFloat(impuestosInput.value) || 0;
+            
+            // Calcular el total
+            const total = (subtotal - descuento) + impuestos;
+            
+            // Actualizar el campo Total
+            totalInput.value = total.toFixed(2);
+        }
+
+        // Añadir event listeners para recalcular el total
+        subtotalInput.addEventListener('input', actualizarTotal);
+        descuentoInput.addEventListener('input', actualizarTotal);
+        impuestosInput.addEventListener('input', actualizarTotal);
+        
+        // Ejecutar el cálculo inicial
+        actualizarTotal();
+
+        // Deshabilitar el campo Total para que no sea editable
+        totalInput.disabled = true;
+
+        // Añadir event listener para el envío del formulario
+        document.querySelector('form').addEventListener('submit', function(event) {
+            // HABILITAR el campo total justo antes de enviarlo
+            totalInput.disabled = false;
+        });
+
+    });
+</script>

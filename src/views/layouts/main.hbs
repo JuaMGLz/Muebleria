@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Innova Living - Muebles con Estilo</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
     <style>
         :root {
             --color-primary: #dc2626; /* Rojo principal */
@@ -16,8 +19,9 @@
             --color-card-bg: #ffffff; /* Fondo de tarjetas */
             --color-white: #ffffff;
             --color-border: #ddd; /* Borde gris claro */
-            --color-shadow: rgba(220, 38, 38, 0.1);
-            --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
+            --color-shadow: rgba(0, 0, 0, 0.15); /* Sombra más suave */
+            --font-family-primary: 'Montserrat', sans-serif;
+            --font-family-secondary: 'Playfair Display', serif; /* Fuente elegante para títulos */
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
@@ -33,14 +37,15 @@
             min-height: 100vh;
             color: var(--color-text);
             line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
         }
 
         /* Header con botón del sidebar */
         .header {
             background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
             color: var(--color-white);
-            padding: 1rem 2rem;
-            box-shadow: 0 4px 20px var(--color-shadow);
+            padding: 1.25rem 2.5rem; /* Aumenta el padding */
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15); /* Sombra más marcada */
             position: sticky;
             top: 0;
             z-index: 100;
@@ -56,17 +61,20 @@
         }
 
         .logo {
-            font-size: 1.8rem;
-            font-weight: bold;
+            font-size: 2rem; /* Tamaño más grande */
+            font-weight: 700;
             color: var(--color-white);
             margin: 0;
+            font-family: var(--font-family-secondary); /* Fuente secundaria para el logo */
+            text-transform: uppercase; /* Texto en mayúsculas */
+            letter-spacing: 2px; /* Espaciado entre letras */
         }
 
         .menu-toggle {
             position: absolute;
             left: 2rem;
             background: transparent;
-            border: none;
+            border: 2px solid var(--color-white); /* Borde para el botón */
             color: var(--color-white);
             padding: 0.5rem;
             border-radius: 8px;
@@ -114,19 +122,21 @@
             font-size: 1.4rem;
             margin: 0;
             color: var(--color-white);
+            font-weight: 600;
         }
 
         .sidebar-close {
             background: none;
             border: none;
             color: var(--color-white);
-            font-size: 1.8rem;
+            font-size: 2rem;
             cursor: pointer;
             transition: var(--transition);
         }
 
         .sidebar-close:hover {
             transform: rotate(90deg);
+            color: var(--color-secondary); /* Usa el color secundario */
         }
 
         .navbar-nav {
@@ -140,7 +150,7 @@
         }
 
         .navbar-item {
-            margin-bottom: 1rem;
+            margin-bottom: 1.25rem; /* Más espaciado */
         }
 
         .navbar-link {
@@ -152,12 +162,29 @@
             border-radius: 6px;
             transition: background-color 0.3s ease, color 0.3s ease, border-left-color 0.3s ease;
             border-left: 4px solid transparent;
+            position: relative;
+        }
+
+        .navbar-link::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 0;
+            background-color: var(--color-secondary); /* Detalle de color secundario */
+            transition: width 0.3s ease;
+            z-index: -1;
+            opacity: 0.2;
         }
 
         .navbar-link:hover {
             background-color: var(--color-primary-light);
             color: var(--color-primary-dark);
-            border-left-color: var(--color-primary);
+        }
+
+        .navbar-link:hover::before {
+            width: 100%;
         }
 
         .navbar-link.active {
@@ -195,17 +222,16 @@
 
         .content {
             background-color: var(--color-card-bg);
-            border-radius: 8px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-            padding: 2rem 4rem;
+            border-radius: 12px; /* Bordes más suaves */
+            box-shadow: 0 4px 25px var(--color-shadow); /* Sombra mejorada */
+            padding: 3rem 4rem; /* Más espacio interior */
             min-height: 600px;
             position: relative;
             overflow: hidden;
-            /* Si solo tiene el body, lo alineará */
-            display: flex; /* Añadido para centrar dinámicamente */
-            flex-direction: column; /* Añadido */
-            justify-content: center; /* Añadido */
-            align-items: center; /* Añadido */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
         }
         
         .content::before {
@@ -214,8 +240,9 @@
             top: 0;
             left: 0;
             right: 0;
-            height: 4px;
+            height: 6px; /* Borde superior más grueso */
             background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            border-radius: 12px 12px 0 0; /* Bordes redondeados */
         }
 
         .content img {
@@ -226,27 +253,36 @@
         }
 
         .content h2 {
+            font-family: var(--font-family-secondary); /* Fuente secundaria para títulos */
             color: var(--color-primary);
-            margin-bottom: 2rem;
-            font-size: 2rem;
+            margin-bottom: 1.5rem; /* Espaciado ajustado */
+            font-size: 2.5rem; /* Más grande */
             font-weight: 700;
             text-align: center;
+            letter-spacing: 1px; /* Para un look más profesional */
         }
 
         .content p {
             color: var(--color-text-light);
             font-size: 1.1rem;
-            line-height: 1.6;
+            line-height: 1.8; /* Más espaciado entre líneas */
             margin-bottom: 1rem;
             text-align: center;
         }
 
         /* --- ESTILOS PARA FORMULARIOS --- */
-        /* Contenedor del formulario dentro del contenido principal para limitar el ancho de los campos */
         .form-container {
-            max-width: 500px; /* Ancho máximo para el formulario */
+            max-width: 600px; /* Ancho más generoso */
             width: 100%;
-            margin: 0 auto; /* Centrar el contenedor del formulario */
+            margin: 0 auto;
+        }
+        
+        .form-title {
+            font-family: var(--font-family-secondary);
+            font-size: 2.2rem;
+            color: var(--color-primary-dark);
+            text-align: center;
+            margin-bottom: 2rem;
         }
 
         .content label {
@@ -254,20 +290,22 @@
             margin-bottom: 0.5rem;
             font-weight: 600;
             color: var(--color-text);
-            text-align: left; /* Alineado a la izquierda dentro de su contenedor */
+            text-align: left;
+            font-size: 1rem;
         }
 
         .content input[type="text"],
         .content input[type="number"],
+        .content input[type="date"],
         .content input[type="email"],
         .content input[type="password"],
         .content select,
         .content textarea {
-            width: 100%; /* La clave para que sean anchos dentro de .form-container */
-            padding: 12px 15px;
+            width: 100%;
+            padding: 14px 18px; /* Más padding para campos más grandes */
             margin-bottom: 1.5rem;
             border: 1px solid var(--color-border);
-            border-radius: 6px;
+            border-radius: 8px; /* Bordes más redondeados */
             font-size: 1rem;
             font-family: var(--font-family-primary);
             box-sizing: border-box;
@@ -279,7 +317,29 @@
         .content textarea:focus {
             outline: none;
             border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px var(--color-shadow);
+            box-shadow: 0 0 0 4px var(--color-primary-light); /* Sombra de enfoque más marcada */
+        }
+
+        /* Botón de guardar */
+        .btn-submit {
+            display: block;
+            width: 100%;
+            padding: 1rem;
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            margin-top: 1rem;
+        }
+        
+        .btn-submit:hover {
+            background-color: var(--color-primary-dark);
+            transform: translateY(-3px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
 
         /* Responsive */
@@ -288,13 +348,13 @@
                 width: 300px;
                 left: -300px;
             }
-            .header-content {
-                padding: 0 1rem;
+            .header {
+                padding: 1rem 1.5rem;
             }
             .menu-toggle {
                 left: 1rem;
             }
-             .main-container {
+            .main-container {
                 padding: 1rem;
                 margin: 1rem auto;
             }
@@ -302,7 +362,13 @@
                 padding: 2rem 1.5rem;
             }
             .form-container {
-                max-width: 100%; /* En móviles, el formulario ocupa todo el ancho */
+                max-width: 100%;
+            }
+            .content h2 {
+                font-size: 2rem;
+            }
+            .content::before {
+                height: 4px;
             }
         }
     </style>
@@ -317,18 +383,18 @@
 
     <nav class="navbar" id="navbar">
         <div class="navbar-header">
-            <h2 class="navbar-title">Secciones</h2>
+            <h2 class="navbar-title">Menú</h2>
             <button class="sidebar-close" onclick="toggleSidebar()">×</button>
         </div>
         <div class="navbar-nav">
             <ul class="navbar-list">
-                 <li class="navbar-item"><a href="/categoria/agregar" class="navbar-link">Categorías</a></li>
-                 <li class="navbar-item"><a href="/producto/agregar" class="navbar-link">Productos</a></li>
-                 <li class="navbar-item"><a href="/inventario/agregar" class="navbar-link">Inventario</a></li>
-                 <li class="navbar-item"><a href="/plantilla" class="navbar-link active">Inicio</a></li>
-                 <li class="navbar-item"><a href="/cliente/agregar" class="navbar-link">Clientes</a></li>
-                 <li class="navbar-item"><a href="/venta/agregar" class="navbar-link">Ventas</a></li>
-                 <li class="navbar-item"><a href="/detalle/agregar" class="navbar-link">Detalles de Pedido</a></li>
+                <li class="navbar-item"><a href="/plantilla" class="navbar-link active">Inicio</a></li>
+                <li class="navbar-item"><a href="/categoria/agregar" class="navbar-link">Categorías</a></li>
+                <li class="navbar-item"><a href="/producto/agregar" class="navbar-link">Productos</a></li>
+                <li class="navbar-item"><a href="/inventario/agregar" class="navbar-link">Inventario</a></li>
+                <li class="navbar-item"><a href="/cliente/agregar" class="navbar-link">Clientes</a></li>
+                <li class="navbar-item"><a href="/venta/agregar" class="navbar-link">Ventas</a></li>
+                <li class="navbar-item"><a href="/detalle/agregar" class="navbar-link">Detalles de Pedido</a></li>
             </ul>
         </div>
     </nav>
@@ -340,11 +406,12 @@
             {{#if isHomePage}}
                 <img src="/images/inicio.webp" alt="Imagen de inicio de Innova Living" />
                 <div>
-                    <h2>🏪 Sistema de Ventas</h2>
-                    
+                    <h2>Sistema de Ventas para Innova Living</h2>
+                    <p>Gestiona tu inventario, clientes y ventas con estilo.</p>
                 </div>
             {{/if}}
-            <div class="form-container"> {{{body}}}
+            <div class="form-container">
+                {{{body}}}
             </div>
         </main>
     </div>

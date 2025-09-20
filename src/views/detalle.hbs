@@ -314,11 +314,13 @@
 
         <!-- Selección de la venta -->
         <div class="form-group">
-            <label for="venta_id">Venta</label>
+            <label for="venta_id">Selecciona una venta</label>
             <select name="venta_id" id="venta_id" required>
                 <option value="" disabled selected>Selecciona una venta</option>
                 {{#each ventas}}
-                    <option value="{{this.nombreCliente}} | {{this.fecha}}">{{this.nombreCliente}} | {{this.fecha}}</option>
+                    <option value="{{this._id}}">
+                        {{this.nombreCliente}} - Total: ${{this.total}}
+                    </option>
                 {{/each}}
             </select>
         </div>

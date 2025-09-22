@@ -327,11 +327,15 @@
         <div class="form-group">
             <label for="telefono">Teléfono</label>
             <input
-                type="text"
+                type="tel"
                 name="telefono"
                 id="telefono"
-                placeholder="Ej. 55-1234-5678"
+                placeholder="Ej. 5512345678"
+                pattern="[0-9]{10}"
+                maxlength="10"
+                title="Ingresa 10 dígitos numéricos"
                 required
+                oninput="validatePhoneNumber(this)"
             />
         </div>
 
@@ -353,6 +357,9 @@
                 name="rfc"
                 id="rfc"
                 placeholder="Ej. XAXX010101000"
+                pattern="[A-Z&Ñ]{3,4}[0-9]{2}(0[1-9]|1[0-2])(0[1-9]|[12][0-9]|3[01])[A-Z0-9]{3}"
+                maxlength="13"
+                title="Ingresa un RFC válido (ej. GOCJ620822GT4)"
                 required
             />
         </div>
@@ -434,3 +441,10 @@
         <button type="submit" class="btn-submit">Guardar</button>
     </form>
 </div>
+
+<script>
+    function validatePhoneNumber(input) {
+        // Replaces any character that is NOT a digit (0-9) with an empty string.
+        input.value = input.value.replace(/[^0-9]/g, '');
+    }
+</script>

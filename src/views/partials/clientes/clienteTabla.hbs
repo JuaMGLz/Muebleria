@@ -1,0 +1,36 @@
+<table>
+    <thead>
+        <tr>
+            <th>Nombre</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>RFC</th>
+            <th>Municipio/Estado</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each clientes}}
+        <tr>
+            <td>{{nombre}}</td>
+            <td>{{telefono}}</td>
+            <td>{{email}}</td>
+            <td>{{rfc}}</td>
+            <td>{{direccion.municipio}}, {{direccion.estado}}</td>
+            <td>
+                {{#if activo}}
+                <span style="color: green;">● Activo</span>
+                {{else}}
+                <span style="color: red;">● Inactivo</span>
+                {{/if}}
+            </td>
+            <td>
+                <button>Status</button>
+                <a href="/editarCliente/{{_id}}">Editar</a>
+                <a href="/eliminarCliente/{{_id}}">Eliminar</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

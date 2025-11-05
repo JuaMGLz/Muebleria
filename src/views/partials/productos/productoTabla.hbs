@@ -1,0 +1,83 @@
+<style>
+.table-wrapper {
+  width: 100%;
+  overflow-x: auto;
+  display: block;
+  white-space: nowrap;
+}
+
+/* QR grande */
+.qr-zoom {
+  width: 180px !important; /* tamaño visible real */
+  height: 180px !important;
+  object-fit: contain;
+  cursor: zoom-in;
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+  z-index: 1;
+}
+
+/* Zoom al centro */
+.qr-zoom:hover {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%) scale(2.6);
+  background: #fff;
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
+  z-index: 99999;
+}
+</style>
+
+<div class="table-wrapper">
+<table border="1" cellpadding="6">
+<thead>
+  <tr>
+    <th>Nombre</th>
+    <th>Categoría</th>
+    <th>Marca</th>
+    <th>Precio</th>
+    <th>Color</th>
+    <th>Material</th>
+    <th>QR</th>
+    <th>Activa</th>
+    <th>Acciones</th>
+  </tr>
+</thead>
+<tbody>
+  {{#each productos}}
+  <tr>
+      <td>{{nombre}}</td>
+      <td>{{nombreCategoria}}</td>
+      <td>{{marca}}</td>
+      <td>${{precio}}</td>
+      <td>{{color}}</td>
+      <td>{{material}}</td>
+
+      <td>
+        {{#if qr}}
+        <img src="{{qr}}" alt="Código QR del producto" class="qr-zoom">
+        {{else}}
+        <span style="color: #999; font-style: italic;">Sin QR</span>
+        {{/if}}
+      </td>
+
+      <td>
+        {{#if activa}}
+        <span style="color: green;">● Activa</span>
+        {{else}}
+        <span style="color: red;">● Inactiva</span>
+        {{/if}}
+      </td>
+
+      <td>
+        <button>Status</button>
+        <a href="/editarProducto/{{_id}}">Editar</a>
+        <a href="/eliminarProducto/{{_id}}">Eliminar</a>
+      </td>
+  </tr>
+  {{/each}}
+</tbody>
+</table>
+</div>

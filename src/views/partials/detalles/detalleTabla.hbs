@@ -1,0 +1,30 @@
+<table>
+    <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Producto</th>
+            <th>Cantidad</th>
+            <th>Precio Unitario</th>
+            <th>Descuento</th>
+            <th>Subtotal</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each detalles}}
+        <tr>
+            <td>{{nombreCliente}}</td>
+            <td>{{nombreProducto}}</td>
+            <td>{{cantidad}}</td>
+            <td>{{precio_unitario}}</td>
+            <td>{{descuento}}</td>
+            <td>{{subtotal}}</td>
+            <td>
+                <button>Status</button>
+                <a href="/editarDetalle/{{_id}}">Editar</a>
+                <a href="/eliminarDetalle/{{_id}}">Eliminar</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

@@ -1,0 +1,509 @@
+<style>
+    :root {
+        --color-primary: #dc2626;
+        --color-primary-dark: #991b1b;
+        --color-primary-light: #fef2f2;
+        --color-secondary: #f59e0b;
+        --color-text: #333;
+        --color-text-light: #6b7280;
+        --color-bg: #f0f2f5;
+        --color-card-bg: #ffffff;
+        --color-white: #ffffff;
+        --color-border: #ddd;
+        --color-shadow: rgba(220, 38, 38, 0.1);
+        --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: var(--font-family-primary);
+        background-color: var(--color-bg);
+        min-height: 100vh;
+        color: var(--color-text);
+        line-height: 1.6;
+    }
+
+    .header {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        color: var(--color-white);
+        padding: 1rem 2rem;
+        box-shadow: 0 4px 20px var(--color-shadow);
+        position: sticky;
+        top: 0;
+        z-index: 100;
+    }
+
+    .header-content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        max-width: 1400px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    #total:disabled {
+        background-color: #f0f2f5;
+        cursor: not-allowed;
+    }
+
+    .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: var(--color-white);
+        margin: 0;
+    }
+
+    .menu-toggle {
+        position: absolute;
+        left: 2rem;
+        background: transparent;
+        border: none;
+        color: var(--color-white);
+        padding: 0.5rem;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: var(--transition);
+        font-size: 1.8rem;
+    }
+
+    .menu-toggle:hover {
+        background: rgba(255, 255, 255, 0.2);
+        transform: scale(1.1);
+    }
+
+    .navbar {
+        position: fixed;
+        top: 0;
+        left: -350px;
+        width: 350px;
+        height: 100vh;
+        background-color: var(--color-card-bg);
+        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
+        transition: var(--transition);
+        z-index: 1000;
+        overflow-y: auto;
+    }
+
+    .navbar.active {
+        left: 0;
+    }
+
+    .navbar-header {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        color: var(--color-white);
+        padding: 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+    }
+
+    .navbar-title {
+        font-size: 1.4rem;
+        margin: 0;
+        color: var(--color-white);
+    }
+
+    .sidebar-close {
+        background: none;
+        border: none;
+        color: var(--color-white);
+        font-size: 1.8rem;
+        cursor: pointer;
+        transition: var(--transition);
+    }
+
+    .sidebar-close:hover {
+        transform: rotate(90deg);
+    }
+
+    .navbar-nav {
+        padding: 1.5rem;
+    }
+
+    .navbar-list {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+    }
+
+    .navbar-item {
+        margin-bottom: 1rem;
+    }
+
+    .navbar-link {
+        text-decoration: none;
+        color: var(--color-text);
+        font-weight: 500;
+        display: block;
+        padding: 0.75rem 1rem;
+        border-radius: 6px;
+        transition: background-color 0.3s ease, color 0.3s ease, border-left-color 0.3s ease;
+        border-left: 4px solid transparent;
+    }
+
+    .navbar-link:hover {
+        background-color: var(--color-primary-light);
+        color: var(--color-primary-dark);
+        border-left-color: var(--color-primary);
+    }
+
+    .navbar-link.active {
+        color: var(--color-primary-dark);
+        background-color: var(--color-primary-light);
+        border-left-color: var(--color-primary);
+        font-weight: 600;
+    }
+    
+    .sidebar-overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+        z-index: 999;
+    }
+
+    .sidebar-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .main-container {
+        max-width: 1400px;
+        margin: 2rem auto;
+        padding: 20px;
+    }
+
+    .content {
+        background-color: var(--color-card-bg);
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+        padding: 2rem;
+        min-height: 600px;
+        position: relative;
+        overflow: hidden;
+        border-top: 4px solid var(--color-primary);
+    }
+    
+    .form-title {
+        text-align: center;
+        color: var(--color-primary);
+        font-size: 2rem;
+        margin-bottom: 2rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: var(--color-text);
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.8rem;
+        border: 1px solid var(--color-border);
+        border-radius: 8px;
+        font-size: 1rem;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        box-sizing: border-box;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 3px var(--color-shadow);
+    }
+
+    .btn-submit {
+        display: block;
+        width: 100%;
+        padding: 1rem;
+        background-color: var(--color-primary);
+        color: var(--color-white);
+        border: none;
+        border-radius: 8px;
+        font-size: 1.1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+        margin-top: 1rem;
+    }
+
+    .btn-submit:hover {
+        background-color: var(--color-primary-dark);
+        transform: translateY(-2px);
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    .form-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 0.7rem top 50%;
+        background-size: 1.2rem;
+        cursor: pointer;
+    }
+
+    .resumen-venta {
+        background-color: var(--color-primary-light);
+        border: 1px solid var(--color-primary);
+        border-radius: 8px;
+        padding: 1rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .resumen-venta h3 {
+        color: var(--color-primary-dark);
+        margin-bottom: 0.5rem;
+    }
+
+    .resumen-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 0.25rem;
+    }
+
+    .resumen-total {
+        font-weight: bold;
+        border-top: 1px solid var(--color-primary);
+        padding-top: 0.5rem;
+        margin-top: 0.5rem;
+    }
+</style>
+
+<div class="form-container">
+    <h2 class="form-title">Agregar Nueva Venta</h2>
+    <form action="/venta/agregar" method="POST">
+        
+        <div class="form-group">
+            <label for="nombreCliente">Cliente</label>
+            <select name="nombreCliente" id="nombreCliente" required>
+                <option value="" disabled selected>Selecciona un cliente</option>
+                {{#each clientes}}
+                    <option value="{{this._id}}">{{this.nombre}}</option>
+                {{/each}}
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="fecha">Fecha</label>
+            <input
+                type="date"
+                name="fecha"
+                id="fecha"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="estado">Estado</label>
+            <select name="estado" id="estado" required>
+                <option value="" disabled selected>Selecciona el estado</option>
+                <option value="Pagado">Pagado</option>
+                <option value="Pendiente">Pendiente</option>
+                <option value="Cancelado">Cancelado</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="metodo_pago">Método de Pago</label>
+            <select name="metodo_pago" id="metodo_pago" required>
+                <option value="" disabled selected>Selecciona el método de pago</option>
+                <option value="Efectivo">Efectivo</option>
+                <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+                <option value="Tarjeta de Débito">Tarjeta de Débito</option>
+                <option value="Transferencia">Transferencia</option>
+                <option value="Cheque">Cheque</option>
+                <option value="Depósito">Depósito</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="subtotal">Subtotal</label>
+            <input
+                type="number"
+                name="subtotal"
+                id="subtotal"
+                placeholder="Ej. 1000.00"
+                min="0"
+                step="0.01"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="descuento">Descuento</label>
+            <input
+                type="number"
+                name="descuento"
+                id="descuento"
+                placeholder="Ej. 100.00"
+                min="0"
+                step="0.01"
+                required
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="impuestos">Impuestos</label>
+            <input
+                type="number"
+                name="impuestos"
+                id="impuestos"
+                placeholder="Ej. 50.00"
+                min="0"
+                step="0.01"
+                required
+            />
+        </div>
+
+        <!-- Resumen de la venta -->
+        <div class="resumen-venta">
+            <h3>Resumen de Venta</h3>
+            <div class="resumen-item">
+                <span>Subtotal:</span>
+                <span id="resumen-subtotal">$0.00</span>
+            </div>
+            <div class="resumen-item">
+                <span>Descuento:</span>
+                <span id="resumen-descuento">$0.00</span>
+            </div>
+            <div class="resumen-item">
+                <span>Impuestos:</span>
+                <span id="resumen-impuestos">$0.00</span>
+            </div>
+            <div class="resumen-item resumen-total">
+                <span>Total:</span>
+                <span id="resumen-total">$0.00</span>
+            </div>
+        </div>
+
+        <div class="form-group" style="display: none;">
+            <label for="total">Total</label>
+            <input
+                type="number"
+                name="total"
+                id="total"
+                placeholder="Ej. 950.00"
+                min="0"
+                step="0.01"
+                required
+                readonly
+            />
+        </div>
+
+        <div class="form-group">
+            <label for="notas">Notas</label>
+            <textarea
+                name="notas"
+                id="notas"
+                rows="4"
+                placeholder="Notas adicionales..."
+            ></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Guardar Venta</button>
+    </form>
+</div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Establecer la fecha actual por defecto
+        const fechaInput = document.getElementById('fecha');
+        const today = new Date().toISOString().split('T')[0];
+        fechaInput.value = today;
+
+        // Selección de los campos de entrada
+        const subtotalInput = document.getElementById('subtotal');
+        const descuentoInput = document.getElementById('descuento');
+        const impuestosInput = document.getElementById('impuestos');
+        const totalInput = document.getElementById('total');
+
+        // Elementos del resumen
+        const resumenSubtotal = document.getElementById('resumen-subtotal');
+        const resumenDescuento = document.getElementById('resumen-descuento');
+        const resumenImpuestos = document.getElementById('resumen-impuestos');
+        const resumenTotal = document.getElementById('resumen-total');
+
+        // Función para formatear moneda
+        function formatCurrency(amount) {
+            return new Intl.NumberFormat('es-MX', {
+                style: 'currency',
+                currency: 'MXN'
+            }).format(amount);
+        }
+
+        // Función para actualizar el total y el resumen
+        function actualizarTotal() {
+            const subtotal = parseFloat(subtotalInput.value) || 0;
+            const descuento = parseFloat(descuentoInput.value) || 0;
+            const impuestos = parseFloat(impuestosInput.value) || 0;
+            
+            // Calcular el total
+            const total = (subtotal - descuento) + impuestos;
+            
+            // Actualizar el campo Total
+            totalInput.value = total.toFixed(2);
+            
+            // Actualizar el resumen visual
+            resumenSubtotal.textContent = formatCurrency(subtotal);
+            resumenDescuento.textContent = formatCurrency(descuento);
+            resumenImpuestos.textContent = formatCurrency(impuestos);
+            resumenTotal.textContent = formatCurrency(total);
+        }
+
+        // Añadir event listeners para recalcular el total
+        subtotalInput.addEventListener('input', actualizarTotal);
+        descuentoInput.addEventListener('input', actualizarTotal);
+        impuestosInput.addEventListener('input', actualizarTotal);
+        
+        // Ejecutar el cálculo inicial
+        actualizarTotal();
+
+        // Deshabilitar el campo Total para que no sea editable
+        totalInput.disabled = true;
+
+        // Añadir event listener para el envío del formulario
+        document.querySelector('form').addEventListener('submit', function(event) {
+            // HABILITAR el campo total justo antes de enviarlo
+            totalInput.disabled = false;
+            
+            // Validación adicional
+            const total = parseFloat(totalInput.value);
+            if (total < 0) {
+                event.preventDefault();
+                alert('El total no puede ser negativo. Por favor revisa los valores.');
+                totalInput.disabled = true;
+            }
+        });
+
+    });
+</script>

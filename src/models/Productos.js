@@ -68,6 +68,10 @@ const productoSchema = new Schema(
       type: Boolean,
       default: true,
     },
+    qr: {
+    type: String, 
+    required: true,
+  }
   },
   { timestamps: true, versionKey: false }
 );

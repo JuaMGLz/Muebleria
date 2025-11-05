@@ -1,0 +1,38 @@
+<table>
+    <thead>
+        <tr>
+            <th>Razón Social</th>
+            <th>Contacto</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>RFC</th>
+            <th>Categoría</th>
+            <th>Activo</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each proveedores}}
+        <tr>
+            <td>{{razonSocial}}</td>
+            <td>{{nombreContacto}}</td>
+            <td>{{telefono}}</td>
+            <td>{{email}}</td>
+            <td>{{rfc}}</td>
+            <td>{{categoria}}</td>
+            <td>
+                {{#if activo}}
+                    <span style="color: green; font-weight: bold;">● Activo</span>
+                {{else}}
+                    <span style="color: red; font-weight: bold;">● Inactivo</span>
+                {{/if}}
+            </td>
+            <td>
+                <button>Status</button>
+                <a href="/editarProveedor/{{_id}}">Editar</a>
+                <a href="/eliminarProveedor/{{_id}}">Eliminar</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

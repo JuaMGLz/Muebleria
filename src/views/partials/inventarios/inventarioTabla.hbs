@@ -1,0 +1,34 @@
+<table>
+    <thead>
+        <tr>
+            <th>Producto</th>
+            <th>Stock</th>
+            <th>Ubicación</th>
+            <th>Sucursal</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each inventarios}}
+        <tr>
+            <td>{{nombreProducto}}</td>
+            <td>
+                {{#if stock}}
+                <span style="color: {{#if (lt stock 10)}}red{{else if (lt stock 20)}}orange{{else}}green{{/if}}; font-weight: bold;">
+                    {{stock}} unidades
+                </span>
+                {{else}}
+                <span style="color: red; font-weight: bold;">Sin stock</span>
+                {{/if}}
+            </td>
+            <td>{{ubicacion}}</td>
+            <td>{{sucursal}}</td>
+            <td>
+                <button>Status</button>
+                <a href="/editarInventario/{{_id}}">Editar</a>
+                <a href="/eliminarInventario/{{_id}}">Eliminar</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

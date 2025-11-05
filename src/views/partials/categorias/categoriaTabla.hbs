@@ -1,0 +1,23 @@
+<table>
+    <thead>
+        <tr>
+            <th> Nombre </th>
+            <th> Descripción </th>
+            <th> Activa </th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each categorias}}
+        <tr>
+            <td>{{nombre}}</td>
+            <td>{{descripcion}}</td>
+            <td>{{activa}}</td>
+            <td>
+                <button>Status</button>
+                <a href="/editarCategoria/{{_id}}">Editar</a>
+                <a href="/eliminarCategoria/{{_id}}">Eliminar</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

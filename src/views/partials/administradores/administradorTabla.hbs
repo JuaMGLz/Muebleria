@@ -1,0 +1,30 @@
+<table>
+    <thead>
+        <tr>
+            <th>Nombre de Usuario</th>
+            <th>Correo</th>
+            <th>Administrador</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each administradores}}
+        <tr>
+            <td>{{nombreUsuario}}</td>
+            <td>{{correo}}</td>
+            <td>
+                {{#if administrador}}
+                    <span style="color: green; font-weight: bold;">● Sí</span>
+                {{else}}
+                    <span style="color: red; font-weight: bold;">● No</span>
+                {{/if}}
+            </td>
+            <td>
+                <button>Status</button>
+                <a href="/editarAdministrador/{{_id}}">Editar</a>
+                <a href="/eliminarAdministrador/{{_id}}">Eliminar</a>
+            </td>
+        </tr>
+        {{/each}}
+    </tbody>
+</table>

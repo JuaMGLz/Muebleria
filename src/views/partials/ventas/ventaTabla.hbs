@@ -1,0 +1,114 @@
+<style>
+  /* Contenedor desplazable horizontal para la tabla */
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  /* QR grande */
+  .qr-zoom {
+    width: 200px; /* 🔥 Ajusta si quieres aún más grande */
+    height: 200px;
+    object-fit: contain;
+    cursor: zoom-in;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Zoom centrado al pasar el mouse */
+  .qr-zoom:hover {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(2.8);
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 999999;
+  }
+</style>
+
+
+<div class="table-wrapper">
+<table border="1">
+  <thead>
+    <tr>
+      <th>Cliente</th>
+      <th>Fecha</th>
+      <th>Subtotal</th>
+      <th>Descuento</th>
+      <th>Impuestos</th>
+      <th>Total</th>
+      <th>Estado</th>
+      <th>Método Pago</th>
+      <th>Notas</th>
+      <th>QR</th>
+      <th>Acciones</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    {{#each ventas}}
+    <tr>
+      <td>{{nombreCliente}}</td>
+      <td>{{formatDate fecha}}</td>
+      <td>{{formatCurrency subtotal}}</td>
+      <td>{{formatCurrency descuento}}</td>
+      <td>{{formatCurrency impuestos}}</td>
+      <td><strong>{{formatCurrency total}}</strong></td>
+
+      <td>
+        {{#if (eq estado "Pagado")}}
+        <span style="color: green; font-weight: bold;">● {{estado}}</span>
+        {{else if (eq estado "Pendiente")}}
+        <span style="color: orange; font-weight: bold;">● {{estado}}</span>
+        {{else}}
+        <span style="color: red; font-weight: bold;">● {{estado}}</span>
+        {{/if}}
+      </td>
+
+      <td>{{metodo_pago}}</td>
+
+      <td>
+        {{#if notas}}
+        <span title="{{notas}}" style="cursor: help; max-width: 200px; display: inline-block;">
+          {{notas}}
+        </span>
+        {{else}}
+        <span style="color: #999;">-</span>
+        {{/if}}
+      </td>
+
+      <td>
+        {{#if qr}}
+        <img src="{{qr}}" alt="QR" class="qr-zoom" />
+        {{else}}
+        <span style="color: #999;">Sin QR</span>
+        {{/if}}
+      </td>
+
+      <td>
+        <button>Status</button>
+        <a href="/editarVenta/{{_id}}">Editar</a>
+        <a href="/eliminarVenta/{{_id}}">Eliminar</a>
+      </td>
+    </tr>
+    {{/each}}
+  </tbody>
+</table>
+</div>

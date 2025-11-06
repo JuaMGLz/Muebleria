@@ -180,18 +180,26 @@
         href="/plantilla"
         class="navbar-link active"
       >Inicio</a></li>
-    <li class="navbar-item"><a
+
+    {{!-- ✅ CATEGORÍAS: Visible para todos (Solo requiere requireAuth) --}}
+    <li class="navbar-item"><a 
         href="/categoria/agregar"
         class="navbar-link"
       >Categorías</a></li>
+      
+    {{!-- ✅ PRODUCTOS: Visible para todos (Solo requiere requireAuth) --}}
     <li class="navbar-item"><a
         href="/producto/agregar"
         class="navbar-link"
       >Productos</a></li>
+      
+    {{!-- ✅ INVENTARIO: Visible para todos (Solo requiere requireAuth) --}}
     <li class="navbar-item"><a
         href="/inventario/agregar"
         class="navbar-link"
       >Inventario</a></li>
+    
+    {{!-- Clientes, Ventas, Detalles de Pedido y Proveedores ya estaban visibles --}}
     <li class="navbar-item"><a
         href="/cliente/agregar"
         class="navbar-link"
@@ -204,13 +212,18 @@
         href="/detalle/agregar"
         class="navbar-link"
       >Detalles de Pedido</a></li>
-      <li class="navbar-item"><a
+    <li class="navbar-item"><a
         href="/proveedor/agregar"
         class="navbar-link"
-      >Proovedores</a></li>
-      <li class="navbar-item"><a
+      >Proveedores</a></li>
+      
+    {{!-- 🔒 ADMINISTRADORES: Solo visible para Administrador --}}
+    {{#if user.administrador}}
+    <li class="navbar-item"><a
         href="/administrador/agregar"
         class="navbar-link"
       >Administradores</a></li>
+    {{/if}}
+
   </ul>
 </div>

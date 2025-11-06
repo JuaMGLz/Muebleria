@@ -5,7 +5,10 @@
             <th>Stock</th>
             <th>Ubicación</th>
             <th>Sucursal</th>
+            {{!-- Columna Acciones: SOLO ADMIN --}}
+            {{#if user.administrador}}
             <th>Acciones</th>
+            {{/if}}
         </tr>
     </thead>
     <tbody>
@@ -23,11 +26,14 @@
             </td>
             <td>{{ubicacion}}</td>
             <td>{{sucursal}}</td>
+            {{!-- Celdas de Acciones: SOLO ADMIN --}}
+            {{#if ../user.administrador}}
             <td>
                 <button>Status</button>
                 <a href="/editarInventario/{{_id}}">Editar</a>
                 <a href="/eliminarInventario/{{_id}}">Eliminar</a>
             </td>
+            {{/if}}
         </tr>
         {{/each}}
     </tbody>

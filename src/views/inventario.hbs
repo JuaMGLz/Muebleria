@@ -1,2 +1,6 @@
-{{>inventarios/inventarioForm}}
-{{>inventarios/inventarioTabla}}
+{{#if user.administrador}}
+    {{> inventarios/inventarioForm }}
+    <hr>
+{{/if}}
+
+{{> inventarios/inventarioTabla }}

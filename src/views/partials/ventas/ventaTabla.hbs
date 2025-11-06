@@ -44,71 +44,78 @@
 </style>
 
 
+
 <div class="table-wrapper">
 <table border="1">
-  <thead>
-    <tr>
-      <th>Cliente</th>
-      <th>Fecha</th>
-      <th>Subtotal</th>
-      <th>Descuento</th>
-      <th>Impuestos</th>
-      <th>Total</th>
-      <th>Estado</th>
-      <th>Método Pago</th>
-      <th>Notas</th>
-      <th>QR</th>
-      <th>Acciones</th>
-    </tr>
-  </thead>
+    <thead>
+        <tr>
+            <th>Cliente</th>
+            <th>Fecha</th>
+            <th>Subtotal</th>
+            <th>Descuento</th>
+            <th>Impuestos</th>
+            <th>Total</th>
+            <th>Estado</th>
+            <th>Método Pago</th>
+            <th>Notas</th>
+            <th>QR</th>
+            {{!-- Columna Acciones: SOLO ADMIN --}}
+            {{#if user.administrador}}
+            <th>Acciones</th>
+            {{/if}}
+        </tr>
+    </thead>
 
-  <tbody>
-    {{#each ventas}}
-    <tr>
-      <td>{{nombreCliente}}</td>
-      <td>{{formatDate fecha}}</td>
-      <td>{{formatCurrency subtotal}}</td>
-      <td>{{formatCurrency descuento}}</td>
-      <td>{{formatCurrency impuestos}}</td>
-      <td><strong>{{formatCurrency total}}</strong></td>
+    <tbody>
+        {{#each ventas}}
+        <tr>
+            <td>{{nombreCliente}}</td>
+            <td>{{formatDate fecha}}</td>
+            <td>{{formatCurrency subtotal}}</td>
+            <td>{{formatCurrency descuento}}</td>
+            <td>{{formatCurrency impuestos}}</td>
+            <td><strong>{{formatCurrency total}}</strong></td>
 
-      <td>
-        {{#if (eq estado "Pagado")}}
-        <span style="color: green; font-weight: bold;">● {{estado}}</span>
-        {{else if (eq estado "Pendiente")}}
-        <span style="color: orange; font-weight: bold;">● {{estado}}</span>
-        {{else}}
-        <span style="color: red; font-weight: bold;">● {{estado}}</span>
-        {{/if}}
-      </td>
+            <td>
+                {{#if (eq estado "Pagado")}}
+                <span style="color: green; font-weight: bold;">● {{estado}}</span>
+                {{else if (eq estado "Pendiente")}}
+                <span style="color: orange; font-weight: bold;">● {{estado}}</span>
+                {{else}}
+                <span style="color: red; font-weight: bold;">● {{estado}}</span>
+                {{/if}}
+            </td>
 
-      <td>{{metodo_pago}}</td>
+            <td>{{metodo_pago}}</td>
 
-      <td>
-        {{#if notas}}
-        <span title="{{notas}}" style="cursor: help; max-width: 200px; display: inline-block;">
-          {{notas}}
-        </span>
-        {{else}}
-        <span style="color: #999;">-</span>
-        {{/if}}
-      </td>
+            <td>
+                {{#if notas}}
+                <span title="{{notas}}" style="cursor: help; max-width: 200px; display: inline-block;">
+                    {{notas}}
+                </span>
+                {{else}}
+                <span style="color: #999;">-</span>
+                {{/if}}
+            </td>
 
-      <td>
-        {{#if qr}}
-        <img src="{{qr}}" alt="QR" class="qr-zoom" />
-        {{else}}
-        <span style="color: #999;">Sin QR</span>
-        {{/if}}
-      </td>
+            <td>
+                {{#if qr}}
+                <img src="{{qr}}" alt="QR" class="qr-zoom" />
+                {{else}}
+                <span style="color: #999;">Sin QR</span>
+                {{/if}}
+            </td>
 
-      <td>
-        <button>Status</button>
-        <a href="/editarVenta/{{_id}}">Editar</a>
-        <a href="/eliminarVenta/{{_id}}">Eliminar</a>
-      </td>
-    </tr>
-    {{/each}}
-  </tbody>
+            {{!-- Celdas de Acciones: SOLO ADMIN --}}
+            {{#if ../user.administrador}} 
+            <td>
+                <button>Status</button>
+                <a href="/editarVenta/{{_id}}">Editar</a>
+                <a href="/eliminarVenta/{{_id}}">Eliminar</a>
+            </td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
 </div>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innova Living - Iniciar Sesión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        /* Copiado de main.hbs */
+        :root {
+            --color-primary: #dc2626; /* Rojo principal */
+            --color-primary-dark: #991b1b; /* Rojo oscuro */
+            --color-primary-light: #fef2f2; /* Rojo muy claro */
+            --color-secondary: #f59e0b; /* Amarillo/dorado */
+            --color-text: #333; /* Gris oscuro para el texto */
+            --color-text-light: #6b7280; /* Gris medio */
+            --color-bg: #f0f2f5; /* Fondo gris claro */
+            --color-card-bg: #ffffff; /* Fondo de tarjetas */
+            --color-white: #ffffff;
+            --color-border: #ddd; /* Borde gris claro */
+            --color-shadow: rgba(0, 0, 0, 0.15); /* Sombra más suave */
+            --font-family-primary: 'Montserrat', sans-serif;
+            --font-family-secondary: 'Playfair Display', serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-family-primary);
+            background-color: var(--color-bg);
+            min-height: 100vh;
+            color: var(--color-text);
+            line-height: 1.6;
+            -webkit-font-smoothing: antialiased;
+            /* Centrado simple */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Contenido principal (necesario para el marco blanco) */
+        .main-container {
+            max-width: 1400px;
+            padding: 20px;
+        }
+
+        .content {
+            background-color: var(--color-card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 25px var(--color-shadow);
+            padding: 3rem 4rem;
+            min-height: 400px; /* Reducido para login */
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            width: 500px; /* Controlar ancho del login */
+            margin: 10vh auto;
+        }
+        
+        .content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+            border-radius: 12px 12px 0 0;
+        }
+
+        /* Estilos del login.hbs (para que luzca bien) */
+        .content h1 {
+            font-family: var(--font-family-secondary);
+            color: var(--color-primary);
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .content input[type="text"],
+        .content input[type="password"] {
+             width: 100%;
+             padding: 14px 18px;
+             margin-bottom: 1.5rem;
+             border: 1px solid var(--color-border);
+             border-radius: 8px;
+             font-size: 1rem;
+             font-family: var(--font-family-primary);
+             box-sizing: border-box;
+             background-color: #f8f9fa;
+        }
+        .content button {
+            /* Estilos del botón Entrar */
+            padding: 1rem;
+            background-color: var(--color-primary);
+            color: var(--color-white);
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <main class="content">
+            {{{body}}}
+        </main>
+    </div>
+</body>
+</html>

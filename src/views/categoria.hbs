@@ -1,2 +1,7 @@
-{{>categorias/categoriaForm}}
-{{>categorias/categoriaTabla}}
+{{#if user.administrador}}
+    {{> categorias/categoriaForm }}
+    <hr>
+{{/if}}
+
+{{!-- Muestra la tabla siempre --}}
+{{> categorias/categoriaTabla }}

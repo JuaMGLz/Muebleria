@@ -278,17 +278,24 @@
         <div class="navbar-nav">
             {{> navbar }}
         </div>
-    </nav>
+    {{#if user}}
+  <li><a href="/logout">Cerrar sesión ({{user.nombreUsuario}})</a></li>
+{{else}}
+  <li><a href="/login">Iniciar sesión</a></li>
+{{/if}}
+</nav>
     
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 
     <div class="main-container">
         <main class="content">
             {{#if isHomePage}}
-                <img src="/images/inicio.webp" alt="Imagen de inicio de Innova Living" />
+                <img src="/Images/Inicio.webp" alt="Imagen de inicio de Innova Living" />
                 <div>
                     <h2>Sistema de Ventas para Innova Living</h2>
+{{#if user.administrador}}
                     <p>Gestiona tu inventario, clientes y ventas con estilo.</p>
+{{/if}}
                 </div>
             {{/if}}
             <div class="form-container">

@@ -1,2 +1,8 @@
-{{>proveedores/proveedorForm}}
-{{>proveedores/proveedorTabla}}
+<h1 style="text-align: center;">Gestión de Proveedores</h1>
+
+{{#if user.administrador}}
+    {{> proveedores/proveedorForm }}
+    <hr>
+{{/if}}
+
+{{> proveedores/proveedorTabla }}

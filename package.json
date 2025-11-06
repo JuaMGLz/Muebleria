@@ -1,19 +1,17 @@
 {
   "name": "muebleria",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/index.js --exec babel-node"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
   "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "connect-mongo": "^5.1.0",
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "express-handlebars": "^5.3.4",
+    "express-session": "^1.18.2",
+    "moment": "^2.30.1",
     "mongoose": "^6.7.2",
     "morgan": "^1.10.1",
     "qrcode": "^1.5.4"

@@ -42,7 +42,10 @@
     <th>Material</th>
     <th>QR</th>
     <th>Activa</th>
+    {{!-- Columna Acciones: SOLO ADMIN --}}
+    {{#if user.administrador}}
     <th>Acciones</th>
+    {{/if}}
   </tr>
 </thead>
 <tbody>
@@ -71,11 +74,14 @@
         {{/if}}
       </td>
 
+      {{!-- Celdas de Acciones: SOLO ADMIN --}}
+      {{#if ../user.administrador}}
       <td>
         <button>Status</button>
         <a href="/editarProducto/{{_id}}">Editar</a>
         <a href="/eliminarProducto/{{_id}}">Eliminar</a>
       </td>
+      {{/if}}
   </tr>
   {{/each}}
 </tbody>

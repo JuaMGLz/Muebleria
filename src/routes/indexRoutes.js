@@ -1,31 +1,40 @@
-import { Router } from "express";
-import Categoria from "../models/Categorias.js";
-import Producto from "../models/Productos.js";
-import Inventario from "../models/Inventario.js";
-import Cliente from "../models/Clientes.js";
-import Venta from "../models/Ventas.js";
-import Detalle from "../models/Detalles.js";
-import Administrador from "../models/Administradores.js";
-import Proveedor from "../models/Proveedores.js";
-
-import qrcode from "qrcode";
-import path from "path";
-import fs from "fs/promises";
-
+// src/routes/indexRoutes.js
+const { requireAuth, requireAdmin } = require("../middlewares/auth.js");
+const { Router } = require("express");
 const router = Router();
 
-//--- Rutas para la página de inicio ---
-router.get(["/", "/plantilla"], (req, res) => {
+// Modelos - Asegurar compatibilidad con ES Modules (.default)
+const Categoria = require("../models/Categorias.js").default;
+const Producto = require("../models/Productos.js").default;
+const Inventario = require("../models/Inventario.js").default;
+const Cliente = require("../models/Clientes.js").default;
+const Venta = require("../models/Ventas.js").default;
+const Detalle = require("../models/Detalles.js").default;
+const Administrador = require("../models/Administradores.js"); // CommonJS
+const Proveedor = require("../models/Proveedores.js").default;
+
+const qrcode = require("qrcode");
+const path = require("path");
+const fs = require("fs/promises");
+const bcrypt = require("bcryptjs");
+
+//================================================================
+//--- Rutas para la página de inicio ------------------------------
+//================================================================
+router.get(["/", "/plantilla"], requireAuth, (req, res) => {
   res.render("plantilla", { isHomePage: true });
 });
 
-//--- Rutas de Categoría ----------------------------------
-router.get("/categoria/agregar", async (req, res) => {
+//================================================================
+//--- Rutas de Categoría -----------------------------------------
+//================================================================
+// ✅ GET (Listado): ACCESO PARA TODOS (requireAuth)
+router.get("/categoria/agregar", requireAuth, async (req, res) => {
   try {
     const categorias = await Categoria.find().lean();
     res.render("categoria", {
       isHomePage: false,
-      categorias: categorias, // Pasar las categorías a la vista
+      categorias: categorias,
     });
   } catch (error) {
     console.error("Error al obtener categorías:", error);
@@ -36,7 +45,29 @@ router.get("/categoria/agregar", async (req, res) => {
   }
 });
 
-router.post("/categoria/agregar", async (req, res) => {
+// 🔒 POST (Agregar): SOLO ADMIN (requireAdmin) - El resto se mantiene igual.
+router.post("/categoria/agregar", requireAuth, requireAdmin, async (req, res) => {
+  try {
+    // Asumo que tienes el modelo Categoria importado correctamente.
+    const categorias = await Categoria.find().lean();
+    res.render("categoria", {
+      isHomePage: false,
+      categorias, // Se pasa el listado de categorías
+    });
+  } catch (error) {
+    console.error("Error al obtener categorías:", error);
+    res.render("categoria", {
+        isHomePage: false,
+        categorias: [],
+        error: "Error al cargar las categorías."
+    });
+  }
+});
+
+
+// 🔒 POST (Agregar): SOLO ADMIN (requireAdmin)
+// Se mantiene la protección para evitar que un no-admin cree categorías.
+router.post("/categoria/agregar", requireAuth, requireAdmin, async (req, res) => {
   try {
     const categoria = new Categoria(req.body);
     await categoria.save();
@@ -51,7 +82,9 @@ router.post("/categoria/agregar", async (req, res) => {
   }
 });
 
-router.get("/editarCategoria/:id", async (req, res) => {
+// 🔒 GET (Editar formulario): SOLO ADMIN (requireAdmin)
+// Se mantiene la protección para evitar que un no-admin acceda al formulario de edición.
+router.get("/editarCategoria/:id", requireAuth, requireAdmin, async (req, res) => {
   try {
     const categoria = await Categoria.findById(req.params.id).lean();
     res.render("editarCategoria", { categoria });
@@ -61,20 +94,29 @@ router.get("/editarCategoria/:id", async (req, res) => {
   }
 });
 
-router.post("/editarCategoria/:id", async (req, res) => {
+// 🔒 POST (Procesar edición): SOLO ADMIN (requireAdmin)
+// Se mantiene la protección para evitar que un no-admin modifique categorías.
+router.post("/editarCategoria/:id", requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
   await Categoria.findByIdAndUpdate(id, req.body);
   res.redirect("/categoria/agregar");
 });
 
-router.get("/eliminarCategoria/:id", async (req, res) => {
+// 🔒 GET (Eliminar): SOLO ADMIN (requireAdmin)
+// Se mantiene la protección para evitar que un no-admin elimine categorías.
+router.get("/eliminarCategoria/:id", requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
   await Categoria.findByIdAndDelete(id);
   res.redirect("/categoria/agregar");
 });
 
-//--- Rutas de Producto ---
-router.get("/producto/agregar", async (req, res, next) => {
+//================================================================
+//--- Rutas de Producto ------------------------------------------
+//================================================================
+
+// ✅ GET (Listado): ACCESO PARA TODOS LOS LOGUEADOS (requireAuth)
+// Permite a los no-administradores ver la tabla de productos.
+router.get("/producto/agregar", requireAuth, async (req, res, next) => {
   try {
     const categorias = await Categoria.find({ activa: true })
       .sort({ nombre: 1 })
@@ -83,8 +125,8 @@ router.get("/producto/agregar", async (req, res, next) => {
     
     // Convertir rutas absolutas a URLs relativas
     const productosConQRCorregido = productos.map(producto => {
+      // Esta lógica se mantiene
       if (producto.qr && producto.qr.startsWith('D:\\')) {
-        // Extraer solo el nombre del archivo
         const filename = path.basename(producto.qr);
         return {
           ...producto,
@@ -104,10 +146,12 @@ router.get("/producto/agregar", async (req, res, next) => {
   }
 });
 
-router.post("/producto/agregar", async (req, res) => {
+// 🔒 POST (Agregar): SOLO ADMIN (requireAdmin)
+router.post("/producto/agregar", requireAuth, requireAdmin, async (req, res) => {
   try {
-    const qrDirectory = path.join("D:", "muebleria", "src", "Qr");
-    await fs.mkdir(qrDirectory, { recursive: true });
+    // 🛑 CORRECCIÓN CLAVE: Usar path.resolve("D:\\muebleria\\src\\Qr") para ruta absoluta robusta
+    const qrDirectory = path.resolve("C:\\Users\\Angel Luis\\Documents\\bucio proyecto fin\\Muebleria\\src\\Qr"); 
+await fs.mkdir(qrDirectory, { recursive: true });
 
     const {
       nombre,
@@ -164,8 +208,8 @@ Medidas (LxAnxAl): ${medidas.largo}cm x ${medidas.ancho}cm x ${medidas.alto}cm
   }
 });
 
-// Agregar estas rutas para editar y eliminar productos
-router.get("/editarProducto/:id", async (req, res) => {
+// 🔒 GET (Editar formulario): SOLO ADMIN (requireAdmin)
+router.get("/editarProducto/:id", requireAuth, requireAdmin, async (req, res) => {
   try {
     const producto = await Producto.findById(req.params.id).lean();
     const categorias = await Categoria.find({ activa: true }).lean();
@@ -180,17 +224,21 @@ router.get("/editarProducto/:id", async (req, res) => {
   }
 });
 
-// Ruta para procesar la edición
-router.post("/editarProducto/:id", async (req, res) => {
+// 🔒 POST (Procesar edición): SOLO ADMIN (requireAdmin)
+router.post("/editarProducto/:id", requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
-    // Eliminar el QR antiguo
+    // 🛑 CORRECCIÓN CLAVE: Usar path.resolve para el directorio
+    const qrDirectory = path.resolve("D:\\muebleria\\src\\Qr");
+    await fs.mkdir(qrDirectory, { recursive: true });
+
+    // Lógica de eliminación de QR antiguo
     const productoAntiguo = await Producto.findById(id);
     if (productoAntiguo.qr) {
       try {
-        // Extraer la ruta absoluta del QR antiguo
+        // Reconstrucción de la ruta para eliminar el archivo
         const qrPath = productoAntiguo.qr.startsWith('/qr-images/') 
-          ? path.join('D:', 'muebleria', 'src', 'Qr', path.basename(productoAntiguo.qr))
+          ? path.join(qrDirectory, path.basename(productoAntiguo.qr))
           : productoAntiguo.qr;
         
         await fs.unlink(qrPath);
@@ -198,10 +246,6 @@ router.post("/editarProducto/:id", async (req, res) => {
         console.error("Error al eliminar QR antiguo:", error);
       }
     }
-
-    // Generar nuevo QR
-    const qrDirectory = path.join("D:", "muebleria", "src", "Qr");
-    await fs.mkdir(qrDirectory, { recursive: true });
 
     const {
       nombre,
@@ -235,12 +279,11 @@ Medidas (LxAnxAl): ${medidas.largo}cm x ${medidas.ancho}cm x ${medidas.alto}cm
 
     await qrcode.toFile(filePath, qrDataString);
 
-    // Actualizar producto con nuevo QR
     const productoActualizado = {
       ...req.body,
       qr: `/qr-images/${filename}`,
     };
-
+    
     await Producto.findByIdAndUpdate(id, productoActualizado);
 
     const mensajeExito = encodeURIComponent("¡Producto actualizado con éxito!");
@@ -254,7 +297,8 @@ Medidas (LxAnxAl): ${medidas.largo}cm x ${medidas.ancho}cm x ${medidas.alto}cm
   }
 });
 
-router.get("/eliminarProducto/:id", async (req, res) => {
+// 🔒 GET (Eliminar): SOLO ADMIN (requireAdmin)
+router.get("/eliminarProducto/:id", requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
     await Producto.findByIdAndDelete(id);
@@ -269,26 +313,28 @@ router.get("/eliminarProducto/:id", async (req, res) => {
   }
 });
 
-
-//--- Rutas de Inventario ---
-//--- Rutas de Inventario ---
-router.get("/inventario/agregar", async (req, res, next) => {
+//================================================================
+//--- Rutas de Inventario ----------------------------------------
+//================================================================
+// ✅ GET (Listado): ACCESO PARA TODOS (requireAuth)
+router.get("/inventario/agregar", requireAuth, async (req, res, next) => {
   try {
     const productos = await Producto.find({ activa: true })
       .sort({ nombre: 1 })
       .lean();
-    const inventarios = await Inventario.find().lean(); // Agregar esta línea
+    const inventarios = await Inventario.find().lean();
     res.render("inventario", { 
       isHomePage: false, 
       productos,
-      inventarios // Pasar inventarios a la vista
+      inventarios
     });
   } catch (e) {
     next(e);
   }
 });
 
-router.post("/inventario/agregar", async (req, res) => {
+// 🔒 POST (Agregar): SOLO ADMIN (requireAdmin)
+router.post("/inventario/agregar", requireAuth, requireAdmin, async (req, res) => {
   try {
     const inventario = new Inventario(req.body);
     await inventario.save();
@@ -305,8 +351,8 @@ router.post("/inventario/agregar", async (req, res) => {
   }
 });
 
-// Rutas para editar inventario
-router.get("/editarInventario/:id", async (req, res) => {
+// 🔒 GET (Editar formulario): SOLO ADMIN (requireAdmin)
+router.get("/editarInventario/:id", requireAuth, requireAdmin, async (req, res) => {
   try {
     const inventario = await Inventario.findById(req.params.id).lean();
     const productos = await Producto.find({ activa: true }).lean();
@@ -320,7 +366,8 @@ router.get("/editarInventario/:id", async (req, res) => {
   }
 });
 
-router.post("/editarInventario/:id", async (req, res) => {
+// 🔒 POST (Procesar edición): SOLO ADMIN (requireAdmin)
+router.post("/editarInventario/:id", requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
     await Inventario.findByIdAndUpdate(id, req.body);
@@ -335,8 +382,8 @@ router.post("/editarInventario/:id", async (req, res) => {
   }
 });
 
-// Ruta para eliminar inventario
-router.get("/eliminarInventario/:id", async (req, res) => {
+// 🔒 GET (Eliminar): SOLO ADMIN (requireAdmin)
+router.get("/eliminarInventario/:id", requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
     await Inventario.findByIdAndDelete(id);
@@ -351,13 +398,15 @@ router.get("/eliminarInventario/:id", async (req, res) => {
   }
 });
 
-//--- Rutas de Cliente ---
-router.get("/cliente/agregar", async (req, res) => {
+//================================================================
+//--- Rutas de Cliente (Acceso Total: requireAuth) ---------------
+//================================================================
+router.get("/cliente/agregar", requireAuth, async (req, res) => {
   try {
-    const clientes = await Cliente.find().lean(); // Agregar esta línea
+    const clientes = await Cliente.find().lean();
     res.render("cliente", { 
       isHomePage: false,
-      clientes // Pasar clientes a la vista
+      clientes
     });
   } catch (error) {
     console.error("Error al obtener clientes:", error);
@@ -368,7 +417,7 @@ router.get("/cliente/agregar", async (req, res) => {
   }
 });
 
-router.post("/cliente/agregar", async (req, res) => {
+router.post("/cliente/agregar", requireAuth, async (req, res) => {
   try {
     const cliente = new Cliente(req.body);
     await cliente.save();
@@ -383,8 +432,7 @@ router.post("/cliente/agregar", async (req, res) => {
   }
 });
 
-// Rutas para editar cliente
-router.get("/editarCliente/:id", async (req, res) => {
+router.get("/editarCliente/:id", requireAuth, async (req, res) => {
   try {
     const cliente = await Cliente.findById(req.params.id).lean();
     res.render("editarCliente", { cliente });
@@ -394,7 +442,7 @@ router.get("/editarCliente/:id", async (req, res) => {
   }
 });
 
-router.post("/editarCliente/:id", async (req, res) => {
+router.post("/editarCliente/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   try {
     await Cliente.findByIdAndUpdate(id, req.body);
@@ -409,8 +457,7 @@ router.post("/editarCliente/:id", async (req, res) => {
   }
 });
 
-// Ruta para eliminar cliente
-router.get("/eliminarCliente/:id", async (req, res) => {
+router.get("/eliminarCliente/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   try {
     await Cliente.findByIdAndDelete(id);
@@ -425,8 +472,10 @@ router.get("/eliminarCliente/:id", async (req, res) => {
   }
 });
 
-//--- Rutas de Venta ---
-router.get("/venta/agregar", async (req, res, next) => {
+//================================================================
+//--- Rutas de Venta (Acceso Total: requireAuth) -----------------
+//================================================================
+router.get("/venta/agregar", requireAuth, async (req, res, next) => {
   try {
     const clientes = await Cliente.find({ activo: true })
       .sort({ nombre: 1 })
@@ -458,9 +507,10 @@ router.get("/venta/agregar", async (req, res, next) => {
   }
 });
 
-router.post("/venta/agregar", async (req, res) => {
+router.post("/venta/agregar", requireAuth, async (req, res) => {
   try {
-    const qrDirectory = path.join("D:", "muebleria", "src", "Qr");
+    // 🛑 CORRECCIÓN DE RUTA: Usar la ruta absoluta de la unidad C:
+    const qrDirectory = path.resolve("C:\\Users\\Angel Luis\\Documents\\bucio proyecto fin\\Muebleria\\src\\Qr"); 
     await fs.mkdir(qrDirectory, { recursive: true });
 
     const {
@@ -510,8 +560,7 @@ Estado: ${estado}
   }
 });
 
-// Rutas para editar venta
-router.get("/editarVenta/:id", async (req, res) => {
+router.get("/editarVenta/:id", requireAuth, async (req, res) => {
   try {
     const venta = await Venta.findById(req.params.id).lean();
     const clientes = await Cliente.find({ activo: true }).lean();
@@ -525,28 +574,27 @@ router.get("/editarVenta/:id", async (req, res) => {
   }
 });
 
-// Ruta para procesar la edición de venta
-router.post("/editarVenta/:id", async (req, res) => {
+router.post("/editarVenta/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   try {
-    // Eliminar el QR antiguo
+    // 🛑 CORRECCIÓN DE RUTA: Usar la ruta absoluta de la unidad C:
+    const qrDirectory = path.resolve("C:\\Users\\Angel Luis\\Documents\\bucio proyecto fin\\Muebleria\\src\\Qr");
+    await fs.mkdir(qrDirectory, { recursive: true });
+
+    // Lógica de eliminación de QR antiguo
     const ventaAntigua = await Venta.findById(id);
     if (ventaAntigua.qr) {
       try {
-        // Extraer la ruta absoluta del QR antiguo
+        // Reconstrucción de la ruta para eliminar el archivo
         const qrPath = ventaAntigua.qr.startsWith('/qr-images/') 
-          ? path.join('D:', 'muebleria', 'src', 'Qr', path.basename(ventaAntigua.qr))
-          : ventaAntigua.qr;
-        
+          ? path.join(qrDirectory, path.basename(ventaAntigua.qr))
+          : ventaAntigua.qr; // Si está guardado como ruta absoluta (D:\...)
+
         await fs.unlink(qrPath);
       } catch (error) {
         console.error("Error al eliminar QR antiguo:", error);
       }
     }
-
-    // Generar nuevo QR
-    const qrDirectory = path.join("D:", "muebleria", "src", "Qr");
-    await fs.mkdir(qrDirectory, { recursive: true });
 
     const {
       nombreCliente, // Este es el ID del cliente
@@ -578,7 +626,7 @@ Estado: ${estado}
       ...req.body,
       qr: `/qr-images/${filename}`,
     };
-
+    
     await Venta.findByIdAndUpdate(id, ventaActualizada);
 
     const mensajeExito = encodeURIComponent("¡Venta actualizada con éxito!");
@@ -592,16 +640,17 @@ Estado: ${estado}
   }
 });
 
-// Ruta para eliminar venta
-router.get("/eliminarVenta/:id", async (req, res) => {
+router.get("/eliminarVenta/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   try {
-    // Eliminar el QR antes de eliminar la venta
+    // 🛑 Usar la ruta absoluta para eliminar el QR
+    const qrDirectory = path.resolve("C:\\Users\\Angel Luis\\Documents\\bucio proyecto fin\\Muebleria\\src\\Qr");
     const venta = await Venta.findById(id);
+    
     if (venta.qr) {
       try {
         const qrPath = venta.qr.startsWith('/qr-images/') 
-          ? path.join('D:', 'muebleria', 'src', 'Qr', path.basename(venta.qr))
+          ? path.join(qrDirectory, path.basename(venta.qr))
           : venta.qr;
         
         await fs.unlink(qrPath);
@@ -622,8 +671,10 @@ router.get("/eliminarVenta/:id", async (req, res) => {
   }
 });
 
-//--- Rutas de Detalle (Reporte Financiero) ---
-router.get("/detalle/agregar", async (req, res) => {
+//================================================================
+//--- Rutas de Detalle (Acceso Total: requireAuth) ---------------
+//================================================================
+router.get("/detalle/agregar", requireAuth, async (req, res) => {
   try {
     const [detalles, productos, clientes, ventas] = await Promise.all([
       Detalle.find().lean(),
@@ -661,7 +712,7 @@ router.get("/detalle/agregar", async (req, res) => {
   }
 });
 
-router.post("/detalle/agregar", async (req, res) => {
+router.post("/detalle/agregar", requireAuth, async (req, res) => {
   try {
     const detalle = new Detalle({
       venta_id: req.body.venta_id,
@@ -684,7 +735,7 @@ router.post("/detalle/agregar", async (req, res) => {
   }
 });
 
-router.get("/editarDetalle/:id", async (req, res) => {
+router.get("/editarDetalle/:id", requireAuth, async (req, res) => {
   try {
     const detalle = await Detalle.findById(req.params.id).lean();
     const [productos, clientes, ventas] = await Promise.all([
@@ -708,7 +759,7 @@ router.get("/editarDetalle/:id", async (req, res) => {
       detalle,
       productos,
       clientes,
-      ventas: ventasConNombres  // Usar ventasConNombres en lugar de ventas
+      ventas: ventasConNombres 
     });
   } catch (error) {
     console.error("Error al obtener el detalle:", error);
@@ -716,7 +767,7 @@ router.get("/editarDetalle/:id", async (req, res) => {
   }
 });
 
-router.post("/editarDetalle/:id", async (req, res) => {
+router.post("/editarDetalle/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   try {
     const detalleActualizado = {
@@ -741,7 +792,7 @@ router.post("/editarDetalle/:id", async (req, res) => {
   }
 });
 
-router.get("/eliminarDetalle/:id", async (req, res) => {
+router.get("/eliminarDetalle/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   try {
     await Detalle.findByIdAndDelete(id);
@@ -756,10 +807,10 @@ router.get("/eliminarDetalle/:id", async (req, res) => {
   }
 });
 
-
-//--- Rutas de Administrador ---
-//--- Rutas de Administrador ---
-router.get("/administrador/agregar", async (req, res) => {
+//================================================================
+//--- Rutas de Administrador (Mantiene requireAdmin para todos) --
+//================================================================
+router.get("/administrador/agregar", requireAuth, requireAdmin, async (req, res) => {
   try {
     const administradores = await Administrador.find().lean();
     res.render("administrador", { 
@@ -775,9 +826,14 @@ router.get("/administrador/agregar", async (req, res) => {
   }
 });
 
-router.post("/administrador/agregar", async (req, res) => {
+router.post("/administrador/agregar", requireAuth, requireAdmin, async (req, res) => {
   try {
-    const administrador = new Administrador(req.body);
+    const data = { ...req.body };
+    if (data.contraseña) {
+      const salt = await bcrypt.genSalt(10);
+      data.contraseña = await bcrypt.hash(data.contraseña, salt);
+    }
+    const administrador = new Administrador(data);
     await administrador.save();
     const mensajeExito = encodeURIComponent("¡Administrador registrado con éxito!");
     res.redirect(`/administrador/agregar?success=${mensajeExito}`);
@@ -790,7 +846,7 @@ router.post("/administrador/agregar", async (req, res) => {
   }
 });
 
-router.get("/editarAdministrador/:id", async (req, res) => {
+router.get("/editarAdministrador/:id", requireAuth, requireAdmin, async (req, res) => {
   try {
     const administrador = await Administrador.findById(req.params.id).lean();
     res.render("editarAdministrador", { administrador });
@@ -800,9 +856,14 @@ router.get("/editarAdministrador/:id", async (req, res) => {
   }
 });
 
-router.post("/editarAdministrador/:id", async (req, res) => {
+router.post("/editarAdministrador/:id", requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
+    // Si se envía una nueva contraseña, encriptarla
+    if (req.body.contraseña) {
+      const salt = await bcrypt.genSalt(10);
+      req.body.contraseña = await bcrypt.hash(req.body.contraseña, salt);
+    }
     await Administrador.findByIdAndUpdate(id, req.body);
     const mensajeExito = encodeURIComponent("¡Administrador actualizado con éxito!");
     res.redirect(`/administrador/agregar?success=${mensajeExito}`);
@@ -815,7 +876,7 @@ router.post("/editarAdministrador/:id", async (req, res) => {
   }
 });
 
-router.get("/eliminarAdministrador/:id", async (req, res) => {
+router.get("/eliminarAdministrador/:id", requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
     await Administrador.findByIdAndDelete(id);
@@ -830,24 +891,24 @@ router.get("/eliminarAdministrador/:id", async (req, res) => {
   }
 });
 
-//--- Rutas de Proveedor ---
-router.get("/proveedor/agregar", async (req, res) => {
+//================================================================
+//--- Rutas de Proveedores ---------------------------------------
+//================================================================
+// ✅ GET (Listado): ACCESO PARA TODOS (requireAuth)
+router.get("/proveedor/agregar", requireAuth, async (req, res, next) => {
   try {
     const proveedores = await Proveedor.find().lean();
     res.render("proveedor", { 
-      isHomePage: false,
-      proveedores: proveedores
+      isHomePage: false, 
+      proveedores 
     });
-  } catch (error) {
-    console.error("Error al obtener proveedores:", error);
-    res.render("proveedor", {
-      isHomePage: false,
-      proveedores: []
-    });
+  } catch (e) {
+    next(e);
   }
 });
 
-router.post("/proveedor/agregar", async (req, res) => {
+// 🔒 POST (Agregar): SOLO ADMIN (requireAdmin)
+router.post("/proveedor/agregar", requireAuth, requireAdmin, async (req, res) => {
   try {
     const proveedor = new Proveedor(req.body);
     await proveedor.save();
@@ -862,44 +923,48 @@ router.post("/proveedor/agregar", async (req, res) => {
   }
 });
 
-router.get("/editarProveedor/:id", async (req, res) => {
-  try {
-    const proveedor = await Proveedor.findById(req.params.id).lean();
-    res.render("editarProveedor", { proveedor });
-  } catch (error) {
-    console.error("Error al obtener el proveedor:", error);
-    res.redirect("/proveedor/agregar");
-  }
+// 🔒 GET (Editar formulario): SOLO ADMIN (requireAdmin)
+router.get("/editarProveedor/:id", requireAuth, requireAdmin, async (req, res) => {
+    try {
+        const proveedor = await Proveedor.findById(req.params.id).lean();
+        res.render("editarProveedor", { proveedor });
+    } catch (error) {
+        console.error("Error al obtener el proveedor:", error);
+        res.redirect("/proveedor/agregar");
+    }
 });
 
-router.post("/editarProveedor/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    await Proveedor.findByIdAndUpdate(id, req.body);
-    const mensajeExito = encodeURIComponent("¡Proveedor actualizado con éxito!");
-    res.redirect(`/proveedor/agregar?success=${mensajeExito}`);
-  } catch (error) {
-    console.error("Error al actualizar el proveedor:", error);
-    const mensajeError = encodeURIComponent(
-      "Hubo un error al actualizar el proveedor."
-    );
-    res.redirect(`/proveedor/agregar?error=${mensajeError}`);
-  }
+// 🔒 POST (Procesar edición): SOLO ADMIN (requireAdmin)
+router.post("/editarProveedor/:id", requireAuth, requireAdmin, async (req, res) => {
+    const { id } = req.params;
+    try {
+        await Proveedor.findByIdAndUpdate(id, req.body);
+        const mensajeExito = encodeURIComponent("¡Proveedor actualizado con éxito!");
+        res.redirect(`/proveedor/agregar?success=${mensajeExito}`);
+    } catch (error) {
+        console.error("Error al actualizar el proveedor:", error);
+        const mensajeError = encodeURIComponent(
+            "Hubo un error al actualizar el proveedor."
+        );
+        res.redirect(`/proveedor/agregar?error=${mensajeError}`);
+    }
 });
 
-router.get("/eliminarProveedor/:id", async (req, res) => {
-  const { id } = req.params;
-  try {
-    await Proveedor.findByIdAndDelete(id);
-    const mensajeExito = encodeURIComponent("¡Proveedor eliminado con éxito!");
-    res.redirect(`/proveedor/agregar?success=${mensajeExito}`);
-  } catch (error) {
-    console.error("Error al eliminar el proveedor:", error);
-    const mensajeError = encodeURIComponent(
-      "Hubo un error al eliminar el proveedor."
-    );
-    res.redirect(`/proveedor/agregar?error=${mensajeError}`);
-  }
+// 🔒 GET (Eliminar): SOLO ADMIN (requireAdmin)
+router.get("/eliminarProveedor/:id", requireAuth, requireAdmin, async (req, res) => {
+    const { id } = req.params;
+    try {
+        await Proveedor.findByIdAndDelete(id);
+        const mensajeExito = encodeURIComponent("¡Proveedor eliminado con éxito!");
+        res.redirect(`/proveedor/agregar?success=${mensajeExito}`);
+    } catch (error) {
+        console.error("Error al eliminar el proveedor:", error);
+        const mensajeError = encodeURIComponent(
+            "Hubo un error al eliminar el proveedor."
+        );
+        res.redirect(`/proveedor/agregar?error=${mensajeError}`);
+    }
 });
 
-export default router;
+
+module.exports = router;

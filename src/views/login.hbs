@@ -1,0 +1,18 @@
+{{!-- src/views/login.hbs --}}
+<div class="mx-auto max-w-sm bg-white rounded-xl shadow p-6 mt-10">
+  <h1 class="text-2xl font-semibold mb-4 text-center">Iniciar sesión</h1>
+
+  {{#if error}}
+    <div class="bg-red-100 text-red-700 p-2 rounded mb-3 text-sm">{{error}}</div>
+  {{/if}}
+
+  <form method="POST" action="/login" class="flex flex-col gap-3">
+    <label class="text-sm">Usuario o correo</label>
+    <input class="border rounded p-2" type="text" name="usuario" required>
+
+    <label class="text-sm">Contraseña</label>
+    <input class="border rounded p-2" type="password" name="contraseña" required>
+
+    <button class="mt-2 rounded bg-black text-white py-2">Entrar</button>
+  </form>
+</div>

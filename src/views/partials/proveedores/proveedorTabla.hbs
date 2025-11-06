@@ -8,7 +8,10 @@
             <th>RFC</th>
             <th>Categoría</th>
             <th>Activo</th>
+            {{!-- Columna Acciones: SOLO ADMIN --}}
+            {{#if user.administrador}}
             <th>Acciones</th>
+            {{/if}}
         </tr>
     </thead>
     <tbody>
@@ -27,11 +30,14 @@
                     <span style="color: red; font-weight: bold;">● Inactivo</span>
                 {{/if}}
             </td>
+            {{!-- Celdas de Acciones: SOLO ADMIN --}}
+            {{#if ../user.administrador}}
             <td>
                 <button>Status</button>
                 <a href="/editarProveedor/{{_id}}">Editar</a>
                 <a href="/eliminarProveedor/{{_id}}">Eliminar</a>
             </td>
+            {{/if}}
         </tr>
         {{/each}}
     </tbody>

@@ -4,6 +4,10 @@
             <th> Nombre </th>
             <th> Descripción </th>
             <th> Activa </th>
+            {{!-- Columna Acciones: SOLO ADMIN --}}
+            {{#if user.administrador}}
+            <th>Acciones</th>
+            {{/if}}
         </tr>
     </thead>
     <tbody>
@@ -12,11 +16,14 @@
             <td>{{nombre}}</td>
             <td>{{descripcion}}</td>
             <td>{{activa}}</td>
+            {{!-- Celdas de Acciones: SOLO ADMIN --}}
+            {{#if ../user.administrador}}
             <td>
                 <button>Status</button>
                 <a href="/editarCategoria/{{_id}}">Editar</a>
                 <a href="/eliminarCategoria/{{_id}}">Eliminar</a>
             </td>
+            {{/if}}
         </tr>
         {{/each}}
     </tbody>

@@ -1,3 +1,77 @@
+<style>
+    /* puntos Sí / No en la tabla */
+.dot { font-weight: bold; }
+.dot.yes { color: green; }
+.dot.no  { color: red; }
+
+/* ----- Modal Ficha ----- */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(1px);
+  z-index: 998;
+}
+
+.modal-ficha {
+  position: fixed; inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, 92vw);
+  background: #2A4D31;          /* container background */
+  color: #E4B767;               /* golden text */
+  border: 2px solid #E4B767;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.55);
+  padding: 20px 20px 16px;
+  z-index: 999;
+}
+
+.modal-ficha[hidden],
+.modal-overlay[hidden] { display: none; }
+
+.modal-close {
+  position: absolute; top: 8px; right: 10px;
+  background: transparent; border: none;
+  font-size: 22px; line-height: 1; cursor: pointer;
+  color: #E4B767;
+}
+
+.ficha-header { margin-bottom: 10px; }
+.ficha-header h3 {
+  margin: 0; font-size: 1.25rem; letter-spacing: .3px;
+}
+
+.ficha-body { display: grid; gap: 10px; margin: 8px 0 14px; }
+.ficha-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+.ficha-label { opacity: .9; }
+.ficha-value a, .ficha-value { color: #E4B767; text-decoration: none; word-break: break-all; }
+
+.ficha-actions {
+  display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
+}
+
+/* Botones */
+.btn {
+  padding: 8px 14px; font-weight: 600;
+  border-radius: 10px; border: 2px solid transparent;
+  background: #1A3623; color: #E4B767; cursor: pointer;
+  text-decoration: none; display: inline-block;
+}
+.btn:hover { filter: brightness(1.05); }
+
+.btn-primary {
+  border-color: #E4B767; background: transparent;
+}
+.btn-danger {
+  border-color: #b74040; background: transparent; color: #ffbdbd;
+}
+.btn-danger:hover { background: #b74040; color: #fff; }
+.btn-ghost {
+  background: transparent; border-color: #3b5b45;
+}
+
+/* Evitar scroll del body con el modal abierto */
+.body-no-scroll { overflow: hidden; }
+</style>
 <table>
     <thead>
         <tr>
@@ -20,11 +94,118 @@
                 {{/if}}
             </td>
             <td>
-                <button>Status</button>
-                <a href="/editarAdministrador/{{_id}}">Editar</a>
-                <a href="/eliminarAdministrador/{{_id}}">Eliminar</a>
+                <button
+                    class="status-btn"
+                    data-id="{{_id}}"
+                    data-nombre="{{nombreUsuario}}"
+                    data-correo="{{correo}}"
+                    data-admin="{{#if administrador}}Sí{{else}}No{{/if}}"
+                    data-edit="/editarAdministrador/{{_id}}"
+                    data-delete="/eliminarAdministrador/{{_id}}"
+                >Status</button>
+                <!--a href="/editarAdministrador/{{_id}}">Editar</a>
+                <a href="/eliminarAdministrador/{{_id}}">Eliminar</a-->
             </td>
         </tr>
         {{/each}}
     </tbody>
 </table>
+<div id="overlay-modal-ficha" class="modal-overlay" hidden></div>
+
+<div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
+  <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+
+  <header class="ficha-header">
+    <h3 id="ficha-title">Ficha de usuario</h3>
+  </header>
+
+  <section class="ficha-body">
+    <div class="ficha-row">
+      <span class="ficha-label">Nombre de usuario</span>
+      <span id="ficha-nombre" class="ficha-value"></span>
+    </div>
+    <div class="ficha-row">
+      <span class="ficha-label">Correo</span>
+      <a id="ficha-correo" class="ficha-value" href="#" target="_blank" rel="noopener"></a>
+    </div>
+    <div class="ficha-row">
+      <span class="ficha-label">Administrador</span>
+      <span id="ficha-admin" class="ficha-value"></span>
+    </div>
+  </section>
+
+  <footer class="ficha-actions">
+    <a id="ficha-btn-editar" class="btn btn-primary" href="#">Editar</a>
+    <a id="ficha-btn-eliminar" class="btn btn-danger" href="#">Eliminar</a>
+    <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
+  </footer>
+</div>
+<script>
+    (function () {
+  const overlay   = document.getElementById('overlay-modal-ficha');
+  const modal     = document.getElementById('modal-ficha');
+  const closeBtn  = modal.querySelector('.modal-close');
+  const cerrarBtn = document.getElementById('ficha-btn-cerrar');
+
+  const elNombre  = document.getElementById('ficha-nombre');
+  const elCorreo  = document.getElementById('ficha-correo');
+  const elAdmin   = document.getElementById('ficha-admin');
+  const btnEdit   = document.getElementById('ficha-btn-editar');
+  const btnDel    = document.getElementById('ficha-btn-eliminar');
+
+  function openModal() {
+    overlay.hidden = false;
+    modal.hidden = false;
+    document.body.classList.add('body-no-scroll');
+  }
+
+  function closeModal() {
+    overlay.hidden = true;
+    modal.hidden = true;
+    document.body.classList.remove('body-no-scroll');
+  }
+
+  function fillCard({ nombre, correo, admin, editUrl, deleteUrl }) {
+    elNombre.textContent = nombre || '';
+    elCorreo.textContent = correo || '';
+    elCorreo.href = correo ? `mailto:${correo}` : '#';
+    elAdmin.textContent = admin || 'No';
+
+    btnEdit.href = editUrl || '#';
+    btnDel.href  = deleteUrl || '#';
+  }
+
+  // Delegación de eventos para todos los botones "Status"
+  document.addEventListener('click', function (e) {
+    const btn = e.target.closest('.status-btn');
+    if (!btn) return;
+
+    const payload = {
+      nombre: btn.dataset.nombre,
+      correo: btn.dataset.correo,
+      admin:  btn.dataset.admin,
+      editUrl: btn.dataset.edit,
+      deleteUrl: btn.dataset.delete
+    };
+
+    fillCard(payload);
+    openModal();
+  });
+
+  // Cerrar
+  closeBtn.addEventListener('click', closeModal);
+  cerrarBtn.addEventListener('click', closeModal);
+  overlay.addEventListener('click', closeModal);
+
+  // Esc para cerrar
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape' && !modal.hidden) closeModal();
+  });
+
+  // Confirmación para eliminar
+  btnDel.addEventListener('click', function (e) {
+    const ok = confirm('¿Seguro que deseas eliminar este administrador?');
+    if (!ok) e.preventDefault();
+  });
+})();
+</script>

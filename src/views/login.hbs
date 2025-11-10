@@ -3,16 +3,33 @@
   <h1 class="text-2xl font-semibold mb-4 text-center">Iniciar sesión</h1>
 
   {{#if error}}
-    <div class="bg-red-100 text-red-700 p-2 rounded mb-3 text-sm">{{error}}</div>
+    {{!-- Estilo para que el mensaje de error se vea bien y no rompa el layout --}}
+    <div style="
+        background-color: #fef2f2; 
+        color: #991b1b; 
+        border: 1px solid #dc2626; 
+        padding: 8px 12px; 
+        border-radius: 4px; 
+        margin-bottom: 1.5rem;
+        font-weight: 600;
+        text-align: center;
+    ">
+      {{error}}
+    </div>
   {{/if}}
 
   <form method="POST" action="/login" class="flex flex-col gap-3">
+    
     <label class="text-sm">Usuario o correo</label>
-    <input class="border rounded p-2" type="text" name="usuario" required>
+    {{!-- ✅ CAMBIO APLICADO: autocomplete="off" --}}
+    <input class="border rounded p-2" type="text" name="usuario" required autocomplete="off"> 
 
     <label class="text-sm">Contraseña</label>
-    <input class="border rounded p-2" type="password" name="contraseña" required>
+    {{!-- ✅ CAMBIO APLICADO: autocomplete="off" --}}
+    <input class="border rounded p-2" type="password" name="contraseña" required autocomplete="off"> 
 
-    <button class="mt-2 rounded bg-black text-white py-2">Entrar</button>
+    <button type="submit" class="mt-2 rounded bg-black text-white py-2">
+      Entrar
+    </button>
   </form>
 </div>

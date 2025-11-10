@@ -1,4 +1,3 @@
-// src/routes/indexRoutes.js
 const { requireAuth, requireAdmin } = require("../middlewares/auth.js");
 const { Router } = require("express");
 const router = Router();
@@ -149,9 +148,10 @@ router.get("/producto/agregar", requireAuth, async (req, res, next) => {
 // 🔒 POST (Agregar): SOLO ADMIN (requireAdmin)
 router.post("/producto/agregar", requireAuth, requireAdmin, async (req, res) => {
   try {
-    // 🛑 CORRECCIÓN CLAVE: Usar path.resolve("D:\\muebleria\\src\\Qr") para ruta absoluta robusta
-    const qrDirectory = path.resolve("C:\\Users\\Angel Luis\\Documents\\bucio proyecto fin\\Muebleria\\src\\Qr"); 
-await fs.mkdir(qrDirectory, { recursive: true });
+    // 🛑 CORRECCIÓN: Usar path.resolve con process.cwd() para una ruta relativa a la raíz del proyecto.
+    // Esto evita rutas absolutas como "C:\" o "D:\" y funciona en cualquier servidor.
+    const qrDirectory = path.resolve(process.cwd(), "src", "Qr");
+    await fs.mkdir(qrDirectory, { recursive: true });
 
     const {
       nombre,
@@ -228,8 +228,8 @@ router.get("/editarProducto/:id", requireAuth, requireAdmin, async (req, res) =>
 router.post("/editarProducto/:id", requireAuth, requireAdmin, async (req, res) => {
   const { id } = req.params;
   try {
-    // 🛑 CORRECCIÓN CLAVE: Usar path.resolve para el directorio
-    const qrDirectory = path.resolve("D:\\muebleria\\src\\Qr");
+    // 🛑 CORRECCIÓN: Usar path.resolve con process.cwd() para una ruta relativa a la raíz del proyecto.
+    const qrDirectory = path.resolve(process.cwd(), "src", "Qr");
     await fs.mkdir(qrDirectory, { recursive: true });
 
     // Lógica de eliminación de QR antiguo
@@ -239,7 +239,7 @@ router.post("/editarProducto/:id", requireAuth, requireAdmin, async (req, res) =
         // Reconstrucción de la ruta para eliminar el archivo
         const qrPath = productoAntiguo.qr.startsWith('/qr-images/') 
           ? path.join(qrDirectory, path.basename(productoAntiguo.qr))
-          : productoAntiguo.qr;
+          : productoAntiguo.qr; // Fallback por si acaso
         
         await fs.unlink(qrPath);
       } catch (error) {
@@ -509,8 +509,8 @@ router.get("/venta/agregar", requireAuth, async (req, res, next) => {
 
 router.post("/venta/agregar", requireAuth, async (req, res) => {
   try {
-    // 🛑 CORRECCIÓN DE RUTA: Usar la ruta absoluta de la unidad C:
-    const qrDirectory = path.resolve("C:\\Users\\Angel Luis\\Documents\\bucio proyecto fin\\Muebleria\\src\\Qr"); 
+    // 🛑 CORRECCIÓN: Usar path.resolve con process.cwd() para una ruta relativa a la raíz del proyecto.
+    const qrDirectory = path.resolve(process.cwd(), "src", "Qr");
     await fs.mkdir(qrDirectory, { recursive: true });
 
     const {
@@ -577,8 +577,8 @@ router.get("/editarVenta/:id", requireAuth, async (req, res) => {
 router.post("/editarVenta/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   try {
-    // 🛑 CORRECCIÓN DE RUTA: Usar la ruta absoluta de la unidad C:
-    const qrDirectory = path.resolve("C:\\Users\\Angel Luis\\Documents\\bucio proyecto fin\\Muebleria\\src\\Qr");
+    // 🛑 CORRECCIÓN: Usar path.resolve con process.cwd() para una ruta relativa a la raíz del proyecto.
+    const qrDirectory = path.resolve(process.cwd(), "src", "Qr");
     await fs.mkdir(qrDirectory, { recursive: true });
 
     // Lógica de eliminación de QR antiguo
@@ -588,7 +588,7 @@ router.post("/editarVenta/:id", requireAuth, async (req, res) => {
         // Reconstrucción de la ruta para eliminar el archivo
         const qrPath = ventaAntigua.qr.startsWith('/qr-images/') 
           ? path.join(qrDirectory, path.basename(ventaAntigua.qr))
-          : ventaAntigua.qr; // Si está guardado como ruta absoluta (D:\...)
+          : ventaAntigua.qr; 
 
         await fs.unlink(qrPath);
       } catch (error) {
@@ -643,8 +643,8 @@ Estado: ${estado}
 router.get("/eliminarVenta/:id", requireAuth, async (req, res) => {
   const { id } = req.params;
   try {
-    // 🛑 Usar la ruta absoluta para eliminar el QR
-    const qrDirectory = path.resolve("C:\\Users\\Angel Luis\\Documents\\bucio proyecto fin\\Muebleria\\src\\Qr");
+    // 🛑 CORRECCIÓN: Usar path.resolve con process.cwd() para una ruta relativa a la raíz del proyecto.
+    const qrDirectory = path.resolve(process.cwd(), "src", "Qr");
     const venta = await Venta.findById(id);
     
     if (venta.qr) {

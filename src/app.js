@@ -1,4 +1,3 @@
-// src/app.js
 const express = require("express");
 const session = require("express-session");
 const MongoStore = require("connect-mongo");
@@ -6,7 +5,7 @@ const exphbs = require("express-handlebars"); // Importación compatible
 const path = require("path");
 const morgan = require("morgan");
 const mongoose = require("mongoose");
-const moment = require("moment"); 
+const moment = require("moment");
 
 const indexRoutes = require("./routes/indexRoutes.js");
 const authRoutes = require("./routes/authRoutes.js");
@@ -35,9 +34,21 @@ app.engine(
       formatCurrency: (amount) => {
         return new Intl.NumberFormat('es-MX', {
           style: 'currency',
-          currency: 'MXN', 
+          currency: 'MXN',
           minimumFractionDigits: 2
         }).format(amount);
+      },
+      // ✅ Helper 'compare' añadido para solucionar el error en editarProducto.hbs
+      compare: (lvalue, rvalue) => {
+        // Convertir a String para manejar ObjectIds de Mongoose
+        if (String(lvalue) === String(rvalue)) {
+          return 'selected';
+        }
+        return '';
+      },
+      // ✅ Helper 'formatDateForInput' añadido para el error en ventas (editarVenta.hbs)
+      formatDateForInput: (date) => {
+        return moment(date).format("YYYY-MM-DD");
       }
     },
   })
@@ -68,7 +79,7 @@ app.use((req, res, next) => {
 });
 
 // =====================
-//      RUTAS
+//       RUTAS
 // =====================
 // Rutas de auth (login/logout) primero
 app.use(authRoutes);
@@ -77,6 +88,7 @@ app.use(authRoutes);
 app.use(indexRoutes);
 
 // Archivos estáticos
+// Usamos path.join(__dirname, ...) para que las rutas sean relativas y funcionen en cualquier PC
 app.use("/qr-images", express.static(path.join(__dirname, "Qr")));
 app.use("/images", express.static(path.join(__dirname, "Images")));
 

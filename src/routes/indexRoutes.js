@@ -44,25 +44,6 @@ router.get("/categoria/agregar", requireAuth, async (req, res) => {
   }
 });
 
-// 🔒 POST (Agregar): SOLO ADMIN (requireAdmin) - El resto se mantiene igual.
-router.post("/categoria/agregar", requireAuth, requireAdmin, async (req, res) => {
-  try {
-    // Asumo que tienes el modelo Categoria importado correctamente.
-    const categorias = await Categoria.find().lean();
-    res.render("categoria", {
-      isHomePage: false,
-      categorias, // Se pasa el listado de categorías
-    });
-  } catch (error) {
-    console.error("Error al obtener categorías:", error);
-    res.render("categoria", {
-        isHomePage: false,
-        categorias: [],
-        error: "Error al cargar las categorías."
-    });
-  }
-});
-
 
 // 🔒 POST (Agregar): SOLO ADMIN (requireAdmin)
 // Se mantiene la protección para evitar que un no-admin cree categorías.

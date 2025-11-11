@@ -1,6 +1,10 @@
 const noCache = (req, res, next) => {
-  res.set('Cache-Control', 'no-cache, private, no-store, must-revalidate, max-stale=0, post-check=0, pre-check=0');
-  res.set('Pragma', 'no-cache');
+  res.set({
+    'Cache-Control': 'no-cache, no-store, must-revalidate, private, max-age=0',
+    'Pragma': 'no-cache',
+    'Expires': '0',
+    'Surrogate-Control': 'no-store'
+  });
   next();
 };
 

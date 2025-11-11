@@ -1,89 +1,339 @@
 <style>
-.table-wrapper {
-  width: 100%;
-  overflow-x: auto;
-  display: block;
-  white-space: nowrap;
+  /* Contenedor desplazable horizontal para la tabla */
+  .table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    display: block;
+    white-space: nowrap;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  th, td {
+    padding: 8px;
+    text-align: left;
+    vertical-align: top;
+  }
+
+  /* QR grande */
+  .qr-zoom {
+    width: 200px; /* 🔥 Ajusta si quieres aún más grande */
+    height: 200px;
+    object-fit: contain;
+    cursor: zoom-in;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    position: relative;
+    z-index: 1;
+  }
+
+  /* Zoom centrado al pasar el mouse */
+  .qr-zoom:hover {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(2.8);
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
+    z-index: 999999;
+  }
+  .dot { font-weight: bold; }
+.dot.yes { color: green; }
+.dot.no  { color: red; }
+
+/* ----- Modal Ficha ----- */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(1px);
+  z-index: 998;
 }
 
-/* QR grande */
-.qr-zoom {
-  width: 180px !important; /* tamaño visible real */
-  height: 180px !important;
-  object-fit: contain;
-  cursor: zoom-in;
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  z-index: 1;
+.modal-ficha {
+  position: fixed; inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, 92vw);
+  background: #2A4D31;          /* container background */
+  color: #E4B767;               /* golden text */
+  border: 2px solid #E4B767;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.55);
+  padding: 20px 20px 16px;
+  z-index: 999;
 }
 
-/* Zoom al centro */
-.qr-zoom:hover {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%) scale(2.6);
-  background: #fff;
-  padding: 10px;
-  border-radius: 10px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.35);
-  z-index: 99999;
+.modal-ficha[hidden],
+.modal-overlay[hidden] { display: none; }
+
+.modal-close {
+  position: absolute; top: 8px; right: 10px;
+  background: transparent; border: none;
+  font-size: 22px; line-height: 1; cursor: pointer;
+  color: #E4B767;
 }
+
+.ficha-header { margin-bottom: 10px; }
+.ficha-header h3 {
+  margin: 0; font-size: 1.25rem; letter-spacing: .3px;
+}
+
+.ficha-body { display: grid; gap: 10px; margin: 8px 0 14px; }
+.ficha-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+.ficha-label { opacity: .9; }
+.ficha-value a, .ficha-value { color: #E4B767; text-decoration: none; word-break: break-all; }
+
+.ficha-actions {
+  display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
+}
+
+/* Botones */
+.btn {
+  padding: 8px 14px; font-weight: 600;
+  border-radius: 10px; border: 2px solid transparent;
+  background: #1A3623; color: #E4B767; cursor: pointer;
+  text-decoration: none; display: inline-block;
+}
+.btn:hover { filter: brightness(1.05); }
+
+.btn-primary {
+  border-color: #E4B767; background: transparent;
+}
+.btn-danger {
+  border-color: #b74040; background: transparent; color: #ffbdbd;
+}
+.btn-danger:hover { background: #b74040; color: #fff; }
+.btn-ghost {
+  background: transparent; border-color: #3b5b45;
+}
+
+/* Evitar scroll del body con el modal abierto */
+.body-no-scroll { overflow: hidden; }
 </style>
 
 <div class="table-wrapper">
-<table border="1" cellpadding="6">
+<table border="1" >
 <thead>
-  <tr>
-    <th>Nombre</th>
-    <th>Categoría</th>
-    <th>Marca</th>
-    <th>Precio</th>
-    <th>Color</th>
-    <th>Material</th>
-    <th>QR</th>
-    <th>Activa</th>
-    {{!-- Columna Acciones: SOLO ADMIN --}}
-    {{#if user.administrador}}
-    <th>Acciones</th>
-    {{/if}}
-  </tr>
+  <tr>
+    <th>Nombre</th>
+    <th>Categoría</th>
+    <th>Marca</th>
+    <th>Precio</th>
+    <th>Color</th>
+    <th>Material</th>
+    <th>QR</th>
+    <th>Activa</th>
+    {{!-- Columna Acciones: SOLO ADMIN --}}
+    {{#if user.administrador}}
+    <th>Acciones</th>
+    {{/if}}
+  </tr>
 </thead>
 <tbody>
-  {{#each productos}}
-  <tr>
-      <td>{{nombre}}</td>
-      <td>{{nombreCategoria}}</td>
-      <td>{{marca}}</td>
-      <td>${{precio}}</td>
-      <td>{{color}}</td>
-      <td>{{material}}</td>
+  {{#each productos}}
+  <tr>
+      <td>{{nombre}}</td>
+      <td>{{nombreCategoria}}</td>
+      <td>{{marca}}</td>
+      <td>${{precio}}</td>
+      <td>{{color}}</td>
+      <td>{{material}}</td>
 
-      <td>
-        {{#if qr}}
-        <img src="{{qr}}" alt="Código QR del producto" class="qr-zoom">
-        {{else}}
-        <span style="color: #999; font-style: italic;">Sin QR</span>
-        {{/if}}
-      </td>
+      <td>
+        {{#if qr}}
+        <img src="{{qr}}" alt="Código QR del producto" class="qr-zoom">
+        {{else}}
+        <span style="color: #999; font-style: italic;">Sin QR</span>
+        {{/if}}
+      </td>
 
-      <td>
-        {{#if activa}}
-        <span style="color: green;">● Activa</span>
-        {{else}}
-        <span style="color: red;">● Inactiva</span>
-        {{/if}}
-      </td>
+      <td>
+        {{#if activa}}
+        <span style="color: green;">● Activa</span>
+        {{else}}
+        <span style="color: red;">● Inactiva</span>
+        {{/if}}
+      </td>
 
-      {{!-- Celdas de Acciones: SOLO ADMIN --}}
-      {{#if ../user.administrador}}
-      <td>
-        <button>Status</button>
-        <a href="/editarProducto/{{_id}}">Editar</a>
-        <a href="/eliminarProducto/{{_id}}">Eliminar</a>
-      </td>
-      {{/if}}
-  </tr>
-  {{/each}}
+      {{!-- Celdas de Acciones: SOLO ADMIN --}}
+      {{#if ../user.administrador}}
+      <td>
+        <button
+            class="status-btn"
+            data-id="{{_id}}"
+            data-nombre="{{nombre}}"
+            data-categoria="{{nombreCategoria}}"
+            data-marca="{{marca}}"
+            data-precio="{{precio}}"
+            data-color="{{color}}"
+            data-material="{{material}}"
+            data-qr="{{qr}}"
+            data-activa="{{#if activa}}Activa{{else}}Inactiva{{/if}}"
+            data-edit="/editarProducto/{{_id}}"
+            data-delete="/eliminarProducto/{{_id}}"
+        >Status</button>
+        <a href="/editarProducto/{{_id}}">Editar</a>
+        <a href="/eliminarProducto/{{_id}}">Eliminar</a>
+      </td>
+      {{/if}}
+  </tr>
+  {{/each}}
 </tbody>
 </table>
 </div>
+
+<div id="overlay-modal-ficha" class="modal-overlay" hidden></div>
+
+<div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
+    <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+
+    <header class="ficha-header">
+        <h3 id="ficha-title">Detalles del Producto</h3>
+    </header>
+
+    <section class="ficha-body">
+        <div class="ficha-row">
+            <span class="ficha-label">Nombre</span>
+            <span id="ficha-nombre" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Categoría</span>
+            <span id="ficha-categoria" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Marca</span>
+            <span id="ficha-marca" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Precio</span>
+            <span id="ficha-precio" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Color</span>
+            <span id="ficha-color" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Material</span>
+            <span id="ficha-material" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Estado</span>
+            <span id="ficha-activa" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row qr-container">
+            <span class="ficha-label">Código QR</span>
+            <span id="ficha-qr-wrapper" class="ficha-value">
+                <img id="ficha-qr" src="#" alt="Código QR del producto" style="max-width: 150px; height: auto;">
+            </span>
+        </div>
+    </section>
+
+    <footer class="ficha-actions">
+        <a id="ficha-btn-editar" class="btn btn-primary" href="#">Editar</a>
+        <a id="ficha-btn-eliminar" class="btn btn-danger" href="#">Eliminar</a>
+        <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
+    </footer>
+</div>
+<script>
+    (function () {
+    // 1. Elementos del Modal y Overlay
+    const overlay   = document.getElementById('overlay-modal-ficha');
+    const modal     = document.getElementById('modal-ficha');
+    const closeBtn  = modal.querySelector('.modal-close');
+    const cerrarBtn = document.getElementById('ficha-btn-cerrar');
+
+    // 2. Campos dentro de la Ficha (Modal)
+    const elNombre     = document.getElementById('ficha-nombre');
+    const elCategoria  = document.getElementById('ficha-categoria');
+    const elMarca      = document.getElementById('ficha-marca');
+    const elPrecio     = document.getElementById('ficha-precio');
+    const elColor      = document.getElementById('ficha-color');
+    const elMaterial   = document.getElementById('ficha-material');
+    const elActiva     = document.getElementById('ficha-activa');
+    const elQrWrapper  = document.querySelector('.qr-container'); // Contenedor del QR
+    const elQrImage    = document.getElementById('ficha-qr');      // Elemento <img> del QR
+    const btnEdit      = document.getElementById('ficha-btn-editar');
+    const btnDel       = document.getElementById('ficha-btn-eliminar');
+
+    // Funciones para abrir y cerrar el modal
+    function openModal() {
+        overlay.hidden = false;
+        modal.hidden = false;
+        document.body.classList.add('body-no-scroll');
+    }
+
+    function closeModal() {
+        overlay.hidden = true;
+        modal.hidden = true;
+        document.body.classList.remove('body-no-scroll');
+    }
+
+    // Función para llenar la ficha con los datos del botón
+    function fillCard({ nombre, categoria, marca, precio, color, material, activa, qr, editUrl, deleteUrl }) {
+        elNombre.textContent    = nombre || '';
+        elCategoria.textContent = categoria || '';
+        elMarca.textContent     = marca || '';
+        elPrecio.textContent    = `$${precio || '0.00'}`;
+        elColor.textContent     = color || '';
+        elMaterial.textContent  = material || '';
+        
+        // Manejo del estado Activa
+        elActiva.textContent = activa || 'Inactiva';
+        elActiva.style.color = activa === 'Activa' ? 'green' : 'red';
+        elActiva.style.fontWeight = 'bold';
+
+        // Manejo de la imagen QR
+        if (qr && qr !== 'undefined') { // Verificar que 'qr' existe y no es la cadena 'undefined'
+            elQrImage.src = qr;
+            elQrWrapper.hidden = false;
+        } else {
+            elQrImage.src = '#'; // Limpiar src para evitar errores
+            elQrWrapper.hidden = true; // Ocultar si no hay QR
+        }
+
+        btnEdit.href = editUrl || '#';
+        btnDel.href  = deleteUrl || '#';
+    }
+
+    // 3. Delegación de eventos para el botón "Status"
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.status-btn');
+        if (!btn) return;
+
+        const payload = {
+            nombre: btn.dataset.nombre,
+            categoria: btn.dataset.categoria,
+            marca: btn.dataset.marca,
+            precio: btn.dataset.precio,
+            color: btn.dataset.color,
+            material: btn.dataset.material,
+            activa: btn.dataset.activa,
+            qr: btn.dataset.qr,
+            editUrl: btn.dataset.edit,
+            deleteUrl: btn.dataset.delete
+        };
+
+        fillCard(payload);
+        openModal();
+    });
+
+    // 4. Eventos para cerrar el modal
+    closeBtn.addEventListener('click', closeModal);
+    cerrarBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+
+    // Cerrar con tecla Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    // 5. Confirmación para eliminar
+    btnDel.addEventListener('click', function (e) {
+        const ok = confirm('¿Seguro que deseas eliminar este producto?');
+        if (!ok) e.preventDefault();
+    });
+})();
+</script>

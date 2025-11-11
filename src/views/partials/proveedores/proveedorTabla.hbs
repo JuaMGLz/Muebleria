@@ -1,44 +1,271 @@
+<style>
+    /* puntos Sí / No en la tabla */
+.dot { font-weight: bold; }
+.dot.yes { color: green; }
+.dot.no  { color: red; }
+
+/* ----- Modal Ficha ----- */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(1px);
+  z-index: 998;
+}
+
+.modal-ficha {
+  position: fixed; inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, 92vw);
+  background: #2A4D31;          /* container background */
+  color: #E4B767;               /* golden text */
+  border: 2px solid #E4B767;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.55);
+  padding: 20px 20px 16px;
+  z-index: 999;
+}
+
+.modal-ficha[hidden],
+.modal-overlay[hidden] { display: none; }
+
+.modal-close {
+  position: absolute; top: 8px; right: 10px;
+  background: transparent; border: none;
+  font-size: 22px; line-height: 1; cursor: pointer;
+  color: #E4B767;
+}
+
+.ficha-header { margin-bottom: 10px; }
+.ficha-header h3 {
+  margin: 0; font-size: 1.25rem; letter-spacing: .3px;
+}
+
+.ficha-body { display: grid; gap: 10px; margin: 8px 0 14px; }
+.ficha-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+.ficha-label { opacity: .9; }
+.ficha-value a, .ficha-value { color: #E4B767; text-decoration: none; word-break: break-all; }
+
+.ficha-actions {
+  display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
+}
+
+/* Botones */
+.btn {
+  padding: 8px 14px; font-weight: 600;
+  border-radius: 10px; border: 2px solid transparent;
+  background: #1A3623; color: #E4B767; cursor: pointer;
+  text-decoration: none; display: inline-block;
+}
+.btn:hover { filter: brightness(1.05); }
+
+.btn-primary {
+  border-color: #E4B767; background: transparent;
+}
+.btn-danger {
+  border-color: #b74040; background: transparent; color: #ffbdbd;
+}
+.btn-danger:hover { background: #b74040; color: #fff; }
+.btn-ghost {
+  background: transparent; border-color: #3b5b45;
+}
+
+/* Evitar scroll del body con el modal abierto */
+.body-no-scroll { overflow: hidden; }
+</style>
 <table>
-    <thead>
-        <tr>
-            <th>Razón Social</th>
-            <th>Contacto</th>
-            <th>Teléfono</th>
-            <th>Email</th>
-            <th>RFC</th>
-            <th>Categoría</th>
-            <th>Activo</th>
-            {{!-- Columna Acciones: SOLO ADMIN --}}
-            {{#if user.administrador}}
-            <th>Acciones</th>
-            {{/if}}
-        </tr>
-    </thead>
-    <tbody>
-        {{#each proveedores}}
-        <tr>
-            <td>{{razonSocial}}</td>
-            <td>{{nombreContacto}}</td>
-            <td>{{telefono}}</td>
-            <td>{{email}}</td>
-            <td>{{rfc}}</td>
-            <td>{{categoria}}</td>
-            <td>
-                {{#if activo}}
-                    <span style="color: green; font-weight: bold;">● Activo</span>
-                {{else}}
-                    <span style="color: red; font-weight: bold;">● Inactivo</span>
-                {{/if}}
-            </td>
-            {{!-- Celdas de Acciones: SOLO ADMIN --}}
-            {{#if ../user.administrador}}
-            <td>
-                <button>Status</button>
-                <a href="/editarProveedor/{{_id}}">Editar</a>
-                <a href="/eliminarProveedor/{{_id}}">Eliminar</a>
-            </td>
-            {{/if}}
-        </tr>
-        {{/each}}
-    </tbody>
+    <thead>
+        <tr>
+            <th>Razón Social</th>
+            <th>Contacto</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>RFC</th>
+            <th>Categoría</th>
+            <th>Activo</th>
+            {{!-- Columna Acciones: SOLO ADMIN --}}
+            {{#if user.administrador}}
+            <th>Acciones</th>
+            {{/if}}
+        </tr>
+    </thead>
+    <tbody>
+        {{#each proveedores}}
+        <tr>
+            <td>{{razonSocial}}</td>
+            <td>{{nombreContacto}}</td>
+            <td>{{telefono}}</td>
+            <td>{{email}}</td>
+            <td>{{rfc}}</td>
+            <td>{{categoria}}</td>
+            <td>
+                {{#if activo}}
+                    <span style="color: green; font-weight: bold;">● Activo</span>
+                {{else}}
+                    <span style="color: red; font-weight: bold;">● Inactivo</span>
+                {{/if}}
+            </td>
+            {{!-- Celdas de Acciones: SOLO ADMIN --}}
+            {{#if ../user.administrador}}
+            <td>
+                <button
+                    class="status-btn"
+                    data-id="{{_id}}"
+                    data-razon-social="{{razonSocial}}"
+                    data-contacto="{{nombreContacto}}"
+                    data-telefono="{{telefono}}"
+                    data-email="{{email}}"
+                    data-rfc="{{rfc}}"
+                    data-categoria="{{categoria}}"
+                    data-activo="{{#if activo}}Activo{{else}}Inactivo{{/if}}"
+                    data-edit="/editarProveedor/{{_id}}"
+                    data-delete="/eliminarProveedor/{{_id}}"
+                >Status</button>
+                <a href="/editarProveedor/{{_id}}">Editar</a>
+                <a href="/eliminarProveedor/{{_id}}">Eliminar</a>
+            </td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
+
+<div id="overlay-modal-ficha" class="modal-overlay" hidden></div>
+
+<div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
+    <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+
+    <header class="ficha-header">
+        <h3 id="ficha-title">Ficha de Proveedor</h3>
+    </header>
+
+    <section class="ficha-body">
+        <div class="ficha-row">
+            <span class="ficha-label">Razón Social</span>
+            <span id="ficha-razon-social" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Contacto</span>
+            <span id="ficha-contacto" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Teléfono</span>
+            <a id="ficha-telefono" class="ficha-value" href="#"></a>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Email</span>
+            <a id="ficha-email" class="ficha-value" href="#"></a>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">RFC</span>
+            <span id="ficha-rfc" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Categoría</span>
+            <span id="ficha-categoria" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Estado</span>
+            <span id="ficha-activo" class="ficha-value"></span>
+        </div>
+    </section>
+
+    <footer class="ficha-actions">
+        <a id="ficha-btn-editar" class="btn btn-primary" href="#">Editar</a>
+        <a id="ficha-btn-eliminar" class="btn btn-danger" href="#">Eliminar</a>
+        <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
+    </footer>
+</div>
+<script>
+    (function () {
+    // 1. Elementos del Modal y Overlay
+    const overlay   = document.getElementById('overlay-modal-ficha');
+    const modal     = document.getElementById('modal-ficha');
+    const closeBtn  = modal.querySelector('.modal-close');
+    const cerrarBtn = document.getElementById('ficha-btn-cerrar');
+
+    // 2. Campos dentro de la Ficha (Modal)
+    const elRazonSocial = document.getElementById('ficha-razon-social');
+    const elContacto    = document.getElementById('ficha-contacto');
+    const elTelefono    = document.getElementById('ficha-telefono');
+    const elEmail       = document.getElementById('ficha-email');
+    const elRfc         = document.getElementById('ficha-rfc');
+    const elCategoria   = document.getElementById('ficha-categoria');
+    const elActivo      = document.getElementById('ficha-activo');
+    const btnEdit       = document.getElementById('ficha-btn-editar');
+    const btnDel        = document.getElementById('ficha-btn-eliminar');
+
+    // Funciones para abrir y cerrar el modal
+    function openModal() {
+        overlay.hidden = false;
+        modal.hidden = false;
+        document.body.classList.add('body-no-scroll');
+    }
+
+    function closeModal() {
+        overlay.hidden = true;
+        modal.hidden = true;
+        document.body.classList.remove('body-no-scroll');
+    }
+
+    // Función para llenar la ficha con los datos del botón
+    function fillCard({ razonSocial, contacto, telefono, email, rfc, categoria, activo, editUrl, deleteUrl }) {
+        elRazonSocial.textContent = razonSocial || '';
+        elContacto.textContent    = contacto || '';
+        elRfc.textContent         = rfc || '';
+        elCategoria.textContent   = categoria || '';
+
+        // Teléfono
+        elTelefono.textContent = telefono || '';
+        elTelefono.href = telefono ? `tel:${telefono}` : '#';
+
+        // Email
+        elEmail.textContent = email || '';
+        elEmail.href = email ? `mailto:${email}` : '#';
+        
+        // Estado Activo
+        elActivo.textContent = activo || 'Inactivo';
+        elActivo.style.color = activo === 'Activo' ? 'green' : 'red';
+        elActivo.style.fontWeight = 'bold';
+
+        btnEdit.href = editUrl || '#';
+        btnDel.href  = deleteUrl || '#';
+    }
+
+    // 3. Delegación de eventos para el botón "Status"
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.status-btn');
+        if (!btn) return;
+
+        const payload = {
+            razonSocial: btn.dataset.razonSocial,
+            contacto: btn.dataset.contacto,
+            telefono: btn.dataset.telefono,
+            email: btn.dataset.email,
+            rfc: btn.dataset.rfc,
+            categoria: btn.dataset.categoria,
+            activo: btn.dataset.activo,
+            editUrl: btn.dataset.edit,
+            deleteUrl: btn.dataset.delete
+        };
+
+        fillCard(payload);
+        openModal();
+    });
+
+    // 4. Eventos para cerrar el modal
+    closeBtn.addEventListener('click', closeModal);
+    cerrarBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+
+    // Cerrar con tecla Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    // 5. Confirmación para eliminar
+    btnDel.addEventListener('click', function (e) {
+        const ok = confirm('¿Seguro que deseas eliminar este proveedor?');
+        if (!ok) e.preventDefault();
+    });
+})();
+</script>

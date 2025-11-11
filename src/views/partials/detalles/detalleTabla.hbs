@@ -1,3 +1,77 @@
+<style>
+    /* puntos Sí / No en la tabla */
+.dot { font-weight: bold; }
+.dot.yes { color: green; }
+.dot.no  { color: red; }
+
+/* ----- Modal Ficha ----- */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,.6);
+  backdrop-filter: blur(1px);
+  z-index: 998;
+}
+
+.modal-ficha {
+  position: fixed; inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  width: min(520px, 92vw);
+  background: #2A4D31;          /* container background */
+  color: #E4B767;               /* golden text */
+  border: 2px solid #E4B767;
+  border-radius: 16px;
+  box-shadow: 0 20px 50px rgba(0,0,0,.55);
+  padding: 20px 20px 16px;
+  z-index: 999;
+}
+
+.modal-ficha[hidden],
+.modal-overlay[hidden] { display: none; }
+
+.modal-close {
+  position: absolute; top: 8px; right: 10px;
+  background: transparent; border: none;
+  font-size: 22px; line-height: 1; cursor: pointer;
+  color: #E4B767;
+}
+
+.ficha-header { margin-bottom: 10px; }
+.ficha-header h3 {
+  margin: 0; font-size: 1.25rem; letter-spacing: .3px;
+}
+
+.ficha-body { display: grid; gap: 10px; margin: 8px 0 14px; }
+.ficha-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
+.ficha-label { opacity: .9; }
+.ficha-value a, .ficha-value { color: #E4B767; text-decoration: none; word-break: break-all; }
+
+.ficha-actions {
+  display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
+}
+
+/* Botones */
+.btn {
+  padding: 8px 14px; font-weight: 600;
+  border-radius: 10px; border: 2px solid transparent;
+  background: #1A3623; color: #E4B767; cursor: pointer;
+  text-decoration: none; display: inline-block;
+}
+.btn:hover { filter: brightness(1.05); }
+
+.btn-primary {
+  border-color: #E4B767; background: transparent;
+}
+.btn-danger {
+  border-color: #b74040; background: transparent; color: #ffbdbd;
+}
+.btn-danger:hover { background: #b74040; color: #fff; }
+.btn-ghost {
+  background: transparent; border-color: #3b5b45;
+}
+
+/* Evitar scroll del body con el modal abierto */
+.body-no-scroll { overflow: hidden; }
+</style>
 <table>
     <thead>
         <tr>
@@ -20,7 +94,18 @@
             <td>{{descuento}}</td>
             <td>{{subtotal}}</td>
             <td>
-                <button>Status</button>
+                <button
+                    class="status-btn"
+                    data-id="{{_id}}"
+                    data-cliente="{{nombreCliente}}"
+                    data-producto="{{nombreProducto}}"
+                    data-cantidad="{{cantidad}}"
+                    data-precio="{{precio_unitario}}"
+                    data-descuento="{{descuento}}"
+                    data-subtotal="{{subtotal}}"
+                    data-edit="/editarDetalle/{{_id}}"
+                    data-delete="/eliminarDetalle/{{_id}}"
+                >Status</button>
                 <a href="/editarDetalle/{{_id}}">Editar</a>
                 <a href="/eliminarDetalle/{{_id}}">Eliminar</a>
             </td>
@@ -28,3 +113,127 @@
         {{/each}}
     </tbody>
 </table>
+
+<div id="overlay-modal-ficha" class="modal-overlay" hidden></div>
+
+<div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
+    <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+
+    <header class="ficha-header">
+        <h3 id="ficha-title">Detalle de Venta</h3>
+    </header>
+
+    <section class="ficha-body">
+        <div class="ficha-row">
+            <span class="ficha-label">Cliente</span>
+            <span id="ficha-cliente" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Producto</span>
+            <span id="ficha-producto" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Cantidad</span>
+            <span id="ficha-cantidad" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Precio Unitario</span>
+            <span id="ficha-precio" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Descuento</span>
+            <span id="ficha-descuento" class="ficha-value"></span>
+        </div>
+        <div class="ficha-row">
+            <span class="ficha-label">Subtotal</span>
+            <span id="ficha-subtotal" class="ficha-value"></span>
+        </div>
+    </section>
+
+    <footer class="ficha-actions">
+        <a id="ficha-btn-editar" class="btn btn-primary" href="#">Editar</a>
+        <a id="ficha-btn-eliminar" class="btn btn-danger" href="#">Eliminar</a>
+        <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
+    </footer>
+</div>
+<script>
+    (function () {
+    // 1. Elementos del Modal y Overlay
+    const overlay   = document.getElementById('overlay-modal-ficha');
+    const modal     = document.getElementById('modal-ficha');
+    const closeBtn  = modal.querySelector('.modal-close');
+    const cerrarBtn = document.getElementById('ficha-btn-cerrar');
+
+    // 2. Campos dentro de la Ficha (Modal)
+    const elCliente  = document.getElementById('ficha-cliente');
+    const elProducto = document.getElementById('ficha-producto');
+    const elCantidad = document.getElementById('ficha-cantidad');
+    const elPrecio   = document.getElementById('ficha-precio');
+    const elDescuento = document.getElementById('ficha-descuento');
+    const elSubtotal = document.getElementById('ficha-subtotal');
+    const btnEdit    = document.getElementById('ficha-btn-editar');
+    const btnDel     = document.getElementById('ficha-btn-eliminar');
+
+    // Funciones para abrir y cerrar el modal
+    function openModal() {
+        overlay.hidden = false;
+        modal.hidden = false;
+        document.body.classList.add('body-no-scroll');
+    }
+
+    function closeModal() {
+        overlay.hidden = true;
+        modal.hidden = true;
+        document.body.classList.remove('body-no-scroll');
+    }
+
+    // Función para llenar la ficha con los datos del botón
+    function fillCard({ cliente, producto, cantidad, precio, descuento, subtotal, editUrl, deleteUrl }) {
+        elCliente.textContent  = cliente || '';
+        elProducto.textContent = producto || '';
+        elCantidad.textContent = cantidad || '';
+        elPrecio.textContent   = `$${precio || '0.00'}`;
+        elDescuento.textContent= `${descuento || '0'}%`;
+        elSubtotal.textContent = `$${subtotal || '0.00'}`;
+
+        btnEdit.href = editUrl || '#';
+        btnDel.href  = deleteUrl || '#';
+    }
+
+    // 3. Delegación de eventos para el botón "Status"
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.status-btn');
+        if (!btn) return;
+
+        const payload = {
+            cliente: btn.dataset.cliente,
+            producto: btn.dataset.producto,
+            cantidad: btn.dataset.cantidad,
+            precio: btn.dataset.precio,
+            descuento: btn.dataset.descuento,
+            subtotal: btn.dataset.subtotal,
+            editUrl: btn.dataset.edit,
+            deleteUrl: btn.dataset.delete
+        };
+
+        fillCard(payload);
+        openModal();
+    });
+
+    // 4. Eventos para cerrar el modal
+    closeBtn.addEventListener('click', closeModal);
+    cerrarBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', closeModal);
+
+    // Cerrar con tecla Escape
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !modal.hidden) closeModal();
+    });
+
+    // 5. Confirmación para eliminar
+    btnDel.addEventListener('click', function (e) {
+        const ok = confirm('¿Seguro que deseas eliminar este detalle de venta?');
+        if (!ok) e.preventDefault();
+    });
+})();
+</script>

@@ -387,4 +387,17 @@
         });
     </script>
 </body>
+<script src="/tu/script/principal.js"></script>
+
+    <script>
+      window.addEventListener('pageshow', function(event) {
+        // event.persisted es 'true' si la página se cargó desde el bfcache
+        if (event.persisted) {
+          // Forzamos una recarga completa desde el servidor
+          window.location.reload();
+        }
+      });
+    </script>
+    </body>
+</html>
 </html>

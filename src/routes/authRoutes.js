@@ -60,7 +60,10 @@ router.post("/login", async (req, res) => {
 });
 
 // GET /logout
-router.get("/logout", (req, res) => {
+// ==========================================================
+// ✅ CAMBIO APLICADO: Añadido 'noCache' para reforzar
+// ==========================================================
+router.get("/logout", noCache, (req, res) => {
   req.session.destroy(() => res.redirect("/login"));
 });
 

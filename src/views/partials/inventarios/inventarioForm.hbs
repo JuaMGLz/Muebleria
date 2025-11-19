@@ -311,61 +311,7 @@
             </div>
         </form>
     </div>
-
-    <div class="table-container">
-        <div class="table-wrapper">
-            <table>
-                <thead>
-                    <tr>
-                        <th>Producto</th>
-                        <th class="text-center">Stock</th>
-                        <th>Ubicación</th>
-                        <th>Sucursal</th>
-                        {{#if user.administrador}}
-                        <th class="text-center">Acciones</th>
-                        {{/if}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each inventarios}}
-                    <tr>
-                        <td><strong>{{nombreProducto}}</strong></td>
-                        <td class="text-center">
-                            {{#if stock}}
-                            <span class="status-label" style="color: {{#if (lt stock 10)}}var(--color-danger){{else if (lt stock 20)}}var(--color-secondary){{else}}var(--color-success){{/if}}; background-color: #f3f4f6;">
-                                {{stock}}
-                            </span>
-                            {{else}}
-                            <span style="color: var(--color-danger); font-weight: bold;">0</span>
-                            {{/if}}
-                        </td>
-                        <td>{{ubicacion}}</td>
-                        <td>{{sucursal}}</td>
-                        {{#if ../user.administrador}}
-                        <td class="text-center">
-                            <div class="action-links">
-                                <button
-                                    class="status-btn"
-                                    data-id="{{_id}}"
-                                    data-producto="{{nombreProducto}}"
-                                    data-stock="{{stock}}"
-                                    data-ubicacion="{{ubicacion}}"
-                                    data-sucursal="{{sucursal}}"
-                                    data-edit="/editarInventario/{{_id}}"
-                                    data-delete="/eliminarInventario/{{_id}}"
-                                >Ver</button>
-                                <a href="/editarInventario/{{_id}}" class="btn-link">Editar</a>
-                                <a href="/eliminarInventario/{{_id}}" class="btn-link">Eliminar</a>
-                            </div>
-                        </td>
-                        {{/if}}
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
-    </div>
-
+    
 </div> <div id="overlay-modal-ficha" class="modal-overlay" hidden>
     <div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title">
         <button class="modal-close" type="button" aria-label="Cerrar">&times;</button>

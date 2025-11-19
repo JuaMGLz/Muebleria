@@ -23,3 +23,4 @@ vendor/
 # IDE
 .vscode/
 .idea/
+node_modules

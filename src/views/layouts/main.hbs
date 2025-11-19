@@ -271,19 +271,14 @@
     </header>
 
     <nav class="navbar" id="navbar">
-        <div class="navbar-header">
-            <h2 class="navbar-title">Menú</h2>
-            <button class="sidebar-close" onclick="toggleSidebar()">×</button>
-        </div>
-        <div class="navbar-nav">
-            {{> navbar }}
-        </div>
-    {{#if user}}
-  <li><a href="/logout">Cerrar sesión ({{user.nombreUsuario}})</a></li>
-{{else}}
-  <li><a href="/login">Iniciar sesión</a></li>
-{{/if}}
-</nav>
+    <div class="navbar-header">
+        <h2 class="navbar-title">Menú</h2>
+        <button class="sidebar-close" onclick="toggleSidebar()">×</button>
+    </div>
+    
+    {{> navbar }} 
+    
+    </nav>
     
     <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
 

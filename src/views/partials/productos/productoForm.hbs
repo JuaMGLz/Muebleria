@@ -10,6 +10,7 @@
             --color-primary-dark: #991b1b;
             --color-primary-light: #fef2f2;
             --color-secondary: #f59e0b;
+            --color-success: #10b981;
             --color-text: #1f2937;
             --color-text-light: #6b7280;
             --color-bg: #f9fafb;
@@ -17,18 +18,13 @@
             --color-white: #ffffff;
             --color-border: #e5e7eb;
             --color-shadow: rgba(220, 38, 38, 0.08);
-            --color-shadow-lg: rgba(0, 0, 0, 0.1);
+            --color-shadow-lg: rgba(0, 0, 0, 0.15);
             --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
             --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
-        /* === FONDO DE PANTALLA === */
         body {
             font-family: var(--font-family-primary);
             background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20230720/pngtree-3d-rendered-red-sofa-and-chair-set-image_3725833.jpg');
@@ -39,207 +35,157 @@
             min-height: 100vh;
             color: var(--color-text);
             line-height: 1.6;
+            padding: 1rem;
         }
 
         .page-wrapper {
             width: 100%;
-            padding: 2rem 1rem;
             display: flex;
             justify-content: center;
-            align-items: flex-start;
-            min-height: 100vh;
+            padding-top: 2rem;
+            padding-bottom: 4rem;
         }
 
         .form-container {
             width: 100%;
-            max-width: 800px;
+            max-width: 900px;
             background: var(--color-card-bg);
             border-radius: 24px;
-            padding: 2.5rem 2rem;
+            box-shadow: 0 20px 60px var(--color-shadow-lg);
+            padding: 3rem 2.5rem;
             position: relative;
+            overflow: hidden;
             animation: fadeIn 0.5s ease-out;
-            margin-bottom: 2rem;
         }
 
-        .form-header {
-            text-align: center;
-            margin-bottom: 2rem;
+        .form-container::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
         }
+
+        .form-header { text-align: center; margin-bottom: 2.5rem; }
 
         .icon-wrapper {
-            width: 60px;
-            height: 60px;
-            margin: 0 auto 1.25rem;
+            width: 70px; height: 70px; margin: 0 auto 1.25rem;
             background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transform: rotate(-5deg);
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25); transform: rotate(-5deg);
             transition: var(--transition);
         }
+        .icon-wrapper:hover { transform: rotate(0deg) scale(1.05); }
+        .icon-wrapper svg { width: 35px; height: 35px; color: var(--color-white); }
 
-        .icon-wrapper:hover {
-            transform: rotate(0deg) scale(1.05);
+        .form-title { font-size: 1.75rem; font-weight: 700; color: var(--color-text); margin-bottom: 0.5rem; }
+        .form-subtitle { font-size: 1rem; color: var(--color-text-light); }
+
+        /* --- LAYOUT DE CAJAS (Consistency) --- */
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        
+        .section-box {
+            border: 2px solid var(--color-border);
+            border-radius: 16px;
+            padding: 1.5rem;
+            margin-top: 1rem;
+            position: relative;
+            background-color: #fff;
+            grid-column: span 1;
         }
+        @media (min-width: 768px) { .section-box { grid-column: span 2; } }
 
-        .icon-wrapper svg {
-            width: 30px;
-            height: 30px;
-            color: var(--color-white);
-        }
-
-        .form-title {
-            font-size: 1.5rem;
+        .section-title {
+            position: absolute;
+            top: -14px;
+            left: 1.5rem;
+            background-color: var(--color-white);
+            padding: 0 0.8rem;
+            color: var(--color-primary);
             font-weight: 700;
-            color: var(--color-text);
-            margin-bottom: 0.5rem;
-        }
-
-        .form-subtitle {
             font-size: 0.9rem;
-            color: var(--color-text-light);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
-        /* Grid para organizar campos en 2 columnas si hay espacio */
-        .form-grid {
+        .inner-grid {
             display: grid;
             grid-template-columns: 1fr;
-            gap: 1.5rem;
+            gap: 1.2rem;
         }
 
-        @media (min-width: 640px) {
-            .form-grid {
-                grid-template-columns: 1fr 1fr;
-            }
-            .full-width {
-                grid-column: span 2;
-            }
+        @media (min-width: 768px) {
+            .inner-grid { grid-template-columns: 1fr 1fr; column-gap: 1.5rem; }
+            .inner-full { grid-column: span 2; }
+            .inner-thirds { grid-template-columns: 1fr 1fr 1fr; } /* Para medidas */
         }
 
-        .form-group {
-            margin-bottom: 0.5rem;
-        }
-
+        /* Inputs */
         .form-group label {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            font-size: 0.9rem;
-            color: var(--color-text);
+            display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.65rem;
+            font-weight: 600; font-size: 0.95rem; color: var(--color-text);
+        }
+        .label-icon { width: 18px; height: 18px; color: var(--color-primary); }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 0.875rem 1rem;
+            border: 2px solid var(--color-border); border-radius: 12px;
+            font-size: 1rem; font-family: inherit; transition: var(--transition);
+            background-color: var(--color-white); color: var(--color-text);
         }
 
-        .label-icon {
-            width: 16px;
-            height: 16px;
-            color: var(--color-primary);
-        }
-
-        .form-group input,
-        .form-group textarea,
-        .form-group select {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid var(--color-border);
-            border-radius: 12px;
-            font-size: 0.95rem;
-            font-family: inherit;
-            transition: var(--transition);
-            background-color: var(--color-white);
-            color: var(--color-text);
-        }
-
-        .form-group select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23dc2626'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 16px;
-            padding-right: 2.5rem;
-            cursor: pointer;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--color-primary);
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none; border-color: var(--color-primary);
             box-shadow: 0 0 0 4px var(--color-shadow);
+            transform: translateY(-1px);
+        }
+        
+        .form-group textarea { resize: vertical; min-height: 100px; }
+
+        .form-group select {
+            appearance: none; padding-right: 2.5rem; cursor: pointer;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23dc2626'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 18px;
         }
 
-        .form-group textarea {
-            resize: vertical;
-            min-height: 80px;
+        /* Status Styles */
+        .status-options { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-top: 0.5rem; }
+        .status-option { position: relative; }
+        .status-option input[type="radio"] { position: absolute; opacity: 0; width: 0; height: 0; }
+        
+        .status-label {
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            padding: 0.875rem; border: 2px solid var(--color-border); border-radius: 12px;
+            cursor: pointer; transition: var(--transition); background-color: var(--color-white);
+            font-weight: 500; font-size: 0.95rem;
         }
+        
+        .status-indicator { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+        .status-activa .status-indicator { background-color: var(--color-success); }
+        .status-inactiva .status-indicator { background-color: var(--color-text-light); }
 
-        /* Estilos para el Fieldset de Medidas */
-        .form-medidas {
-            border: 2px solid var(--color-border);
-            border-radius: 12px;
-            padding: 1.5rem;
-            margin-bottom: 1rem;
-            grid-column: span 1; 
-        }
-
-        @media (min-width: 640px) {
-            .form-medidas {
-                grid-column: span 2;
-            }
-        }
-
-        .form-medidas legend {
-            font-weight: 700;
+        .status-option input:checked + .status-label {
+            border-color: var(--color-primary);
+            background-color: var(--color-primary-light);
             color: var(--color-primary);
-            padding: 0 0.5rem;
-            font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
+            box-shadow: 0 4px 12px var(--color-shadow);
         }
 
-        .medidas-group {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 1rem;
-        }
-
-        @media (max-width: 500px) {
-            .medidas-group {
-                grid-template-columns: 1fr;
-            }
-        }
-
+        /* Button */
         .btn-submit {
-            width: 100%;
-            padding: 1rem;
+            width: 100%; padding: 1.1rem;
             background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
-            color: var(--color-white);
-            border: none;
-            border-radius: 12px;
-            font-size: 1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: var(--transition);
-            margin-top: 2rem;
+            color: var(--color-white); border: none; border-radius: 12px;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer;
+            transition: var(--transition); margin-top: 1.5rem;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
         }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45); }
 
-        .btn-submit:hover {
-            transform: translateY(-2px);
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
     </style>
 </head>
 <body>
 
 <div class="page-wrapper">
     <div class="form-container">
-        
         <div class="form-header">
             <div class="icon-wrapper">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -253,140 +199,161 @@
         <form action="/producto/agregar" method="POST">
             <div class="form-grid">
                 
-                <div class="form-group full-width">
-                    <label for="nombreCategoria">
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
-                        </svg>
-                        Categoría
-                    </label>
-                    <select name="nombreCategoria" id="nombreCategoria" required>
-                        <option value="" disabled selected>Selecciona una categoría</option>
-                        {{#each categorias}}
-                            <option value="{{this.nombre}}">{{this.nombre}}</option>
-                        {{/each}}
-                    </select>
+                <div class="section-box">
+                    <span class="section-title">Datos Generales</span>
+                    <div class="inner-grid">
+                        
+                        <div class="form-group inner-full">
+                            <label for="nombreCategoria">
+                                <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                                </svg>
+                                Categoría
+                            </label>
+                            <select name="nombreCategoria" id="nombreCategoria" required>
+                                <option value="" disabled selected>Selecciona una categoría</option>
+                                {{#each categorias}}
+                                    <option value="{{this.nombre}}">{{this.nombre}}</option>
+                                {{/each}}
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="nombre">
+                                <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                </svg>
+                                Nombre del producto
+                            </label>
+                            <input type="text" name="nombre" id="nombre" placeholder="Ej. Sofá Chesterfield" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="marca">
+                                <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
+                                </svg>
+                                Marca
+                            </label>
+                            <input type="text" name="marca" id="marca" placeholder="Ej. Muebles Finos" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="precio">
+                                <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                </svg>
+                                Precio (MXN)
+                            </label>
+                            <input type="number" name="precio" id="precio" placeholder="0.00" min="0" step="0.01" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="garantia_meses">
+                                <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
+                                </svg>
+                                Garantía (meses)
+                            </label>
+                            <input type="number" name="garantia_meses" id="garantia_meses" placeholder="12" min="0" required />
+                        </div>
+
+                        <div class="form-group inner-full">
+                            <label for="descripcion">
+                                <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                                </svg>
+                                Descripción
+                            </label>
+                            <textarea name="descripcion" id="descripcion" rows="3" placeholder="Detalles y características del producto..." required></textarea>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="nombre">
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                        </svg>
-                        Nombre del producto
-                    </label>
-                    <input type="text" name="nombre" id="nombre" placeholder="Ej. Sofá Chesterfield" required />
+                <div class="section-box">
+                    <span class="section-title">Características Físicas</span>
+                    <div class="inner-grid">
+                        
+                        <div class="form-group">
+                            <label for="material">
+                                <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+                                </svg>
+                                Material
+                            </label>
+                            <input type="text" name="material" id="material" placeholder="Ej. Madera de Pino" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="color">
+                                <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                                </svg>
+                                Color
+                            </label>
+                            <input type="text" name="color" id="color" placeholder="Ej. Gris Oxford" required />
+                        </div>
+
+                        <div class="form-group">
+                            <label for="peso">
+                                <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
+                                </svg>
+                                Peso (kg)
+                            </label>
+                            <input type="number" name="peso" id="peso" placeholder="0.00" min="0" step="0.01" required />
+                        </div>
+
+                        <div class="inner-grid inner-thirds inner-full" style="margin-top: 0.5rem;">
+                            <div class="form-group">
+                                <label for="medidas-largo" style="font-size:0.9rem;">Largo (cm)</label>
+                                <input type="number" id="medidas-largo" name="medidas[largo]" step="0.01" min="0" placeholder="0.00" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="medidas-ancho" style="font-size:0.9rem;">Ancho (cm)</label>
+                                <input type="number" id="medidas-ancho" name="medidas[ancho]" step="0.01" min="0" placeholder="0.00" required />
+                            </div>
+                            <div class="form-group">
+                                <label for="medidas-alto" style="font-size:0.9rem;">Alto (cm)</label>
+                                <input type="number" id="medidas-alto" name="medidas[alto]" step="0.01" min="0" placeholder="0.00" required />
+                            </div>
+                        </div>
+
+                    </div>
                 </div>
 
-                <div class="form-group">
-                    <label for="marca">
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.384-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z" />
-                        </svg>
-                        Marca
-                    </label>
-                    <input type="text" name="marca" id="marca" placeholder="Ej. Muebles Finos" required />
-                </div>
-
-                <div class="form-group full-width">
-                    <label for="descripcion">
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
-                        </svg>
-                        Descripción
-                    </label>
-                    <textarea name="descripcion" id="descripcion" rows="3" placeholder="Detalles del producto..." required></textarea>
-                </div>
-
-                <div class="form-group">
-                    <label for="garantia_meses">
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-                        </svg>
-                        Garantía (meses)
-                    </label>
-                    <input type="number" name="garantia_meses" id="garantia_meses" placeholder="12" min="0" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="color">
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
-                        </svg>
-                        Color
-                    </label>
-                    <input type="text" name="color" id="color" placeholder="Ej. Gris Oxford" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="material">
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-                        </svg>
-                        Material
-                    </label>
-                    <input type="text" name="material" id="material" placeholder="Ej. Madera de Pino" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="peso">
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 6l3 1m0 0l-3 9a5.002 5.002 0 006.001 0M6 7l3 9M6 7l6-2m6 2l3-1m-3 1l-3 9a5.002 5.002 0 006.001 0M18 7l3 9m-3-9l-6-2m0-2v2m0 16V5m0 16H9m3 0h3" />
-                        </svg>
-                        Peso (kg)
-                    </label>
-                    <input type="number" name="peso" id="peso" placeholder="0.00" min="0" step="0.01" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="precio">
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-                        </svg>
-                        Precio (MXN)
-                    </label>
-                    <input type="number" name="precio" id="precio" placeholder="0.00" min="0" step="0.01" required />
-                </div>
-
-                <div class="form-group">
-                    <label for="activa">
+                <div class="form-group full-width" style="margin-top: 0.5rem;">
+                    <label>
                         <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                         </svg>
-                        Estado
+                        Estado del producto
                     </label>
-                    <select name="activa" id="activa" required>
-                        <option value="true">Activa</option>
-                        <option value="false">Inactiva</option>
-                    </select>
-                </div>
-
-                <fieldset class="form-medidas">
-                    <legend>
-                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 8h16M4 16h16" />
-                        </svg>
-                        Medidas (cm)
-                    </legend>
-                    <div class="medidas-group">
-                        <div class="form-group">
-                            <label for="medidas-largo">Largo</label>
-                            <input type="number" id="medidas-largo" name="medidas[largo]" step="0.01" min="0" placeholder="0.00" required />
+                    <div class="status-options">
+                        <div class="status-option">
+                            <input type="radio" name="activa" id="activa-true" value="true" checked>
+                            <label for="activa-true" class="status-label status-activa">
+                                <span class="status-indicator"></span>
+                                Activo
+                            </label>
                         </div>
-                        <div class="form-group">
-                            <label for="medidas-ancho">Ancho</label>
-                            <input type="number" id="medidas-ancho" name="medidas[ancho]" step="0.01" min="0" placeholder="0.00" required />
-                        </div>
-                        <div class="form-group">
-                            <label for="medidas-alto">Alto</label>
-                            <input type="number" id="medidas-alto" name="medidas[alto]" step="0.01" min="0" placeholder="0.00" required />
+                        <div class="status-option">
+                            <input type="radio" name="activa" id="activa-false" value="false">
+                            <label for="activa-false" class="status-label status-inactiva">
+                                <span class="status-indicator"></span>
+                                Inactivo
+                            </label>
                         </div>
                     </div>
-                </fieldset>
+                </div>
+
+                <div class="full-width">
+                    <button type="submit" class="btn-submit">
+                        Guardar Producto
+                    </button>
+                </div>
 
             </div>
-
-            <button type="submit" class="btn-submit">Guardar Producto</button>
         </form>
     </div>
 </div>

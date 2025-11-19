@@ -1,0 +1,277 @@
+    <style>
+        :root {
+            --color-primary: #dc2626;
+            --color-primary-dark: #991b1b;
+            --color-primary-light: #fef2f2;
+            --color-secondary: #f59e0b;
+            --color-success: #10b981;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-bg: #f9fafb;
+            --color-card-bg: #ffffff;
+            --color-white: #ffffff;
+            --color-border: #e5e7eb;
+            --color-shadow: rgba(220, 38, 38, 0.08);
+            --color-shadow-lg: rgba(0, 0, 0, 0.15);
+            --color-danger: #ef4444;
+            --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: var(--font-family-primary);
+            background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20230720/pngtree-3d-rendered-red-sofa-and-chair-set-image_3725833.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--color-text);
+            line-height: 1.6;
+            padding: 1rem;
+        }
+
+        /* Wrapper para organizar el contenido verticalmente */
+        .page-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2rem; /* Espacio entre el formulario y la tabla */
+            padding-top: 1rem;
+            padding-bottom: 3rem;
+            width: 100%;
+        }
+
+        /* ========================================= */
+        /* 1. ESTILOS DEL FORMULARIO (Agregar)       */
+        /* ========================================= */
+        .form-container {
+            width: 100%;
+            max-width: 1000px; /* Ancho controlado para el formulario */
+            background: var(--color-card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px var(--color-shadow-lg);
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+            z-index: 1;
+        }
+
+        .form-container::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+        }
+
+        .form-header { text-align: center; margin-bottom: 2.5rem; }
+        
+        .icon-wrapper {
+            width: 70px; height: 70px; margin: 0 auto 1.25rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+            border-radius: 20px; display: flex; align-items: center; justify-content: center;
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25); transform: rotate(-5deg);
+            transition: var(--transition);
+        }
+        .icon-wrapper:hover { transform: rotate(0deg) scale(1.05); }
+        .icon-wrapper svg { width: 35px; height: 35px; color: var(--color-white); }
+
+        .form-title { font-size: 1.75rem; font-weight: 700; color: var(--color-text); margin-bottom: 0.5rem; }
+        .form-subtitle { font-size: 1rem; color: var(--color-text-light); }
+
+        /* Grid del Formulario */
+        .form-grid { display: grid; grid-template-columns: 1fr; gap: 1.5rem; }
+        @media (min-width: 768px) {
+            .form-grid { grid-template-columns: 1fr 1fr; column-gap: 2rem; }
+            .full-width { grid-column: span 2; }
+        }
+
+        .form-group label {
+            display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.65rem;
+            font-weight: 600; font-size: 0.95rem; color: var(--color-text);
+        }
+        .label-icon { width: 18px; height: 18px; color: var(--color-primary); }
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%; padding: 0.875rem 1rem;
+            border: 2px solid var(--color-border); border-radius: 12px;
+            font-size: 1rem; font-family: inherit; transition: var(--transition);
+            background-color: var(--color-white); color: var(--color-text);
+        }
+        .form-group select {
+            appearance: none; cursor: pointer; padding-right: 2.5rem;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23dc2626'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat; background-position: right 1rem center; background-size: 18px;
+        }
+        .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+            outline: none; border-color: var(--color-primary);
+            box-shadow: 0 0 0 4px var(--color-shadow);
+        }
+        .form-group textarea { resize: vertical; min-height: 100px; }
+
+        .btn-submit {
+            width: 100%; padding: 1.1rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+            color: var(--color-white); border: none; border-radius: 12px;
+            font-size: 1.1rem; font-weight: 700; cursor: pointer;
+            transition: var(--transition); margin-top: 1rem;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+        }
+        .btn-submit:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45); }
+
+        /* ========================================= */
+        /* 2. ESTILOS DE LA TABLA (Inventario)       */
+        /* ========================================= */
+        .table-container {
+            width: 98%;
+            max-width: 1800px; /* Ancho muy amplio */
+            background: var(--color-card-bg);
+            border-radius: 20px;
+            box-shadow: 0 8px 30px var(--color-shadow-lg);
+            overflow: hidden;
+            position: relative;
+            padding-bottom: 1rem;
+            z-index: 1;
+        }
+        .table-wrapper { width: 100%; overflow-x: auto; }
+
+        table { width: 100%; border-collapse: collapse; min-width: 900px; }
+        
+        thead { background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%); color: var(--color-white); }
+        th { padding: 1.2rem 1rem; text-align: left; font-weight: 600; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.02em; white-space: nowrap; }
+        
+        td { padding: 1rem; border-bottom: 1px solid var(--color-border); color: var(--color-text); vertical-align: middle; }
+        tbody tr:hover { background-color: var(--color-primary-light); }
+        .text-center { text-align: center; }
+
+        .status-label {
+            font-weight: bold; padding: 0.3rem 0.8rem; border-radius: 12px; font-size: 0.85rem; display: inline-block;
+        }
+
+        /* Botones Tabla */
+        .action-links { display: flex; gap: 0.5rem; align-items: center; justify-content: center; flex-wrap: wrap; }
+        .status-btn {
+            background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+            color: var(--color-white); border: none; padding: 0.4rem 0.8rem;
+            border-radius: 8px; font-size: 0.85rem; font-weight: 600; cursor: pointer; transition: var(--transition); white-space: nowrap;
+        }
+        .status-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4); }
+        
+        .btn-link {
+            color: var(--color-primary); text-decoration: none; font-weight: 600; font-size: 0.9rem;
+            padding: 0.4rem 0.6rem; border-radius: 6px; transition: var(--transition); white-space: nowrap;
+        }
+        .btn-link:hover { background-color: var(--color-primary-light); color: var(--color-primary-dark); }
+
+        /* ========================================= */
+        /* 3. ESTILOS DEL MODAL (Centrado y Limpio)  */
+        /* ========================================= */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(5px);
+            z-index: 9999; /* Encima de todo */
+            display: flex; align-items: center; justify-content: center;
+            opacity: 0; visibility: hidden; transition: all 0.3s ease;
+        }
+        .modal-overlay.active { opacity: 1; visibility: visible; }
+
+        .modal-ficha {
+            background: #ffffff; width: 90%; max-width: 500px;
+            border-radius: 24px; box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+            transform: scale(0.95) translateY(20px);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden; position: relative;
+        }
+        .modal-overlay.active .modal-ficha { transform: scale(1) translateY(0); }
+
+        .modal-ficha::before {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 8px;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+        }
+
+        .modal-close {
+            position: absolute; top: 1.5rem; right: 1.5rem;
+            background: transparent; border: none; color: var(--color-text-light);
+            font-size: 1.8rem; cursor: pointer; line-height: 1; transition: color 0.2s; z-index: 10;
+        }
+        .modal-close:hover { color: var(--color-primary); }
+
+        .ficha-header { text-align: center; padding: 2.5rem 2rem 1.5rem; border-bottom: 1px solid #f0f0f0; }
+        .ficha-header h3 { margin: 0; font-size: 1.6rem; color: var(--color-text); font-weight: 800; }
+
+        .ficha-body { padding: 2rem; display: flex; flex-direction: column; gap: 1.2rem; }
+        .ficha-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 0.5rem; }
+        .ficha-row:last-child { border-bottom: none; }
+        .ficha-label { font-weight: 600; color: var(--color-text-light); font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .ficha-value { font-weight: 600; color: var(--color-text); font-size: 1rem; text-align: right; }
+
+        .ficha-actions {
+            background-color: #f9fafb; padding: 1.5rem; display: flex;
+            justify-content: center; gap: 1rem; border-top: 1px solid #f0f0f0;
+        }
+        .btn-modal { padding: 0.7rem 1.5rem; border-radius: 10px; font-weight: 600; text-decoration: none; cursor: pointer; transition: 0.2s; font-size: 0.9rem; border: 1px solid transparent; }
+        .btn-modal-primary { background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%); color: white; }
+        .btn-modal-primary:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(220,38,38,0.3); }
+        .btn-modal-danger { color: var(--color-danger); border-color: var(--color-danger); background: transparent; }
+        .btn-modal-danger:hover { background: var(--color-danger); color: white; }
+        .btn-modal-ghost { color: var(--color-text-light); background: transparent; border-color: var(--color-border); }
+        .btn-modal-ghost:hover { background: #eee; color: #333; }
+
+        .body-no-scroll { overflow: hidden; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+    
+<div class="table-container">
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th class="text-center">Stock</th>
+                        <th>Ubicación</th>
+                        <th>Sucursal</th>
+                        {{#if user.administrador}}
+                        <th class="text-center">Acciones</th>
+                        {{/if}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each inventarios}}
+                    <tr>
+                        <td><strong>{{nombreProducto}}</strong></td>
+                        <td class="text-center">
+                            {{#if stock}}
+                            <span class="status-label" style="color: {{#if (lt stock 10)}}var(--color-danger){{else if (lt stock 20)}}var(--color-secondary){{else}}var(--color-success){{/if}}; background-color: #f3f4f6;">
+                                {{stock}}
+                            </span>
+                            {{else}}
+                            <span style="color: var(--color-danger); font-weight: bold;">0</span>
+                            {{/if}}
+                        </td>
+                        <td>{{ubicacion}}</td>
+                        <td>{{sucursal}}</td>
+                        {{#if ../user.administrador}}
+                        <td class="text-center">
+                            <div class="action-links">
+                                <button
+                                    class="status-btn"
+                                    data-id="{{_id}}"
+                                    data-producto="{{nombreProducto}}"
+                                    data-stock="{{stock}}"
+                                    data-ubicacion="{{ubicacion}}"
+                                    data-sucursal="{{sucursal}}"
+                                    data-edit="/editarInventario/{{_id}}"
+                                    data-delete="/eliminarInventario/{{_id}}"
+                                >Ver</button>
+                                <a href="/editarInventario/{{_id}}" class="btn-link">Editar</a>
+                                <a href="/eliminarInventario/{{_id}}" class="btn-link">Eliminar</a>
+                            </div>
+                        </td>
+                        {{/if}}
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>

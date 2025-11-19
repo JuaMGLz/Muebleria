@@ -1,526 +1,337 @@
 <style>
-    /* puntos Sí / No en la tabla */
-.dot { font-weight: bold; }
-.dot.yes { color: green; }
-.dot.no  { color: red; }
+    :root {
+        /* --- Variables del Diseño Moderno Rojo --- */
+        --color-primary: #c62828;
+        --color-primary-dark: #8e0000;
+        --color-primary-light: #ffebee;
+        --color-text: #333;
+        --color-border: #ddd;
+        --color-white: #ffffff;
+        --color-bg: #f5f5f5;
+        --font-family-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
 
-/* ----- Modal Ficha ----- */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(1px);
-  z-index: 998;
-}
+    body {
+        font-family: var(--font-family-primary);
+        background-color: var(--color-bg);
+        margin: 0;
+        padding: 20px;
+    }
 
-.modal-ficha {
-  position: fixed; inset: 50% auto auto 50%;
-  transform: translate(-50%, -50%);
-  width: min(520px, 92vw);
-  background: #2A4D31;          /* container background */
-  color: #E4B767;               /* golden text */
-  border: 2px solid #E4B767;
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.55);
-  padding: 20px 20px 16px;
-  z-index: 999;
-}
+    /* --- TABLA --- */
+    .table-container {
+        background: var(--color-white);
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        overflow: hidden;
+        padding: 20px;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 1200px; /* Un poco más angosta pues son menos columnas */
+    }
 
-.modal-ficha[hidden],
-.modal-overlay[hidden] { display: none; }
+    .table-wrapper { overflow-x: auto; }
 
-.modal-close {
-  position: absolute; top: 8px; right: 10px;
-  background: transparent; border: none;
-  font-size: 22px; line-height: 1; cursor: pointer;
-  color: #E4B767;
-}
-
-.ficha-header { margin-bottom: 10px; }
-.ficha-header h3 {
-  margin: 0; font-size: 1.25rem; letter-spacing: .3px;
-}
-
-.ficha-body { display: grid; gap: 10px; margin: 8px 0 14px; }
-.ficha-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
-.ficha-label { opacity: .9; }
-.ficha-value a, .ficha-value { color: #E4B767; text-decoration: none; word-break: break-all; }
-
-.ficha-actions {
-  display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
-}
-
-/* Botones */
-.btn {
-  padding: 8px 14px; font-weight: 600;
-  border-radius: 10px; border: 2px solid transparent;
-  background: #1A3623; color: #E4B767; cursor: pointer;
-  text-decoration: none; display: inline-block;
-}
-.btn:hover { filter: brightness(1.05); }
-
-.btn-primary {
-  border-color: #E4B767; background: transparent;
-}
-.btn-danger {
-  border-color: #b74040; background: transparent; color: #ffbdbd;
-}
-.btn-danger:hover { background: #b74040; color: #fff; }
-.btn-ghost {
-  background: transparent; border-color: #3b5b45;
-}
-
-/* Evitar scroll del body con el modal abierto */
-.body-no-scroll { overflow: hidden; }
-
-
-
-/* ============================== */
-/*      TABLA — ESTILO DORADO     */
-/* ============================== */
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #2A4D31;         /* verde oscuro del contenedor */
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(0,0,0,0.45);
-}
-
-/* ------------------------------ */
-/*          ENCABEZADO           */
-/* ------------------------------ */
-thead {
-    background: #1A3623;         /* verde más oscuro */
-}
-
-thead th {
-    padding: 14px;
-    color: #E4B767;              /* dorado */
-    font-size: 0.95rem;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    border-bottom: 2px solid #E4B76744;
-}
-
-/* ------------------------------ */
-/*            FILAS              */
-/* ------------------------------ */
-tbody tr {
-    transition: .25s ease;
-    background: #2A4D31;
-}
-
-tbody tr:nth-child(even) {
-    background: #25452C; /* ligera variación */
-}
-
-tbody tr:hover {
-    background: #1A3623;
-    transform: scale(1.01);
-}
-
-/* ------------------------------ */
-/*            CELDAS             */
-/* ------------------------------ */
-tbody td {
-    padding: 12px 14px;
-    color: #E4B767;
-    font-size: 0.93rem;
-    text-align: center;
-    border-bottom: 1px solid #E4B76733;
-}
-
-/* Alinear la primera columna a la izquierda (nombre) */
-tbody td:first-child,
-thead th:first-child {
-    text-align: left;
-    padding-left: 18px;
-}
-
-/* ------------------------------ */
-/*         BOTÓN STATUS           */
-/* ------------------------------ */
-.status-btn {
-    background: transparent;
-    color: #E4B767;
-    border: 2px solid #E4B767;
-    padding: 6px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: .25s ease;
-}
-
-.status-btn:hover {
-    background: #E4B767;
-    color: #1A3623;
-    transform: translateY(-2px);
-}
-
-/* ------------------------------ */
-/*        BOTONES EDITAR          */
-/* ------------------------------ */
-tbody td a {
-    color: #E4B767;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 8px;
-    border: 1px solid #E4B767;
-    font-size: 0.8rem;
-    transition: .25s ease;
-}
-
-tbody td a:hover {
-    background: #E4B767;
-    color: #1A3623;
-}
-
-/* ------------------------------ */
-/*        PUNTOS Sí / No          */
-/* ------------------------------ */
-.dot.yes {
-    color: #10b981; /* verde éxito */
-    font-weight: bold;
-}
-
-.dot.no {
-    color: #ef4444; /* rojo error */
-    font-weight: bold;
-}
-
-/* ------------------------------ */
-/*          RESPONSIVE            */
-/* ------------------------------ */
-@media (max-width: 768px) {
     table {
-        font-size: 0.8rem;
+        width: 100%;
+        border-collapse: collapse;
+        min-width: 600px;
     }
 
-    thead th,
+    thead {
+        background-color: var(--color-primary);
+        color: var(--color-white);
+    }
+
+    thead th {
+        padding: 15px;
+        text-align: left;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.9rem;
+        white-space: nowrap;
+    }
+
+    thead th.text-center { text-align: center; }
+
+    tbody tr {
+        border-bottom: 1px solid var(--color-border);
+        background-color: white;
+    }
+
+    tbody tr:hover { background-color: var(--color-primary-light); }
+
     tbody td {
-        padding: 10px;
+        padding: 15px;
+        vertical-align: middle;
+        color: var(--color-text);
+        font-size: 1rem;
     }
 
-    tbody td:first-child {
-        padding-left: 12px;
+    tbody td.text-center { text-align: center; }
+
+    .fw-bold { font-weight: 700; }
+
+    /* Badges (Sí/No) */
+    .status-badge {
+        padding: 6px 14px;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        font-weight: 600;
+        display: inline-block;
+    }
+    .status-active { background-color: #d1fae5; color: #065f46; }   /* Verde */
+    .status-inactive { background-color: #fee2e2; color: #991b1b; } /* Rojo */
+
+    /* Columna de Acciones */
+    .action-column {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
     }
 
-    .status-btn,
-    tbody td a {
-        font-size: 0.7rem;
-        padding: 5px 8px;
+    .btn-ver {
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.9rem;
+        transition: background 0.3s;
     }
-}
+    .btn-ver:hover { background-color: var(--color-primary-dark); }
 
+    .link-action {
+        font-size: 0.85rem;
+        color: #666;
+        text-decoration: none;
+        margin: 0 5px;
+    }
+    .link-action:hover { color: var(--color-primary); text-decoration: underline; }
 
+    /* --- MODAL (Estilo limpio blanco/rojo) --- */
+    .modal-overlay {
+        position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+        background-color: rgba(0, 0, 0, 0.6); backdrop-filter: blur(2px);
+        z-index: 9999;
+        display: flex; align-items: center; justify-content: center;
+        opacity: 0; visibility: hidden; transition: all 0.3s ease;
+    }
+    .modal-overlay.active { opacity: 1; visibility: visible; }
 
+    .modal-ficha {
+        background: #ffffff; width: 90%; max-width: 450px;
+        border-radius: 12px; box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+        transform: scale(0.95) translateY(20px);
+        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        overflow: hidden; position: relative;
+    }
+    .modal-overlay.active .modal-ficha { transform: scale(1) translateY(0); }
 
-.btn-submit {
-    display: block;
-    width: 100%;
-    padding: 1rem;
-    background: #dc2626;                  /* 🔴 Rojo exacto */
-    color: #ffffff;
-    border: none;
-    border-radius: 10px;
-    font-size: 1.1rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: 0.25s ease-in-out;
-    margin-top: 1rem;
-}
-
-/* Hover igual al estilo real */
-.btn-submit:hover {
-    background: #ef4444;                  /* 🔴 Rojo más claro (hover) */
-    transform: translateY(-2px);
-}
-
-/* Efecto al hacer click */
-.btn-submit:active {
-    transform: translateY(0);
-}
-
-
-
-
-/* ============================== */
-/*      TABLA — ESTILO ROJO       */
-/* ============================== */
-
-table {
-    width: 100%;
-    border-collapse: collapse;
-    background: #ffffff;                         /* fondo blanco */
-    border-radius: 12px;
-    overflow: hidden;
-    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.25); /* sombra rojiza */
-}
-
-/* ------------------------------ */
-/*          ENCABEZADO           */
-/* ------------------------------ */
-thead {
-    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
-}
-
-thead th {
-    padding: 14px;
-    color: #ffffff;                              /* texto blanco */
-    font-size: 0.95rem;
-    text-align: center;
-    text-transform: uppercase;
-    letter-spacing: .5px;
-    border-bottom: 2px solid rgba(255,255,255,0.25);
-}
-
-/* ------------------------------ */
-/*            FILAS              */
-/* ------------------------------ */
-tbody tr {
-    transition: .25s ease;
-    background: #ffffff;
-}
-
-tbody tr:nth-child(even) {
-    background: #fef2f2; /* rojo muy claro alterno */
-}
-
-tbody tr:hover {
-    background: #fee2e2; /* hover rojito suave */
-    transform: scale(1.01);
-}
-
-/* ------------------------------ */
-/*            CELDAS             */
-/* ------------------------------ */
-tbody td {
-    padding: 12px 14px;
-    color: #1f2937;
-    font-size: 0.93rem;
-    text-align: center;
-    border-bottom: 1px solid #fecaca; /* línea sutil roja */
-}
-
-/* Alinear la primera columna a la izquierda (nombre) */
-tbody td:first-child,
-thead th:first-child {
-    text-align: left;
-    padding-left: 18px;
-}
-
-/* ------------------------------ */
-/*         BOTÓN STATUS           */
-/* ------------------------------ */
-.status-btn {
-    background: transparent;
-    color: #dc2626;
-    border: 2px solid #dc2626;
-    padding: 6px 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    font-size: 0.8rem;
-    transition: .25s ease;
-}
-
-.status-btn:hover {
-    background: #dc2626;
-    color: #ffffff;
-    transform: translateY(-2px);
-}
-
-/* ------------------------------ */
-/*        BOTONES EDITAR          */
-/* ------------------------------ */
-tbody td a {
-    color: #dc2626;
-    text-decoration: none;
-    padding: 5px 10px;
-    border-radius: 8px;
-    border: 1px solid #dc2626;
-    font-size: 0.8rem;
-    transition: .25s ease;
-}
-
-tbody td a:hover {
-    background: #dc2626;
-    color: #ffffff;
-}
-
-/* ------------------------------ */
-/*        PUNTOS Sí / No          */
-/* ------------------------------ */
-.dot.yes {
-    color: #10b981; /* verde éxito */
-    font-weight: bold;
-}
-
-.dot.no {
-    color: #ef4444; /* rojo error */
-    font-weight: bold;
-}
-
-/* ------------------------------ */
-/*          RESPONSIVE            */
-/* ------------------------------ */
-@media (max-width: 768px) {
-    table {
-        font-size: 0.8rem;
+    .modal-ficha::before {
+        content: ''; position: absolute; top: 0; left: 0; right: 0; height: 6px;
+        background: var(--color-primary);
     }
 
-    thead th,
-    tbody td {
-        padding: 10px;
+    .modal-close {
+        position: absolute; top: 1rem; right: 1rem;
+        background: transparent; border: none; color: #999;
+        font-size: 1.8rem; cursor: pointer; line-height: 1;
     }
+    .modal-close:hover { color: var(--color-primary); }
 
-    tbody td:first-child {
-        padding-left: 12px;
+    .ficha-header { text-align: center; padding: 2rem 2rem 1rem; border-bottom: 1px solid #f0f0f0; }
+    .ficha-header h3 { margin: 0; font-size: 1.5rem; color: var(--color-text); font-weight: 700; }
+
+    .ficha-body { padding: 1.5rem 2rem; display: flex; flex-direction: column; gap: 1rem; }
+    .ficha-row { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px dashed #eee; padding-bottom: 0.5rem; }
+    .ficha-row:last-child { border-bottom: none; }
+    
+    .ficha-label { font-weight: 600; color: #666; font-size: 0.9rem; text-transform: uppercase; }
+    .ficha-value { font-weight: 600; color: var(--color-text); font-size: 1rem; text-align: right; }
+
+    .ficha-actions {
+        background-color: #f9fafb; padding: 1.5rem; display: flex;
+        justify-content: center; gap: 1rem; border-top: 1px solid #f0f0f0;
     }
+    
+    .btn-modal { padding: 0.6rem 1.2rem; border-radius: 6px; font-weight: 600; text-decoration: none; font-size: 0.9rem; cursor: pointer; border: 1px solid transparent;}
+    .btn-modal-primary { background-color: var(--color-primary); color: white; }
+    .btn-modal-primary:hover { background-color: var(--color-primary-dark); }
+    .btn-modal-danger { color: #c62828; border-color: #c62828; background: transparent; }
+    .btn-modal-danger:hover { background: #c62828; color: white; }
+    .btn-modal-ghost { color: #666; background: transparent; border: 1px solid #ccc; }
+    .btn-modal-ghost:hover { background: #eee; }
 
-    .status-btn,
-    tbody td a {
-        font-size: 0.7rem;
-        padding: 5px 8px;
-    }
-}
-
+    .body-no-scroll { overflow: hidden; }
 </style>
-<table>
-    <thead>
-        <tr>
-            <th>Nombre de Usuario</th>
-            <th>Correo</th>
-            <th>Administrador</th>
-            <th>Acciones</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each administradores}}
-        <tr>
-            <td>{{nombreUsuario}}</td>
-            <td>{{correo}}</td>
-            <td>
-                {{#if administrador}}
-                    <span style="color: green; font-weight: bold;">● Sí</span>
-                {{else}}
-                    <span style="color: red; font-weight: bold;">● No</span>
-                {{/if}}
-            </td>
-            <td>
-                <button
-                    class="status-btn"
-                    data-id="{{_id}}"
-                    data-nombre="{{nombreUsuario}}"
-                    data-correo="{{correo}}"
-                    data-admin="{{#if administrador}}Sí{{else}}No{{/if}}"
-                    data-edit="/editarAdministrador/{{_id}}"
-                    data-delete="/eliminarAdministrador/{{_id}}"
-                >Status</button>
-                <a href="/editarAdministrador/{{_id}}">Editar</a>
-                <a href="/eliminarAdministrador/{{_id}}">Eliminar</a>
-            </td>
-        </tr>
-        {{/each}}
-    </tbody>
-</table>
-<div id="overlay-modal-ficha" class="modal-overlay" hidden></div>
 
-<div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
-  <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+<div class="table-container">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre de Usuario</th>
+                    <th>Correo</th>
+                    <th class="text-center">Administrador</th>
+                    <th class="text-center">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each administradores}}
+                <tr>
+                    <td class="fw-bold">{{nombreUsuario}}</td>
+                    <td>{{correo}}</td>
+                    
+                    <td class="text-center">
+                        {{#if administrador}}
+                            <span class="status-badge status-active">Sí</span>
+                        {{else}}
+                            <span class="status-badge status-inactive">No</span>
+                        {{/if}}
+                    </td>
 
-  <header class="ficha-header">
-    <h3 id="ficha-title">Ficha de usuario</h3>
-  </header>
-
-  <section class="ficha-body">
-    <div class="ficha-row">
-      <span class="ficha-label">Nombre de usuario</span>
-      <span id="ficha-nombre" class="ficha-value"></span>
+                    <td class="text-center">
+                        <div class="action-column">
+                            <button
+                                class="btn-ver status-btn"
+                                data-id="{{_id}}"
+                                data-nombre="{{nombreUsuario}}"
+                                data-correo="{{correo}}"
+                                data-admin="{{#if administrador}}Sí{{else}}No{{/if}}"
+                                data-edit="/editarAdministrador/{{_id}}"
+                                data-delete="/eliminarAdministrador/{{_id}}"
+                            >
+                                Ver Detalles
+                            </button>
+                            
+                            <div>
+                                <a href="/editarAdministrador/{{_id}}" class="link-action">Editar</a> | 
+                                <a href="/eliminarAdministrador/{{_id}}" class="link-action" style="color: #c62828;">Eliminar</a>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
     </div>
-    <div class="ficha-row">
-      <span class="ficha-label">Correo</span>
-      <a id="ficha-correo" class="ficha-value" href="#" target="_blank" rel="noopener"></a>
-    </div>
-    <div class="ficha-row">
-      <span class="ficha-label">Administrador</span>
-      <span id="ficha-admin" class="ficha-value"></span>
-    </div>
-  </section>
-
-  <footer class="ficha-actions">
-    <a id="ficha-btn-editar" class="btn btn-primary" href="#">Editar</a>
-    <a id="ficha-btn-eliminar" class="btn btn-danger" href="#">Eliminar</a>
-    <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
-  </footer>
 </div>
+
+<div id="overlay-modal-ficha" class="modal-overlay" hidden>
+    <div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
+        <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+
+        <header class="ficha-header">
+            <h3 id="ficha-title">Ficha de Usuario</h3>
+        </header>
+
+        <section class="ficha-body">
+            <div class="ficha-row">
+                <span class="ficha-label">Nombre de Usuario</span>
+                <span id="ficha-nombre" class="ficha-value"></span>
+            </div>
+            <div class="ficha-row">
+                <span class="ficha-label">Correo</span>
+                <a id="ficha-correo" class="ficha-value" href="#" target="_blank"></a>
+            </div>
+            <div class="ficha-row">
+                <span class="ficha-label">Es Administrador</span>
+                <span id="ficha-admin" class="ficha-value"></span>
+            </div>
+        </section>
+
+        <footer class="ficha-actions">
+            <a id="ficha-btn-editar" class="btn-modal btn-modal-primary" href="#">Editar</a>
+            <a id="ficha-btn-eliminar" class="btn-modal btn-modal-danger" href="#">Eliminar</a>
+            <button id="ficha-btn-cerrar" class="btn-modal btn-modal-ghost" type="button">Cerrar</button>
+        </footer>
+    </div>
+</div>
+
 <script>
-    (function () {
-  const overlay   = document.getElementById('overlay-modal-ficha');
-  const modal     = document.getElementById('modal-ficha');
-  const closeBtn  = modal.querySelector('.modal-close');
-  const cerrarBtn = document.getElementById('ficha-btn-cerrar');
+(function () {
+    const overlay   = document.getElementById('overlay-modal-ficha');
+    const modal     = document.getElementById('modal-ficha');
+    const closeBtn  = modal.querySelector('.modal-close');
+    const cerrarBtn = document.getElementById('ficha-btn-cerrar');
 
-  const elNombre  = document.getElementById('ficha-nombre');
-  const elCorreo  = document.getElementById('ficha-correo');
-  const elAdmin   = document.getElementById('ficha-admin');
-  const btnEdit   = document.getElementById('ficha-btn-editar');
-  const btnDel    = document.getElementById('ficha-btn-eliminar');
+    const elNombre  = document.getElementById('ficha-nombre');
+    const elCorreo  = document.getElementById('ficha-correo');
+    const elAdmin   = document.getElementById('ficha-admin');
+    const btnEdit   = document.getElementById('ficha-btn-editar');
+    const btnDel    = document.getElementById('ficha-btn-eliminar');
 
-  function openModal() {
-    overlay.hidden = false;
-    modal.hidden = false;
-    document.body.classList.add('body-no-scroll');
-  }
+    // Funciones Modal
+    function openModal() {
+        overlay.hidden = false;
+        modal.hidden = false;
+        setTimeout(() => {
+            overlay.classList.add('active');
+        }, 10);
+        document.body.classList.add('body-no-scroll');
+    }
 
-  function closeModal() {
-    overlay.hidden = true;
-    modal.hidden = true;
-    document.body.classList.remove('body-no-scroll');
-  }
+    function closeModal() {
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            overlay.hidden = true;
+            modal.hidden = true;
+            document.body.classList.remove('body-no-scroll');
+        }, 300);
+    }
 
-  function fillCard({ nombre, correo, admin, editUrl, deleteUrl }) {
-    elNombre.textContent = nombre || '';
-    elCorreo.textContent = correo || '';
-    elCorreo.href = correo ? `mailto:${correo}` : '#';
-    elAdmin.textContent = admin || 'No';
+    // Llenar datos
+    function fillCard({ nombre, correo, admin, editUrl, deleteUrl }) {
+        elNombre.textContent = nombre || '';
+        
+        elCorreo.textContent = correo || '';
+        elCorreo.href = correo ? `mailto:${correo}` : '#';
+        
+        elAdmin.textContent = admin || 'No';
+        // Color dinámico en el modal también
+        elAdmin.style.color = (admin === 'Sí') ? '#065f46' : '#991b1b';
 
-    btnEdit.href = editUrl || '#';
-    btnDel.href  = deleteUrl || '#';
-  }
+        btnEdit.href = editUrl || '#';
+        btnDel.href  = deleteUrl || '#';
+    }
 
-  // Delegación de eventos para todos los botones "Status"
-  document.addEventListener('click', function (e) {
-    const btn = e.target.closest('.status-btn');
-    if (!btn) return;
+    // Delegación de eventos
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.status-btn');
+        if (!btn) return;
 
-    const payload = {
-      nombre: btn.dataset.nombre,
-      correo: btn.dataset.correo,
-      admin:  btn.dataset.admin,
-      editUrl: btn.dataset.edit,
-      deleteUrl: btn.dataset.delete
-    };
+        const payload = {
+            nombre: btn.dataset.nombre,
+            correo: btn.dataset.correo,
+            admin:  btn.dataset.admin,
+            editUrl: btn.dataset.edit,
+            deleteUrl: btn.dataset.delete
+        };
 
-    fillCard(payload);
-    openModal();
-  });
+        fillCard(payload);
+        openModal();
+    });
 
-  // Cerrar
-  closeBtn.addEventListener('click', closeModal);
-  cerrarBtn.addEventListener('click', closeModal);
-  overlay.addEventListener('click', closeModal);
+    // Listeners de cierre
+    closeBtn.addEventListener('click', closeModal);
+    cerrarBtn.addEventListener('click', closeModal);
+    overlay.addEventListener('click', (e) => {
+        if(e.target === overlay) closeModal();
+    });
 
-  // Esc para cerrar
-  document.addEventListener('keydown', function (e) {
-    if (e.key === 'Escape' && !modal.hidden) closeModal();
-  });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && !overlay.hidden) closeModal();
+    });
 
-  // Confirmación para eliminar
-  btnDel.addEventListener('click', function (e) {
-    const ok = confirm('¿Seguro que deseas eliminar este administrador?');
-    if (!ok) e.preventDefault();
-  });
+    // Confirmación eliminar
+    btnDel.addEventListener('click', function (e) {
+        const ok = confirm('¿Seguro que deseas eliminar este administrador?');
+        if (!ok) e.preventDefault();
+    });
 })();
 </script>

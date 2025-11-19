@@ -1,679 +1,377 @@
 <style>
     :root {
-        --color-primary: #dc2626;
-        --color-primary-dark: #991b1b;
-        --color-primary-light: #fef2f2;
-        --color-secondary: #f59e0b;
-        --color-success: #10b981;
-        --color-text: #1f2937;
-        --color-text-light: #6b7280;
-        --color-bg: #f9fafb;
-        --color-card-bg: #ffffff;
+        --qr-size: 120px; 
+        --color-primary: #C73E3A; 
+        --color-primary-dark: #8e0000;
+        --color-primary-light: #ffebee;
+        --color-text: #333;
+        --color-border: #ddd;
         --color-white: #ffffff;
-        --color-border: #e5e7eb;
-        --color-shadow: rgba(220, 38, 38, 0.08);
-        --color-shadow-lg: rgba(0, 0, 0, 0.15);
-        --color-danger: #ef4444;
-        --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        --color-bg: #f5f5f5;
+        --font-family-primary: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     }
 
-    * {
+    body {
+        font-family: var(--font-family-primary);
+        background-color: var(--color-bg);
         margin: 0;
-        padding: 0;
+        padding: 20px;
+    }
+
+    /* --- CONTENEDOR DE LA TARJETA --- */
+    .table-container {
+        /* 1. Eliminamos el truco de centrado que cortaba los lados */
+        width: 100%; 
+        max-width: 100%;
+        
+        background: var(--color-white);
+        border-radius: 8px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        
+        /* Padding interno de la tarjeta */
+        padding: 20px; 
+        margin-top: 20px;
+        margin-bottom: 40px;
         box-sizing: border-box;
     }
 
-    /* === FONDO DE PANTALLA === */
-    body {
-        font-family: var(--font-family-primary);
-        background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20230720/pngtree-3d-rendered-red-sofa-and-chair-set-image_3725833.jpg');
-        background-size: cover;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-        min-height: 100vh;
-        color: var(--color-text);
-        line-height: 1.6;
-        padding: 1rem;
-    }
-
-    /* Contenedor principal de la página */
-    .page-wrapper {
-        display: flex;
-        justify-content: center;
-        padding: 2rem 0.5rem;
-        width: 100%;
-        min-height: 100vh;
-    }
-
-    /* Contenedor de la Tabla */
-    .table-container {
-        width: 100%;
-        max-width: none;
-        background: var(--color-card-bg);
-        border-radius: 20px;
-        overflow: hidden; 
-        animation: fadeIn 0.5s ease-out;
-        position: relative;
-        margin-bottom: 2rem;
-    }
-
-    /* Scroll horizontal (se mantiene por seguridad en móviles muy pequeños) */
+    /* --- ZONA DE SCROLL (SOLUCIÓN) --- */
     .table-wrapper {
         width: 100%;
-        overflow-x: auto;
-        overflow-y: visible;
-        -webkit-overflow-scrolling: touch;
+        display: block;
+        
+        /* 2. Forzamos el scroll horizontal AQUÍ MISMO */
+        overflow-x: auto; 
+        
+        /* 3. Un poco de espacio abajo para que la barra de scroll no tape el contenido */
+        padding-bottom: 15px; 
     }
 
+    /* Estilo de la barra de scroll (Alta visibilidad) */
     .table-wrapper::-webkit-scrollbar {
-        height: 10px;
+        height: 14px; /* Barra gruesa para que sea fácil de clicar */
     }
-
     .table-wrapper::-webkit-scrollbar-track {
         background: #f1f1f1;
-        border-radius: 10px;
+        border-radius: 7px;
     }
-
     .table-wrapper::-webkit-scrollbar-thumb {
-        background: var(--color-primary);
-        border-radius: 10px;
+        background-color: #C73E3A; /* Rojo de tu marca */
+        border-radius: 7px;
+        border: 3px solid #f1f1f1; /* Borde blanco para efecto flotante */
     }
-
     .table-wrapper::-webkit-scrollbar-thumb:hover {
-        background: var(--color-primary-dark);
+        background-color: #8e0000;
     }
 
     table {
         width: 100%;
         border-collapse: collapse;
-        table-layout: auto; /* Permite que las columnas se ajusten al contenido */
+        /* 4. Ancho mínimo gigante para OBLIGAR a que salga el scroll */
+        min-width: 1600px; 
     }
 
+    /* Encabezado */
     thead {
-        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        background-color: var(--color-primary);
         color: var(--color-white);
     }
 
     thead th {
-        padding: 1rem 0.85rem;
+        padding: 15px;
         text-align: left;
         font-weight: 600;
-        font-size: 0.85rem;
-        letter-spacing: 0.02em;
         text-transform: uppercase;
-        /* CAMBIO: Permitir que el texto baje de línea si es largo */
-        white-space: normal; 
-        vertical-align: middle;
+        font-size: 0.85rem;
+        white-space: nowrap; /* Evita saltos de línea en encabezados */
+        position: sticky; /* Fija el encabezado al hacer scroll vertical */
+        top: 0;
+        z-index: 10;
     }
 
-    /* Centrar encabezados específicos */
-    thead th.text-center {
-        text-align: center;
-    }
+    thead th.text-center { text-align: center; }
 
+    /* Cuerpo */
     tbody tr {
         border-bottom: 1px solid var(--color-border);
-        transition: var(--transition);
+        background-color: white;
     }
-
     tbody tr:hover {
         background-color: var(--color-primary-light);
     }
 
     tbody td {
-        padding: 0.85rem;
+        padding: 15px;
+        vertical-align: middle; 
         color: var(--color-text);
-        font-size: 0.9rem;
-        vertical-align: middle;
-        /* CAMBIO: Permitir que el contenido se ajuste y no fuerce el ancho */
-        white-space: normal; 
-        word-wrap: break-word;
-        max-width: 200px; /* Límite opcional para columnas muy anchas */
+        font-size: 0.95rem;
+        /* 5. Evita que el texto se rompa, forzando la tabla a ser ancha */
+        white-space: nowrap; 
     }
 
-    /* Centrar contenido de celdas específicas */
-    tbody td.text-center {
+    tbody td.text-center { text-align: center; }
+    .fw-bold { font-weight: 700; }
+
+    /* === QR === */
+    .qr-display {
+        display: block;
+        width: var(--qr-size) !important;      
+        height: var(--qr-size) !important;     
+        min-width: var(--qr-size);             
+        object-fit: contain;
+        background: white;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        margin: 0 auto;
+    }
+
+    /* Badges */
+    .status-badge { padding: 6px 14px; border-radius: 20px; font-size: 0.85rem; font-weight: 600; display: inline-block; }
+    .status-active { background-color: #d1fae5; color: #065f46; }
+    .status-inactive { background-color: #fee2e2; color: #991b1b; }
+
+    /* Acciones */
+    .action-column {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+        min-width: 150px; /* Asegura espacio para botones */
+        padding-right: 10px; 
+        /* Sticky para que los botones siempre se vean a la derecha (Opcional, si quieres quítalo) */
+        position: sticky; 
+        right: 0;
+        background-color: inherit; /* Hereda el color de fondo de la fila */
+        z-index: 5;
+        border-left: 2px solid #f0f0f0; /* Separador visual */
+    }
+
+    /* Ajuste para que el encabezado de acciones también sea sticky */
+    thead th:last-child {
+        position: sticky;
+        right: 0;
+        z-index: 20;
+        background-color: var(--color-primary);
+    }
+
+    .btn-ver {
+        background-color: var(--color-primary);
+        color: white;
+        border: none;
+        padding: 8px 20px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+        font-size: 0.85rem;
+        width: 100%;
         text-align: center;
     }
+    .btn-ver:hover { background-color: var(--color-primary-dark); }
 
-    /* Negrita para datos clave */
-    .fw-bold {
-        font-weight: 600;
-    }
+    .link-group { display: flex; gap: 10px; font-size: 0.9rem; justify-content: center; }
+    .link-action { color: #666; text-decoration: none; }
+    .link-action:hover { color: var(--color-primary); text-decoration: underline; }
+    .link-delete { color: #c62828; }
 
-    /* Estilos para los indicadores de estado */
-    .status-active {
-        color: var(--color-success);
-        font-weight: 600;
-        background-color: #d1fae5;
-        padding: 0.3rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        display: inline-block;
-        white-space: nowrap;
+    /* --- MODAL --- */
+    .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,.6); backdrop-filter: blur(2px); z-index: 998; display: none; }
+    .modal-overlay.active { display: block; }
+    .modal-ficha { 
+        position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+        width: min(520px, 92vw); max-height: 90vh; overflow-y: auto;
+        background: var(--color-primary); color: white;
+        border: 2px solid white; border-radius: 16px;
+        box-shadow: 0 20px 50px rgba(0,0,0,.55); padding: 20px; z-index: 999;
+        display: none;
     }
-
-    .status-inactive {
-        color: var(--color-text-light);
-        font-weight: 600;
-        background-color: #f3f4f6;
-        padding: 0.3rem 0.75rem;
-        border-radius: 20px;
-        font-size: 0.8rem;
-        display: inline-block;
-        white-space: nowrap;
-    }
-
-    /* Botones de acción en la tabla */
-    .action-links {
-        display: flex;
-        gap: 0.4rem;
-        align-items: center;
-        justify-content: center;
-        flex-wrap: wrap; /* CAMBIO: Permitir que los botones bajen si no caben */
-    }
-
-    .status-btn {
-        background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
-        color: var(--color-white);
-        border: none;
-        padding: 0.4rem 0.8rem;
-        border-radius: 8px;
-        font-size: 0.8rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: var(--transition);
-        white-space: nowrap;
-    }
-
-    .status-btn:hover {
-        transform: translateY(-2px);
-    }
-
-    .btn-link {
-        color: var(--color-primary);
-        text-decoration: none;
-        font-weight: 500;
-        padding: 0.4rem 0.6rem;
-        border-radius: 6px;
-        transition: var(--transition);
-        font-size: 0.8rem;
-        white-space: nowrap;
-    }
-
-    .btn-link:hover {
-        background-color: var(--color-primary-light);
-        color: var(--color-primary-dark);
-    }
-
-    /* === QR ZOOM === */
-    .qr-zoom {
-        width: 40px; 
-        height: 40px;
-        object-fit: contain;
-        cursor: zoom-in;
-        transition: transform 0.25s ease;
-        border-radius: 4px;
-        border: 1px solid var(--color-border);
-        background: white;
-        padding: 2px;
-    }
-
-    .qr-zoom:hover {
-        position: fixed;
-        top: 50%;
-        left: 50%;
-        transform: translate(-50%, -50%) scale(5);
-        z-index: 1000;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
-        border-radius: 8px;
-    }
-
-    /* === MODAL STYLES === */
-    .modal-overlay {
-        position: fixed;
-        inset: 0;
-        background: rgba(0, 0, 0, 0.6);
-        backdrop-filter: blur(4px);
-        z-index: 998;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        opacity: 0;
-        visibility: hidden;
-        transition: var(--transition);
-    }
-
-    .modal-overlay.active {
-        opacity: 1;
-        visibility: visible;
-    }
-
-    .modal-ficha {
-        width: min(500px, 92vw);
-        background: var(--color-card-bg);
-        color: var(--color-text);
-        border-radius: 24px;
-        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
-        padding: 0;
-        z-index: 999;
-        position: relative;
-        overflow: hidden;
-        transform: scale(0.9);
-        transition: var(--transition);
-    }
-
-    .modal-overlay.active .modal-ficha {
-        transform: scale(1);
-    }
-
-    .modal-ficha::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 6px;
-        background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
-    }
-
-    .modal-close {
-        position: absolute;
-        top: 1.25rem;
-        right: 1.25rem;
-        background: rgba(220, 38, 38, 0.1);
-        border: none;
-        width: 36px;
-        height: 36px;
-        border-radius: 8px;
-        font-size: 1.5rem;
-        line-height: 1;
-        cursor: pointer;
-        color: var(--color-primary);
-        transition: var(--transition);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        z-index: 10;
-    }
-
-    .modal-close:hover {
-        background: var(--color-primary);
-        color: var(--color-white);
-        transform: rotate(90deg);
-    }
-
-    .ficha-header {
-        background: linear-gradient(135deg, var(--color-primary-light) 0%, transparent 100%);
-        padding: 2rem 2rem 1.5rem;
-        border-bottom: 1px solid var(--color-border);
-    }
-
-    .ficha-header h3 {
-        margin: 0;
-        font-size: 1.5rem;
-        letter-spacing: -0.02em;
-        font-weight: 700;
-        color: var(--color-text);
-    }
-
-    .ficha-body {
-        padding: 2rem;
-        display: grid;
-        gap: 1rem;
-    }
-
-    .ficha-row {
-        display: grid;
-        grid-template-columns: 120px 1fr;
-        gap: 1rem;
-        align-items: start;
-        border-bottom: 1px dashed var(--color-border);
-        padding-bottom: 0.5rem;
-    }
-    
-    .ficha-row:last-child {
-        border-bottom: none;
-    }
-
-    .ficha-label {
-        font-weight: 600;
-        color: var(--color-text-light);
-        font-size: 0.85rem;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-
-    .ficha-value {
-        color: var(--color-text);
-        font-weight: 500;
-        word-break: break-word;
-    }
-
-    .ficha-actions {
-        display: flex;
-        gap: 0.75rem;
-        justify-content: flex-end;
-        padding: 1.5rem 2rem 2rem;
-        background-color: #f9fafb;
-        border-top: 1px solid var(--color-border);
-    }
-
-    /* Botones del Modal */
-    .btn {
-        padding: 0.75rem 1.5rem;
-        font-weight: 600;
-        font-size: 0.925rem;
-        border-radius: 10px;
-        border: 2px solid transparent;
-        cursor: pointer;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-        transition: var(--transition);
-    }
-
-    .btn:hover { transform: translateY(-2px); }
-
-    .btn-primary {
-        background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
-        color: var(--color-white);
-    }
-
-    .btn-danger {
-        border-color: var(--color-danger);
-        background: transparent;
-        color: var(--color-danger);
-    }
-    .btn-danger:hover {
-        background: var(--color-danger);
-        color: var(--color-white);
-    }
-
-    .btn-ghost {
-        background: transparent;
-        color: var(--color-text-light);
-    }
-    .btn-ghost:hover {
-        color: var(--color-text);
-        background: var(--color-border);
-    }
-
-    .body-no-scroll { overflow: hidden; }
-
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(20px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Responsive */
-    @media (max-width: 1200px) {
-        tbody td {
-            font-size: 0.85rem;
-            padding: 0.75rem;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .table-container {
-            border-radius: 12px;
-        }
-        
-        thead th {
-            padding: 0.75rem 0.6rem;
-            font-size: 0.75rem;
-        }
-        
-        tbody td {
-            padding: 0.6rem;
-            font-size: 0.8rem;
-        }
-        
-        .qr-zoom {
-            width: 35px;
-            height: 35px;
-        }
-        
-        .action-links {
-            gap: 0.25rem;
-        }
-    }
+    .modal-ficha.active { display: block; }
+    .modal-close { position: absolute; top: 10px; right: 15px; background: none; border: none; font-size: 24px; color: white; cursor: pointer; }
+    .ficha-header h3 { margin: 0 0 15px 0; font-size: 1.4rem; border-bottom: 1px solid rgba(255,255,255,0.3); padding-bottom: 10px; }
+    .ficha-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.1); }
+    .ficha-label { font-weight: bold; opacity: 0.9; }
+    .ficha-value { font-weight: 400; text-align: right; }
+    .ficha-actions { margin-top: 20px; display: flex; justify-content: flex-end; gap: 10px; }
+    .btn-modal { padding: 8px 16px; border-radius: 6px; font-weight: bold; text-decoration: none; cursor: pointer; border: none; }
+    .btn-modal-primary { background: white; color: var(--color-primary); }
+    .btn-modal-danger { background: #8B0000; color: white; }
+    .btn-modal-ghost { background: transparent; color: white; border: 1px solid white; }
 </style>
 
-<div class="page-wrapper">
-    <div class="table-container">
-        <div class="table-wrapper">
-            <table border="0">
-                <thead>
-                    <tr>
-                        <th>Nombre</th>
-                        <th>Categoría</th>
-                        <th>Marca</th>
-                        <th class="text-center">Precio</th>
-                        <th>Color</th>
-                        <th>Material</th>
-                        <th class="text-center">QR</th>
-                        <th class="text-center">Activa</th>
-                        {{#if user.administrador}}
-                        <th class="text-center">Acciones</th>
+<div class="table-container">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Categoría</th>
+                    <th>Marca</th>
+                    <th class="text-center">Precio</th>
+                    <th>Color</th>
+                    <th>Material</th>
+                    <th class="text-center">QR</th>
+                    <th class="text-center">Estado</th>
+                    {{#if user.administrador}}
+                    <th class="text-center">Acciones</th>
+                    {{/if}}
+                </tr>
+            </thead>
+            <tbody>
+                {{#each productos}}
+                <tr>
+                    <td class="fw-bold">{{nombre}}</td>
+                    <td>{{nombreCategoria}}</td>
+                    <td>{{marca}}</td>
+                    <td class="text-center fw-bold" style="font-size: 1.1rem;">${{precio}}</td>
+                    <td>{{color}}</td>
+                    <td>{{material}}</td>
+
+                    <td class="text-center">
+                        {{#if qr}}
+                            <img src="{{qr}}" alt="QR Producto" class="qr-display">
+                        {{else}}
+                            <span style="color:#ccc; font-style: italic;">Sin QR</span>
                         {{/if}}
-                    </tr>
-                </thead>
-                <tbody>
-                    {{#each productos}}
-                    <tr>
-                        <td class="fw-bold">{{nombre}}</td>
-                        <td>{{nombreCategoria}}</td>
-                        <td>{{marca}}</td>
-                        <td class="text-center fw-bold">${{precio}}</td>
-                        <td>{{color}}</td>
-                        <td>{{material}}</td>
+                    </td>
 
-                        <td class="text-center">
-                            {{#if qr}}
-                            <img src="{{qr}}" alt="QR" class="qr-zoom">
-                            {{else}}
-                            <span style="color: #ccc; font-size: 0.8rem;">N/A</span>
-                            {{/if}}
-                        </td>
+                    <td class="text-center">
+                        {{#if activa}}
+                        <span class="status-badge status-active">Activa</span>
+                        {{else}}
+                        <span class="status-badge status-inactive">Inactiva</span>
+                        {{/if}}
+                    </td>
 
-                        <td class="text-center">
-                            {{#if activa}}
-                            <span class="status-active">Activa</span>
-                            {{else}}
-                            <span class="status-inactive">Inactiva</span>
-                            {{/if}}
-                        </td>
-
-                        {{#if ../user.administrador}}
-                        <td class="text-center">
-                            <div class="action-links">
-                                <button
-                                    class="status-btn"
-                                    data-id="{{_id}}"
-                                    data-nombre="{{nombre}}"
-                                    data-categoria="{{nombreCategoria}}"
-                                    data-marca="{{marca}}"
-                                    data-precio="{{precio}}"
-                                    data-color="{{color}}"
-                                    data-material="{{material}}"
-                                    data-qr="{{qr}}"
-                                    data-activa="{{#if activa}}Activa{{else}}Inactiva{{/if}}"
-                                    data-edit="/editarProducto/{{_id}}"
-                                    data-delete="/eliminarProducto/{{_id}}"
-                                >Ver</button>
-                                <a href="/editarProducto/{{_id}}" class="btn-link">Editar</a>
-                                <a href="/eliminarProducto/{{_id}}" class="btn-link">Eliminar</a>
+                    {{#if ../user.administrador}}
+                    <td class="text-center">
+                        <div class="action-column">
+                            <button class="btn-ver status-btn"
+                                data-id="{{_id}}"
+                                data-nombre="{{nombre}}"
+                                data-categoria="{{nombreCategoria}}"
+                                data-marca="{{marca}}"
+                                data-precio="{{precio}}"
+                                data-color="{{color}}"
+                                data-material="{{material}}"
+                                data-activa="{{#if activa}}Activa{{else}}Inactiva{{/if}}"
+                                data-qr="{{qr}}"
+                                data-edit="/editarProducto/{{_id}}"
+                                data-delete="/eliminarProducto/{{_id}}">
+                                Ver Detalles
+                            </button>
+                            <div class="link-group">
+                                <a href="/editarProducto/{{_id}}" class="link-action">Editar</a> | 
+                                <a href="/eliminarProducto/{{_id}}" class="link-action link-delete">Eliminar</a>
                             </div>
-                        </td>
-                        {{/if}}
-                    </tr>
-                    {{/each}}
-                </tbody>
-            </table>
-        </div>
+                        </div>
+                    </td>
+                    {{/if}}
+                </tr>
+                {{/each}}
+            </tbody>
+        </table>
     </div>
 </div>
 
-<div id="overlay-modal-ficha" class="modal-overlay">
-    <div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
-        <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+<div id="overlay-modal-ficha" class="modal-overlay"></div>
+<div id="modal-ficha" class="modal-ficha">
+    <button class="modal-close">×</button>
+    <header class="ficha-header"><h3>Detalles del Producto</h3></header>
+    <section class="ficha-body">
+        <div class="ficha-row"><span class="ficha-label">Nombre</span><span id="ficha-nombre" class="ficha-value"></span></div>
+        <div class="ficha-row"><span class="ficha-label">Categoría</span><span id="ficha-categoria" class="ficha-value"></span></div>
+        <div class="ficha-row"><span class="ficha-label">Marca</span><span id="ficha-marca" class="ficha-value"></span></div>
+        <div class="ficha-row"><span class="ficha-label">Precio</span><span id="ficha-precio" class="ficha-value" style="font-weight:bold; font-size:1.1em;"></span></div>
+        <div class="ficha-row"><span class="ficha-label">Color</span><span id="ficha-color" class="ficha-value"></span></div>
+        <div class="ficha-row"><span class="ficha-label">Material</span><span id="ficha-material" class="ficha-value"></span></div>
+        <div class="ficha-row"><span class="ficha-label">Estado</span><span id="ficha-activa" class="ficha-value" style="font-weight:bold;"></span></div>
 
-        <header class="ficha-header">
-            <h3 id="ficha-title">Detalles del Producto</h3>
-        </header>
-
-        <section class="ficha-body">
-            <div class="ficha-row">
-                <span class="ficha-label">Nombre</span>
-                <span id="ficha-nombre" class="ficha-value"></span>
-            </div>
-            <div class="ficha-row">
-                <span class="ficha-label">Categoría</span>
-                <span id="ficha-categoria" class="ficha-value"></span>
-            </div>
-            <div class="ficha-row">
-                <span class="ficha-label">Marca</span>
-                <span id="ficha-marca" class="ficha-value"></span>
-            </div>
-            <div class="ficha-row">
-                <span class="ficha-label">Precio</span>
-                <span id="ficha-precio" class="ficha-value fw-bold" style="color: var(--color-primary);"></span>
-            </div>
-            <div class="ficha-row">
-                <span class="ficha-label">Color</span>
-                <span id="ficha-color" class="ficha-value"></span>
-            </div>
-            <div class="ficha-row">
-                <span class="ficha-label">Material</span>
-                <span id="ficha-material" class="ficha-value"></span>
-            </div>
-            <div class="ficha-row">
-                <span class="ficha-label">Estado</span>
-                <span id="ficha-activa" class="ficha-value"></span>
-            </div>
-            <div class="ficha-row qr-container">
-                <span class="ficha-label">Código QR</span>
-                <span id="ficha-qr-wrapper" class="ficha-value">
-                    <img id="ficha-qr" src="#" alt="Código QR del producto" style="max-width: 150px; border-radius: 8px; border: 1px solid #eee;">
-                </span>
-            </div>
-        </section>
-
-        <footer class="ficha-actions">
-            <a id="ficha-btn-editar" class="btn btn-primary" href="#">Editar</a>
-            <a id="ficha-btn-eliminar" class="btn btn-danger" href="#">Eliminar</a>
-            <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
-        </footer>
-    </div>
+        <div style="text-align:center; margin-top:15px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.2);">
+            <span class="ficha-label" style="display:block; margin-bottom:5px;">Código QR</span>
+            <img id="ficha-qr" src="#" style="max-width:120px; border-radius:8px; background:white; padding:5px;">
+            <div id="qr-no-disponible" style="font-style:italic; opacity:0.7;">Sin QR</div>
+        </div>
+    </section>
+    <footer class="ficha-actions">
+        <a id="ficha-btn-editar" class="btn-modal btn-modal-primary" href="#">Editar</a>
+        <a id="ficha-btn-eliminar" class="btn-modal btn-modal-danger" href="#">Eliminar</a>
+        <button id="ficha-btn-cerrar" class="btn-modal btn-modal-ghost">Cerrar</button>
+    </footer>
 </div>
 
 <script>
     (function () {
-    // 1. Elementos del Modal y Overlay
-    const overlay   = document.getElementById('overlay-modal-ficha');
-    const modal     = document.getElementById('modal-ficha');
-    const closeBtn  = modal.querySelector('.modal-close');
-    const cerrarBtn = document.getElementById('ficha-btn-cerrar');
-
-    // 2. Campos dentro de la Ficha (Modal)
-    const elNombre     = document.getElementById('ficha-nombre');
-    const elCategoria  = document.getElementById('ficha-categoria');
-    const elMarca      = document.getElementById('ficha-marca');
-    const elPrecio     = document.getElementById('ficha-precio');
-    const elColor      = document.getElementById('ficha-color');
-    const elMaterial   = document.getElementById('ficha-material');
-    const elActiva     = document.getElementById('ficha-activa');
-    const elQrWrapper  = document.querySelector('.qr-container'); 
-    const elQrImage    = document.getElementById('ficha-qr');      
-    const btnEdit      = document.getElementById('ficha-btn-editar');
-    const btnDel       = document.getElementById('ficha-btn-eliminar');
-
-    // Funciones para abrir y cerrar el modal
-    function openModal() {
-        overlay.hidden = false;
-        modal.hidden = false;
-        setTimeout(() => overlay.classList.add('active'), 10);
-        document.body.classList.add('body-no-scroll');
-    }
-
-    function closeModal() {
-        overlay.classList.remove('active');
-        setTimeout(() => {
-            overlay.hidden = true;
-            modal.hidden = true;
-        }, 300);
-        document.body.classList.remove('body-no-scroll');
-    }
-
-    // Función para llenar la ficha
-    function fillCard({ nombre, categoria, marca, precio, color, material, activa, qr, editUrl, deleteUrl }) {
-        elNombre.textContent    = nombre || '';
-        elCategoria.textContent = categoria || '';
-        elMarca.textContent     = marca || '';
-        elPrecio.textContent    = `$${precio || '0.00'}`;
-        elColor.textContent     = color || '';
-        elMaterial.textContent  = material || '';
+        const overlay = document.getElementById('overlay-modal-ficha');
+        const modal = document.getElementById('modal-ficha');
+        const closeBtn = modal.querySelector('.modal-close');
+        const cerrarBtn = document.getElementById('ficha-btn-cerrar');
         
-        elActiva.textContent = activa || 'Inactiva';
-        elActiva.style.color = activa === 'Activa' ? 'var(--color-success)' : 'var(--color-danger)';
-
-        // Manejo de la imagen QR
-        if (qr && qr !== 'undefined') { 
-            elQrImage.src = qr;
-            elQrWrapper.style.display = 'grid';
-        } else {
-            elQrImage.src = '#'; 
-            elQrWrapper.style.display = 'none';
-        }
-
-        btnEdit.href = editUrl || '#';
-        btnDel.href  = deleteUrl || '#';
-    }
-
-    // 3. Delegación de eventos para el botón "Ver"
-    document.addEventListener('click', function (e) {
-        const btn = e.target.closest('.status-btn');
-        if (!btn) return;
-
-        const payload = {
-            nombre: btn.dataset.nombre,
-            categoria: btn.dataset.categoria,
-            marca: btn.dataset.marca,
-            precio: btn.dataset.precio,
-            color: btn.dataset.color,
-            material: btn.dataset.material,
-            activa: btn.dataset.activa,
-            qr: btn.dataset.qr,
-            editUrl: btn.dataset.edit,
-            deleteUrl: btn.dataset.delete
+        const els = {
+            nombre: document.getElementById('ficha-nombre'),
+            categoria: document.getElementById('ficha-categoria'),
+            marca: document.getElementById('ficha-marca'),
+            precio: document.getElementById('ficha-precio'),
+            color: document.getElementById('ficha-color'),
+            material: document.getElementById('ficha-material'),
+            activa: document.getElementById('ficha-activa'),
+            qr: document.getElementById('ficha-qr'),
+            qrNoDisp: document.getElementById('qr-no-disponible'),
+            btnEdit: document.getElementById('ficha-btn-editar'),
+            btnDel: document.getElementById('ficha-btn-eliminar')
         };
 
-        fillCard(payload);
-        openModal();
-    });
+        function openModal() { 
+            overlay.classList.add('active'); 
+            modal.classList.add('active'); 
+            document.body.style.overflow = 'hidden'; 
+        }
+        function closeModal() { 
+            overlay.classList.remove('active'); 
+            modal.classList.remove('active'); 
+            document.body.style.overflow = ''; 
+        }
 
-    // 4. Eventos para cerrar el modal
-    if(closeBtn) closeBtn.addEventListener('click', closeModal);
-    if(cerrarBtn) cerrarBtn.addEventListener('click', closeModal);
-    if(overlay) overlay.addEventListener('click', (e) => {
-        if(e.target === overlay) closeModal();
-    });
+        function fillCard(d) {
+            els.nombre.textContent = d.nombre;
+            els.categoria.textContent = d.categoria;
+            els.marca.textContent = d.marca;
+            els.precio.textContent = '$' + d.precio;
+            els.color.textContent = d.color;
+            els.material.textContent = d.material;
+            
+            els.activa.textContent = d.activa;
+            if(d.activa === 'Activa') els.activa.style.color = '#90EE90'; 
+            else els.activa.style.color = '#FFB6B6';
 
-    // Cerrar con tecla Escape
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && !modal.hidden) closeModal();
-    });
+            if (d.qr && d.qr !== 'undefined' && d.qr !== "") {
+                els.qr.src = d.qr;
+                els.qr.style.display = 'inline-block';
+                els.qrNoDisp.style.display = 'none';
+            } else {
+                els.qr.style.display = 'none';
+                els.qrNoDisp.style.display = 'block';
+            }
+            
+            els.btnEdit.href = d.edit;
+            els.btnDel.href = d.delete;
+        }
 
-    // 5. Confirmación para eliminar
-    if(btnDel) {
-        btnDel.addEventListener('click', function (e) {
-            const ok = confirm('¿Seguro que deseas eliminar este producto?');
-            if (!ok) e.preventDefault();
+        document.addEventListener('click', function (e) {
+            const btn = e.target.closest('.status-btn');
+            if (!btn) return;
+            fillCard(btn.dataset);
+            openModal();
         });
-    }
+
+        closeBtn.addEventListener('click', closeModal);
+        cerrarBtn.addEventListener('click', closeModal);
+        overlay.addEventListener('click', closeModal);
+        
+        if(els.btnDel) {
+            els.btnDel.addEventListener('click', (e) => {
+                if(!confirm('¿Seguro que deseas eliminar este producto?')) e.preventDefault();
+            });
+        }
     })();
 </script>

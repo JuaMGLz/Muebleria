@@ -1,142 +1,569 @@
 <style>
-        :root {
-            --color-primary: #dc2626; /* Rojo principal (Existente) */
-            --color-primary-dark: #991b1b; /* Rojo oscuro (Existente) */
-            --color-primary-light: #fef2f2; /* Rojo muy claro (Existente) */
-            --color-secondary: #f59e0b; /* Amarillo/dorado (Existente) */
-            --color-text: #333; /* Gris oscuro para el texto */
-            --color-text-light: #6b7280; /* Gris medio */
-            --color-bg: #f0f2f5; /* Fondo gris claro */
-            --color-card-bg: #ffffff; /* Fondo de tarjetas */
-            --color-white: #ffffff;
-            --color-border: #ddd; /* Borde gris claro */
-            --color-shadow: rgba(220, 38, 38, 0.1);
-            --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
-            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    :root {
+        --color-primary: #dc2626;
+        --color-primary-dark: #991b1b;
+        --color-primary-light: #fef2f2;
+        --color-secondary: #f59e0b;
+        --color-text: #1f2937;
+        --color-text-light: #6b7280;
+        --color-bg: #f9fafb;
+        --color-card-bg: #ffffff;
+        --color-white: #ffffff;
+        --color-border: #e5e7eb;
+        --color-shadow: rgba(220, 38, 38, 0.08);
+        --color-shadow-lg: rgba(0, 0, 0, 0.1);
+        --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+    body {
+        font-family: var(--font-family-primary);
+        background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20230720/pngtree-3d-rendered-red-sofa-and-chair-set-image_3725833.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: var(--color-text);
+        line-height: 1.6;
+    }
+
+    .page-wrapper {
+        width: 100%;
+        padding: 1rem;
+    }
+
+    .form-container {
+        width: 100%;
+        max-width: 100%;
+        background: var(--color-card-bg);
+        border-radius: 24px;
+        box-shadow: 0 20px 60px var(--color-shadow-lg);
+        padding: 2rem 1.5rem;
+        margin: 0 auto;
+        position: relative;
+        overflow: hidden;
+        animation: fadeIn 0.5s ease-out;
+    }
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .icon-wrapper {
+        width: 60px;
+        height: 60px;
+        margin: 0 auto 1.25rem;
+        background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+        border-radius: 18px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+        transform: rotate(-5deg);
+        transition: var(--transition);
+    }
+
+    .icon-wrapper:hover {
+        transform: rotate(0deg) scale(1.05);
+    }
+
+    .icon-wrapper svg {
+        width: 32px;
+        height: 32px;
+        color: var(--color-white);
+        flex-shrink: 0;
+    }
+
+    .form-title {
+        color: var(--color-text);
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 0.5rem;
+        letter-spacing: -0.02em;
+    }
+
+    .form-subtitle {
+        color: var(--color-text-light);
+        font-size: 0.9rem;
+        font-weight: 400;
+        padding: 0 1rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+    }
+
+    .form-group label {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        margin-bottom: 0.65rem;
+        color: var(--color-text);
+        font-weight: 600;
+        font-size: 0.9rem;
+        letter-spacing: -0.01em;
+    }
+
+    .label-icon {
+        width: 16px;
+        height: 16px;
+        color: var(--color-primary);
+        flex-shrink: 0;
+    }
+
+    .form-group input,
+    .form-group textarea,
+    .form-group select {
+        width: 100%;
+        padding: 0.875rem 1rem;
+        border: 2px solid var(--color-border);
+        border-radius: 12px;
+        font-size: 0.9rem;
+        font-family: inherit;
+        transition: var(--transition);
+        background-color: var(--color-white);
+        color: var(--color-text);
+    }
+
+    .form-group input:hover,
+    .form-group textarea:hover,
+    .form-group select:hover {
+        border-color: #d1d5db;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus,
+    .form-group select:focus {
+        outline: none;
+        border-color: var(--color-primary);
+        box-shadow: 0 0 0 4px var(--color-shadow);
+        transform: translateY(-1px);
+    }
+
+    .form-group textarea {
+        resize: vertical;
+        min-height: 110px;
+        font-family: inherit;
+    }
+
+    .form-group select {
+        appearance: none;
+        -webkit-appearance: none;
+        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23dc2626' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'%3E%3C/polyline%3E%3C/svg%3E");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 18px;
+        cursor: pointer;
+        padding-right: 2.5rem;
+    }
+
+    .status-options {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 0.75rem;
+        margin-top: 0.65rem;
+    }
+
+    .status-option {
+        position: relative;
+    }
+
+    .status-option input[type="radio"] {
+        position: absolute;
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .status-label {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        padding: 0.875rem;
+        border: 2px solid var(--color-border);
+        border-radius: 12px;
+        cursor: pointer;
+        transition: var(--transition);
+        background-color: var(--color-white);
+        font-weight: 500;
+        font-size: 0.875rem;
+    }
+
+    .status-option input[type="radio"]:checked + .status-label {
+        border-color: var(--color-primary);
+        background-color: var(--color-primary-light);
+        color: var(--color-primary);
+        box-shadow: 0 4px 12px var(--color-shadow);
+    }
+
+    .status-label:hover {
+        border-color: var(--color-primary);
+        transform: translateY(-2px);
+    }
+
+    .status-indicator {
+        width: 9px;
+        height: 9px;
+        border-radius: 50%;
+        display: inline-block;
+        flex-shrink: 0;
+    }
+
+    .status-activa .status-indicator {
+        background-color: #10b981;
+    }
+
+    .status-inactiva .status-indicator {
+        background-color: #6b7280;
+    }
+
+    .btn-submit {
+        width: 100%;
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+        color: var(--color-white);
+        border: none;
+        border-radius: 12px;
+        font-size: 0.975rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        margin-top: 1.5rem;
+        box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+        letter-spacing: 0.01em;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .btn-submit::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+        transition: left 0.5s;
+    }
+
+    .btn-submit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45);
+    }
+
+    .btn-submit:hover::before {
+        left: 100%;
+    }
+
+    .btn-submit:active {
+        transform: translateY(0);
+    }
+
+    .char-counter {
+        position: absolute;
+        bottom: -1.5rem;
+        right: 0;
+        font-size: 0.75rem;
+        color: var(--color-text-light);
+    }
+
+    /* ==================== RESPONSIVE ==================== */
+    
+    /* Móviles pequeños (320px - 480px) */
+    @media (min-width: 320px) and (max-width: 480px) {
+        .page-wrapper {
+            padding: 0.75rem;
         }
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            font-family: var(--font-family-primary);
-            background-color: var(--color-bg);
-            min-height: 100vh;
-            color: var(--color-text);
-            line-height: 1.6;
+        .form-container {
+            padding: 1.5rem 1rem;
+            border-radius: 16px;
         }
 
         .form-title {
-            text-align: center;
-            color: var(--color-primary);
-            font-size: 2rem;
-            margin-bottom: 2rem;
+            font-size: 1.25rem;
         }
 
-        .form-group {
-            margin-bottom: 1.5rem;
+        .form-subtitle {
+            font-size: 0.825rem;
+        }
+
+        .icon-wrapper {
+            width: 50px;
+            height: 50px;
+        }
+
+        .icon-wrapper svg {
+            width: 26px;
+            height: 26px;
+        }
+
+        .status-options {
+            grid-template-columns: 1fr;
+            gap: 0.65rem;
         }
 
         .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            color: var(--color-text);
-            font-weight: 600;
-            font-size: 1rem;
+            font-size: 0.85rem;
         }
 
         .form-group input,
         .form-group textarea,
         .form-group select {
-            width: 100%;
-            padding: 0.8rem;
-            border: 1px solid var(--color-border);
-            border-radius: 8px;
-            font-size: 1rem;
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-            box-sizing: border-box;
-        }
-
-        .form-group input:focus,
-        .form-group textarea:focus,
-        .form-group select:focus {
-            outline: none;
-            border-color: var(--color-primary);
-            box-shadow: 0 0 0 3px var(--color-shadow);
+            font-size: 0.875rem;
+            padding: 0.75rem 0.875rem;
         }
 
         .btn-submit {
-            display: block;
-            width: 100%;
+            font-size: 0.9rem;
+            padding: 0.875rem;
+        }
+    }
+
+    /* Móviles medianos/grandes (481px - 767px) */
+    @media (min-width: 481px) and (max-width: 767px) {
+        .page-wrapper {
             padding: 1rem;
-            background-color: var(--color-primary);
-            color: var(--color-white);
-            border: none;
-            border-radius: 8px;
+        }
+
+        .form-container {
+            padding: 2rem 1.25rem;
+            border-radius: 20px;
+        }
+
+        .form-title {
+            font-size: 1.4rem;
+        }
+
+        .icon-wrapper {
+            width: 56px;
+            height: 56px;
+        }
+
+        .icon-wrapper svg {
+            width: 28px;
+            height: 28px;
+        }
+    }
+
+    /* Tablets (768px - 1024px) */
+    @media (min-width: 768px) and (max-width: 1024px) {
+        .page-wrapper {
+            padding: 1.5rem;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            padding: 2.5rem 2rem;
+            border-radius: 22px;
+        }
+
+        .form-title {
+            font-size: 1.65rem;
+        }
+
+        .icon-wrapper {
+            width: 64px;
+            height: 64px;
+        }
+
+        .icon-wrapper svg {
+            width: 34px;
+            height: 34px;
+        }
+    }
+
+    /* Desktop pequeño (1025px - 1366px) */
+    @media (min-width: 1025px) and (max-width: 1366px) {
+        .page-wrapper {
+            padding: 2rem;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            padding: 2.75rem 2.5rem;
+        }
+
+        .form-title {
+            font-size: 1.75rem;
+        }
+
+        .icon-wrapper {
+            width: 66px;
+            height: 66px;
+        }
+
+        .icon-wrapper svg {
+            width: 34px;
+            height: 34px;
+        }
+    }
+
+    /* Desktop grande (1367px+) */
+    @media (min-width: 1367px) {
+        .page-wrapper {
+            padding: 2.5rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .form-container {
+            padding: 3rem;
+        }
+
+        .form-title {
+            font-size: 1.875rem;
+        }
+
+        .icon-wrapper {
+            width: 70px;
+            height: 70px;
+        }
+
+        .icon-wrapper svg {
+            width: 36px;
+            height: 36px;
+        }
+    }
+
+    /* Landscape móviles */
+    @media (max-height: 500px) and (orientation: landscape) {
+        .form-container {
+            margin: 1rem auto;
+        }
+
+        .form-header {
+            margin-bottom: 1rem;
+        }
+
+        .icon-wrapper {
+            width: 45px;
+            height: 45px;
+            margin-bottom: 0.75rem;
+        }
+
+        .form-title {
             font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            margin-top: 1rem;
         }
 
-        .btn-submit:hover {
-            background-color: var(--color-primary-dark);
-            transform: translateY(-2px);
+        .form-subtitle {
+            font-size: 0.8rem;
         }
+    }
 
-        .btn-submit:active {
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
             transform: translateY(0);
         }
-
-        .form-group select {
-            appearance: none;
-            -webkit-appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 0.7rem top 50%;
-            background-size: 1.2rem;
-            cursor: pointer;
-        }
+    }
 </style>
 
-<div class="form-container">
-  <h2 class="form-title">Agregar Nueva Categoría</h2>
-  <form action="/categoria/agregar" method="POST">
-    <div class="form-group">
-      <label for="nombre">Nombre</label>
-      <input
-        type="text"
-        name="nombre"
-        placeholder="Nombre de la categoría"
-        id="nombre"
-        required
-      />
-    </div>
+<div class="page-wrapper">
+    <div class="form-container">
+        <div class="form-header">
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                </svg>
+            </div>
+            <h2 class="form-title">Nueva Categoría</h2>
+            <p class="form-subtitle">Completa la información para crear una nueva categoría</p>
+        </div>
 
-    <div class="form-group">
-      <label for="descripcion">Descripción</label>
-      <textarea
-        name="descripcion"
-        id="descripcion"
-        rows="5"
-        placeholder="Describe la categoría..."
-      ></textarea>
-    </div>
+        <form action="/categoria/agregar" method="POST">
+            <div class="form-group">
+                <label for="nombre">
+                    <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z" />
+                    </svg>
+                    Nombre de la categoría
+                </label>
+                <input
+                    type="text"
+                    name="nombre"
+                    placeholder="Ej: Electrónica, Ropa, Alimentos..."
+                    id="nombre"
+                    required
+                    maxlength="50"
+                />
+            </div>
 
-    <div class="form-group">
-      <label for="activa">Estado</label>
-      <select name="activa" id="activa">
-        <option value="true">Activa</option>
-        <option value="false">Inactiva</option>
-      </select>
-    </div>
+            <div class="form-group">
+                <label for="descripcion">
+                    <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7" />
+                    </svg>
+                    Descripción
+                </label>
+                <textarea
+                    name="descripcion"
+                    id="descripcion"
+                    rows="5"
+                    placeholder="Describe las características y productos que incluye esta categoría..."
+                    maxlength="500"
+                ></textarea>
+                <span class="char-counter">
+                    <span id="charCount">0</span>/500
+                </span>
+            </div>
 
-    <button type="submit" class="btn-submit">
-      Guardar
-    </button>
-  </form>
+            <div class="form-group">
+                <label>
+                    <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    Estado de la categoría
+                </label>
+                <div class="status-options">
+                    <div class="status-option">
+                        <input type="radio" name="activa" id="activa-true" value="true" checked>
+                        <label for="activa-true" class="status-label status-activa">
+                            <span class="status-indicator"></span>
+                            Activa
+                        </label>
+                    </div>
+                    <div class="status-option">
+                        <input type="radio" name="activa" id="activa-false" value="false">
+                        <label for="activa-false" class="status-label status-inactiva">
+                            <span class="status-indicator"></span>
+                            Inactiva
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <button type="submit" class="btn-submit">
+                Guardar Categoría
+            </button>
+        </form>
+    </div>
 </div>
+
+<script>
+    const descripcionTextarea = document.getElementById('descripcion');
+    const charCount = document.getElementById('charCount');
+    
+    if (descripcionTextarea && charCount) {
+        descripcionTextarea.addEventListener('input', function() {
+            charCount.textContent = this.value.length;
+        });
+    }
+</script>

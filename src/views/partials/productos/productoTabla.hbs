@@ -1,242 +1,576 @@
 <style>
-  /* Contenedor desplazable horizontal para la tabla */
-  .table-wrapper {
-    width: 100%;
-    overflow-x: auto;
-    display: block;
-    white-space: nowrap;
-  }
+    :root {
+        --color-primary: #dc2626;
+        --color-primary-dark: #991b1b;
+        --color-primary-light: #fef2f2;
+        --color-secondary: #f59e0b;
+        --color-success: #10b981;
+        --color-text: #1f2937;
+        --color-text-light: #6b7280;
+        --color-bg: #f9fafb;
+        --color-card-bg: #ffffff;
+        --color-white: #ffffff;
+        --color-border: #e5e7eb;
+        --color-shadow: rgba(220, 38, 38, 0.08);
+        --color-shadow-lg: rgba(0, 0, 0, 0.15);
+        --color-danger: #ef4444;
+        --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-  table {
-    width: 100%;
-    border-collapse: collapse;
-  }
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
 
-  th, td {
-    padding: 8px;
-    text-align: left;
-    vertical-align: top;
-  }
+    /* === FONDO DE PANTALLA === */
+    body {
+        font-family: var(--font-family-primary);
+        background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20230720/pngtree-3d-rendered-red-sofa-and-chair-set-image_3725833.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: var(--color-text);
+        line-height: 1.6;
+        padding: 1rem;
+    }
 
-  /* QR grande */
-  .qr-zoom {
-    width: 200px; /* 🔥 Ajusta si quieres aún más grande */
-    height: 200px;
-    object-fit: contain;
-    cursor: zoom-in;
-    transition: transform 0.25s ease, box-shadow 0.25s ease;
-    position: relative;
-    z-index: 1;
-  }
+    /* Contenedor principal de la página */
+    .page-wrapper {
+        display: flex;
+        justify-content: center;
+        padding: 2rem 0.5rem;
+        width: 100%;
+        min-height: 100vh;
+    }
 
-  /* Zoom centrado al pasar el mouse */
-  .qr-zoom:hover {
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%) scale(2.8);
-    background: white;
-    padding: 10px;
-    border-radius: 8px;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.4);
-    z-index: 999999;
-  }
-  .dot { font-weight: bold; }
-.dot.yes { color: green; }
-.dot.no  { color: red; }
+    /* Contenedor de la Tabla */
+    .table-container {
+        width: 100%;
+        max-width: none;
+        background: var(--color-card-bg);
+        border-radius: 20px;
+        overflow: hidden; 
+        animation: fadeIn 0.5s ease-out;
+        position: relative;
+        margin-bottom: 2rem;
+    }
 
-/* ----- Modal Ficha ----- */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(1px);
-  z-index: 998;
-}
+    /* Scroll horizontal (se mantiene por seguridad en móviles muy pequeños) */
+    .table-wrapper {
+        width: 100%;
+        overflow-x: auto;
+        overflow-y: visible;
+        -webkit-overflow-scrolling: touch;
+    }
 
-.modal-ficha {
-  position: fixed; inset: 50% auto auto 50%;
-  transform: translate(-50%, -50%);
-  width: min(520px, 92vw);
-  background: #2A4D31;          /* container background */
-  color: #E4B767;               /* golden text */
-  border: 2px solid #E4B767;
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.55);
-  padding: 20px 20px 16px;
-  z-index: 999;
-}
+    .table-wrapper::-webkit-scrollbar {
+        height: 10px;
+    }
 
-.modal-ficha[hidden],
-.modal-overlay[hidden] { display: none; }
+    .table-wrapper::-webkit-scrollbar-track {
+        background: #f1f1f1;
+        border-radius: 10px;
+    }
 
-.modal-close {
-  position: absolute; top: 8px; right: 10px;
-  background: transparent; border: none;
-  font-size: 22px; line-height: 1; cursor: pointer;
-  color: #E4B767;
-}
+    .table-wrapper::-webkit-scrollbar-thumb {
+        background: var(--color-primary);
+        border-radius: 10px;
+    }
 
-.ficha-header { margin-bottom: 10px; }
-.ficha-header h3 {
-  margin: 0; font-size: 1.25rem; letter-spacing: .3px;
-}
+    .table-wrapper::-webkit-scrollbar-thumb:hover {
+        background: var(--color-primary-dark);
+    }
 
-.ficha-body { display: grid; gap: 10px; margin: 8px 0 14px; }
-.ficha-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
-.ficha-label { opacity: .9; }
-.ficha-value a, .ficha-value { color: #E4B767; text-decoration: none; word-break: break-all; }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: auto; /* Permite que las columnas se ajusten al contenido */
+    }
 
-.ficha-actions {
-  display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
-}
+    thead {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        color: var(--color-white);
+    }
 
-/* Botones */
-.btn {
-  padding: 8px 14px; font-weight: 600;
-  border-radius: 10px; border: 2px solid transparent;
-  background: #1A3623; color: #E4B767; cursor: pointer;
-  text-decoration: none; display: inline-block;
-}
-.btn:hover { filter: brightness(1.05); }
+    thead th {
+        padding: 1rem 0.85rem;
+        text-align: left;
+        font-weight: 600;
+        font-size: 0.85rem;
+        letter-spacing: 0.02em;
+        text-transform: uppercase;
+        /* CAMBIO: Permitir que el texto baje de línea si es largo */
+        white-space: normal; 
+        vertical-align: middle;
+    }
 
-.btn-primary {
-  border-color: #E4B767; background: transparent;
-}
-.btn-danger {
-  border-color: #b74040; background: transparent; color: #ffbdbd;
-}
-.btn-danger:hover { background: #b74040; color: #fff; }
-.btn-ghost {
-  background: transparent; border-color: #3b5b45;
-}
+    /* Centrar encabezados específicos */
+    thead th.text-center {
+        text-align: center;
+    }
 
-/* Evitar scroll del body con el modal abierto */
-.body-no-scroll { overflow: hidden; }
+    tbody tr {
+        border-bottom: 1px solid var(--color-border);
+        transition: var(--transition);
+    }
+
+    tbody tr:hover {
+        background-color: var(--color-primary-light);
+    }
+
+    tbody td {
+        padding: 0.85rem;
+        color: var(--color-text);
+        font-size: 0.9rem;
+        vertical-align: middle;
+        /* CAMBIO: Permitir que el contenido se ajuste y no fuerce el ancho */
+        white-space: normal; 
+        word-wrap: break-word;
+        max-width: 200px; /* Límite opcional para columnas muy anchas */
+    }
+
+    /* Centrar contenido de celdas específicas */
+    tbody td.text-center {
+        text-align: center;
+    }
+
+    /* Negrita para datos clave */
+    .fw-bold {
+        font-weight: 600;
+    }
+
+    /* Estilos para los indicadores de estado */
+    .status-active {
+        color: var(--color-success);
+        font-weight: 600;
+        background-color: #d1fae5;
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    .status-inactive {
+        color: var(--color-text-light);
+        font-weight: 600;
+        background-color: #f3f4f6;
+        padding: 0.3rem 0.75rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        display: inline-block;
+        white-space: nowrap;
+    }
+
+    /* Botones de acción en la tabla */
+    .action-links {
+        display: flex;
+        gap: 0.4rem;
+        align-items: center;
+        justify-content: center;
+        flex-wrap: wrap; /* CAMBIO: Permitir que los botones bajen si no caben */
+    }
+
+    .status-btn {
+        background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+        color: var(--color-white);
+        border: none;
+        padding: 0.4rem 0.8rem;
+        border-radius: 8px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: var(--transition);
+        white-space: nowrap;
+    }
+
+    .status-btn:hover {
+        transform: translateY(-2px);
+    }
+
+    .btn-link {
+        color: var(--color-primary);
+        text-decoration: none;
+        font-weight: 500;
+        padding: 0.4rem 0.6rem;
+        border-radius: 6px;
+        transition: var(--transition);
+        font-size: 0.8rem;
+        white-space: nowrap;
+    }
+
+    .btn-link:hover {
+        background-color: var(--color-primary-light);
+        color: var(--color-primary-dark);
+    }
+
+    /* === QR ZOOM === */
+    .qr-zoom {
+        width: 40px; 
+        height: 40px;
+        object-fit: contain;
+        cursor: zoom-in;
+        transition: transform 0.25s ease;
+        border-radius: 4px;
+        border: 1px solid var(--color-border);
+        background: white;
+        padding: 2px;
+    }
+
+    .qr-zoom:hover {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%) scale(5);
+        z-index: 1000;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+        border-radius: 8px;
+    }
+
+    /* === MODAL STYLES === */
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        z-index: 998;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        opacity: 0;
+        visibility: hidden;
+        transition: var(--transition);
+    }
+
+    .modal-overlay.active {
+        opacity: 1;
+        visibility: visible;
+    }
+
+    .modal-ficha {
+        width: min(500px, 92vw);
+        background: var(--color-card-bg);
+        color: var(--color-text);
+        border-radius: 24px;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+        padding: 0;
+        z-index: 999;
+        position: relative;
+        overflow: hidden;
+        transform: scale(0.9);
+        transition: var(--transition);
+    }
+
+    .modal-overlay.active .modal-ficha {
+        transform: scale(1);
+    }
+
+    .modal-ficha::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 6px;
+        background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        background: rgba(220, 38, 38, 0.1);
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        font-size: 1.5rem;
+        line-height: 1;
+        cursor: pointer;
+        color: var(--color-primary);
+        transition: var(--transition);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 10;
+    }
+
+    .modal-close:hover {
+        background: var(--color-primary);
+        color: var(--color-white);
+        transform: rotate(90deg);
+    }
+
+    .ficha-header {
+        background: linear-gradient(135deg, var(--color-primary-light) 0%, transparent 100%);
+        padding: 2rem 2rem 1.5rem;
+        border-bottom: 1px solid var(--color-border);
+    }
+
+    .ficha-header h3 {
+        margin: 0;
+        font-size: 1.5rem;
+        letter-spacing: -0.02em;
+        font-weight: 700;
+        color: var(--color-text);
+    }
+
+    .ficha-body {
+        padding: 2rem;
+        display: grid;
+        gap: 1rem;
+    }
+
+    .ficha-row {
+        display: grid;
+        grid-template-columns: 120px 1fr;
+        gap: 1rem;
+        align-items: start;
+        border-bottom: 1px dashed var(--color-border);
+        padding-bottom: 0.5rem;
+    }
+    
+    .ficha-row:last-child {
+        border-bottom: none;
+    }
+
+    .ficha-label {
+        font-weight: 600;
+        color: var(--color-text-light);
+        font-size: 0.85rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+    }
+
+    .ficha-value {
+        color: var(--color-text);
+        font-weight: 500;
+        word-break: break-word;
+    }
+
+    .ficha-actions {
+        display: flex;
+        gap: 0.75rem;
+        justify-content: flex-end;
+        padding: 1.5rem 2rem 2rem;
+        background-color: #f9fafb;
+        border-top: 1px solid var(--color-border);
+    }
+
+    /* Botones del Modal */
+    .btn {
+        padding: 0.75rem 1.5rem;
+        font-weight: 600;
+        font-size: 0.925rem;
+        border-radius: 10px;
+        border: 2px solid transparent;
+        cursor: pointer;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        transition: var(--transition);
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+        background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+        color: var(--color-white);
+    }
+
+    .btn-danger {
+        border-color: var(--color-danger);
+        background: transparent;
+        color: var(--color-danger);
+    }
+    .btn-danger:hover {
+        background: var(--color-danger);
+        color: var(--color-white);
+    }
+
+    .btn-ghost {
+        background: transparent;
+        color: var(--color-text-light);
+    }
+    .btn-ghost:hover {
+        color: var(--color-text);
+        background: var(--color-border);
+    }
+
+    .body-no-scroll { overflow: hidden; }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Responsive */
+    @media (max-width: 1200px) {
+        tbody td {
+            font-size: 0.85rem;
+            padding: 0.75rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .table-container {
+            border-radius: 12px;
+        }
+        
+        thead th {
+            padding: 0.75rem 0.6rem;
+            font-size: 0.75rem;
+        }
+        
+        tbody td {
+            padding: 0.6rem;
+            font-size: 0.8rem;
+        }
+        
+        .qr-zoom {
+            width: 35px;
+            height: 35px;
+        }
+        
+        .action-links {
+            gap: 0.25rem;
+        }
+    }
 </style>
 
-<div class="table-wrapper">
-<table border="1" >
-<thead>
-  <tr>
-    <th>Nombre</th>
-    <th>Categoría</th>
-    <th>Marca</th>
-    <th>Precio</th>
-    <th>Color</th>
-    <th>Material</th>
-    <th>QR</th>
-    <th>Activa</th>
-    {{!-- Columna Acciones: SOLO ADMIN --}}
-    {{#if user.administrador}}
-    <th>Acciones</th>
-    {{/if}}
-  </tr>
-</thead>
-<tbody>
-  {{#each productos}}
-  <tr>
-      <td>{{nombre}}</td>
-      <td>{{nombreCategoria}}</td>
-      <td>{{marca}}</td>
-      <td>${{precio}}</td>
-      <td>{{color}}</td>
-      <td>{{material}}</td>
+<div class="page-wrapper">
+    <div class="table-container">
+        <div class="table-wrapper">
+            <table border="0">
+                <thead>
+                    <tr>
+                        <th>Nombre</th>
+                        <th>Categoría</th>
+                        <th>Marca</th>
+                        <th class="text-center">Precio</th>
+                        <th>Color</th>
+                        <th>Material</th>
+                        <th class="text-center">QR</th>
+                        <th class="text-center">Activa</th>
+                        {{#if user.administrador}}
+                        <th class="text-center">Acciones</th>
+                        {{/if}}
+                    </tr>
+                </thead>
+                <tbody>
+                    {{#each productos}}
+                    <tr>
+                        <td class="fw-bold">{{nombre}}</td>
+                        <td>{{nombreCategoria}}</td>
+                        <td>{{marca}}</td>
+                        <td class="text-center fw-bold">${{precio}}</td>
+                        <td>{{color}}</td>
+                        <td>{{material}}</td>
 
-      <td>
-        {{#if qr}}
-        <img src="{{qr}}" alt="Código QR del producto" class="qr-zoom">
-        {{else}}
-        <span style="color: #999; font-style: italic;">Sin QR</span>
-        {{/if}}
-      </td>
+                        <td class="text-center">
+                            {{#if qr}}
+                            <img src="{{qr}}" alt="QR" class="qr-zoom">
+                            {{else}}
+                            <span style="color: #ccc; font-size: 0.8rem;">N/A</span>
+                            {{/if}}
+                        </td>
 
-      <td>
-        {{#if activa}}
-        <span style="color: green;">● Activa</span>
-        {{else}}
-        <span style="color: red;">● Inactiva</span>
-        {{/if}}
-      </td>
+                        <td class="text-center">
+                            {{#if activa}}
+                            <span class="status-active">Activa</span>
+                            {{else}}
+                            <span class="status-inactive">Inactiva</span>
+                            {{/if}}
+                        </td>
 
-      {{!-- Celdas de Acciones: SOLO ADMIN --}}
-      {{#if ../user.administrador}}
-      <td>
-        <button
-            class="status-btn"
-            data-id="{{_id}}"
-            data-nombre="{{nombre}}"
-            data-categoria="{{nombreCategoria}}"
-            data-marca="{{marca}}"
-            data-precio="{{precio}}"
-            data-color="{{color}}"
-            data-material="{{material}}"
-            data-qr="{{qr}}"
-            data-activa="{{#if activa}}Activa{{else}}Inactiva{{/if}}"
-            data-edit="/editarProducto/{{_id}}"
-            data-delete="/eliminarProducto/{{_id}}"
-        >Status</button>
-        <a href="/editarProducto/{{_id}}">Editar</a>
-        <a href="/eliminarProducto/{{_id}}">Eliminar</a>
-      </td>
-      {{/if}}
-  </tr>
-  {{/each}}
-</tbody>
-</table>
+                        {{#if ../user.administrador}}
+                        <td class="text-center">
+                            <div class="action-links">
+                                <button
+                                    class="status-btn"
+                                    data-id="{{_id}}"
+                                    data-nombre="{{nombre}}"
+                                    data-categoria="{{nombreCategoria}}"
+                                    data-marca="{{marca}}"
+                                    data-precio="{{precio}}"
+                                    data-color="{{color}}"
+                                    data-material="{{material}}"
+                                    data-qr="{{qr}}"
+                                    data-activa="{{#if activa}}Activa{{else}}Inactiva{{/if}}"
+                                    data-edit="/editarProducto/{{_id}}"
+                                    data-delete="/eliminarProducto/{{_id}}"
+                                >Ver</button>
+                                <a href="/editarProducto/{{_id}}" class="btn-link">Editar</a>
+                                <a href="/eliminarProducto/{{_id}}" class="btn-link">Eliminar</a>
+                            </div>
+                        </td>
+                        {{/if}}
+                    </tr>
+                    {{/each}}
+                </tbody>
+            </table>
+        </div>
+    </div>
 </div>
 
-<div id="overlay-modal-ficha" class="modal-overlay" hidden></div>
+<div id="overlay-modal-ficha" class="modal-overlay">
+    <div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
+        <button class="modal-close" type="button" aria-label="Cerrar">×</button>
 
-<div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
-    <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+        <header class="ficha-header">
+            <h3 id="ficha-title">Detalles del Producto</h3>
+        </header>
 
-    <header class="ficha-header">
-        <h3 id="ficha-title">Detalles del Producto</h3>
-    </header>
+        <section class="ficha-body">
+            <div class="ficha-row">
+                <span class="ficha-label">Nombre</span>
+                <span id="ficha-nombre" class="ficha-value"></span>
+            </div>
+            <div class="ficha-row">
+                <span class="ficha-label">Categoría</span>
+                <span id="ficha-categoria" class="ficha-value"></span>
+            </div>
+            <div class="ficha-row">
+                <span class="ficha-label">Marca</span>
+                <span id="ficha-marca" class="ficha-value"></span>
+            </div>
+            <div class="ficha-row">
+                <span class="ficha-label">Precio</span>
+                <span id="ficha-precio" class="ficha-value fw-bold" style="color: var(--color-primary);"></span>
+            </div>
+            <div class="ficha-row">
+                <span class="ficha-label">Color</span>
+                <span id="ficha-color" class="ficha-value"></span>
+            </div>
+            <div class="ficha-row">
+                <span class="ficha-label">Material</span>
+                <span id="ficha-material" class="ficha-value"></span>
+            </div>
+            <div class="ficha-row">
+                <span class="ficha-label">Estado</span>
+                <span id="ficha-activa" class="ficha-value"></span>
+            </div>
+            <div class="ficha-row qr-container">
+                <span class="ficha-label">Código QR</span>
+                <span id="ficha-qr-wrapper" class="ficha-value">
+                    <img id="ficha-qr" src="#" alt="Código QR del producto" style="max-width: 150px; border-radius: 8px; border: 1px solid #eee;">
+                </span>
+            </div>
+        </section>
 
-    <section class="ficha-body">
-        <div class="ficha-row">
-            <span class="ficha-label">Nombre</span>
-            <span id="ficha-nombre" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Categoría</span>
-            <span id="ficha-categoria" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Marca</span>
-            <span id="ficha-marca" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Precio</span>
-            <span id="ficha-precio" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Color</span>
-            <span id="ficha-color" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Material</span>
-            <span id="ficha-material" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Estado</span>
-            <span id="ficha-activa" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row qr-container">
-            <span class="ficha-label">Código QR</span>
-            <span id="ficha-qr-wrapper" class="ficha-value">
-                <img id="ficha-qr" src="#" alt="Código QR del producto" style="max-width: 150px; height: auto;">
-            </span>
-        </div>
-    </section>
-
-    <footer class="ficha-actions">
-        <a id="ficha-btn-editar" class="btn btn-primary" href="#">Editar</a>
-        <a id="ficha-btn-eliminar" class="btn btn-danger" href="#">Eliminar</a>
-        <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
-    </footer>
+        <footer class="ficha-actions">
+            <a id="ficha-btn-editar" class="btn btn-primary" href="#">Editar</a>
+            <a id="ficha-btn-eliminar" class="btn btn-danger" href="#">Eliminar</a>
+            <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
+        </footer>
+    </div>
 </div>
+
 <script>
     (function () {
     // 1. Elementos del Modal y Overlay
@@ -253,8 +587,8 @@
     const elColor      = document.getElementById('ficha-color');
     const elMaterial   = document.getElementById('ficha-material');
     const elActiva     = document.getElementById('ficha-activa');
-    const elQrWrapper  = document.querySelector('.qr-container'); // Contenedor del QR
-    const elQrImage    = document.getElementById('ficha-qr');      // Elemento <img> del QR
+    const elQrWrapper  = document.querySelector('.qr-container'); 
+    const elQrImage    = document.getElementById('ficha-qr');      
     const btnEdit      = document.getElementById('ficha-btn-editar');
     const btnDel       = document.getElementById('ficha-btn-eliminar');
 
@@ -262,16 +596,20 @@
     function openModal() {
         overlay.hidden = false;
         modal.hidden = false;
+        setTimeout(() => overlay.classList.add('active'), 10);
         document.body.classList.add('body-no-scroll');
     }
 
     function closeModal() {
-        overlay.hidden = true;
-        modal.hidden = true;
+        overlay.classList.remove('active');
+        setTimeout(() => {
+            overlay.hidden = true;
+            modal.hidden = true;
+        }, 300);
         document.body.classList.remove('body-no-scroll');
     }
 
-    // Función para llenar la ficha con los datos del botón
+    // Función para llenar la ficha
     function fillCard({ nombre, categoria, marca, precio, color, material, activa, qr, editUrl, deleteUrl }) {
         elNombre.textContent    = nombre || '';
         elCategoria.textContent = categoria || '';
@@ -280,25 +618,23 @@
         elColor.textContent     = color || '';
         elMaterial.textContent  = material || '';
         
-        // Manejo del estado Activa
         elActiva.textContent = activa || 'Inactiva';
-        elActiva.style.color = activa === 'Activa' ? 'green' : 'red';
-        elActiva.style.fontWeight = 'bold';
+        elActiva.style.color = activa === 'Activa' ? 'var(--color-success)' : 'var(--color-danger)';
 
         // Manejo de la imagen QR
-        if (qr && qr !== 'undefined') { // Verificar que 'qr' existe y no es la cadena 'undefined'
+        if (qr && qr !== 'undefined') { 
             elQrImage.src = qr;
-            elQrWrapper.hidden = false;
+            elQrWrapper.style.display = 'grid';
         } else {
-            elQrImage.src = '#'; // Limpiar src para evitar errores
-            elQrWrapper.hidden = true; // Ocultar si no hay QR
+            elQrImage.src = '#'; 
+            elQrWrapper.style.display = 'none';
         }
 
         btnEdit.href = editUrl || '#';
         btnDel.href  = deleteUrl || '#';
     }
 
-    // 3. Delegación de eventos para el botón "Status"
+    // 3. Delegación de eventos para el botón "Ver"
     document.addEventListener('click', function (e) {
         const btn = e.target.closest('.status-btn');
         if (!btn) return;
@@ -321,9 +657,11 @@
     });
 
     // 4. Eventos para cerrar el modal
-    closeBtn.addEventListener('click', closeModal);
-    cerrarBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', closeModal);
+    if(closeBtn) closeBtn.addEventListener('click', closeModal);
+    if(cerrarBtn) cerrarBtn.addEventListener('click', closeModal);
+    if(overlay) overlay.addEventListener('click', (e) => {
+        if(e.target === overlay) closeModal();
+    });
 
     // Cerrar con tecla Escape
     document.addEventListener('keydown', function (e) {
@@ -331,9 +669,11 @@
     });
 
     // 5. Confirmación para eliminar
-    btnDel.addEventListener('click', function (e) {
-        const ok = confirm('¿Seguro que deseas eliminar este producto?');
-        if (!ok) e.preventDefault();
-    });
-})();
+    if(btnDel) {
+        btnDel.addEventListener('click', function (e) {
+            const ok = confirm('¿Seguro que deseas eliminar este producto?');
+            if (!ok) e.preventDefault();
+        });
+    }
+    })();
 </script>

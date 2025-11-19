@@ -1,32 +1,69 @@
 <style>
-  /* Contenedor desplazable horizontal para la tabla */
+  /* Contenedor de tabla sin scroll horizontal */
   .table-wrapper {
     width: 100%;
-    overflow-x: auto;
-    display: block;
-    white-space: nowrap;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 0 20px;
   }
 
   table {
-    width: 100%;
+    width: auto;
+    max-width: 100%;
     border-collapse: collapse;
+    background: white;
+    table-layout: auto;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  thead {
+    background: #C73E3A; /* Color del botón Guardar Venta */
+    color: white;
+    position: sticky;
+    top: 0;
+    z-index: 10;
   }
 
   th, td {
-    padding: 8px;
-    text-align: left;
-    vertical-align: top;
+    padding: 12px 15px;
+    text-align: center;
+    vertical-align: middle;
+    border: 1px solid #ddd;
+    white-space: nowrap;
+    font-size: 0.9rem;
+  }
+
+  th {
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+  }
+
+  tbody tr:nth-child(even) {
+    background-color: #fff5f5;
+  }
+
+  tbody tr:hover {
+    background-color: #ffe6e6;
+    transition: background-color 0.2s ease;
   }
 
   /* QR grande */
   .qr-zoom {
-    width: 200px; /* 🔥 Ajusta si quieres aún más grande */
-    height: 200px;
+    width: 50px;
+    height: 50px;
     object-fit: contain;
     cursor: zoom-in;
     transition: transform 0.25s ease, box-shadow 0.25s ease;
     position: relative;
     z-index: 1;
+    border-radius: 4px;
+    display: block;
+    margin: 0 auto;
   }
 
   /* Zoom centrado al pasar el mouse */
@@ -34,172 +71,352 @@
     position: fixed;
     top: 50%;
     left: 50%;
-    transform: translate(-50%, -50%) scale(2.8);
+    transform: translate(-50%, -50%) scale(3.5);
     background: white;
-    padding: 10px;
+    padding: 15px;
     border-radius: 8px;
     box-shadow: 0 8px 24px rgba(0,0,0,0.4);
     z-index: 999999;
+    width: 200px;
+    height: 200px;
   }
+
   .dot { font-weight: bold; }
-.dot.yes { color: green; }
-.dot.no  { color: red; }
+  .dot.yes { color: green; }
+  .dot.no  { color: red; }
 
-/* ----- Modal Ficha ----- */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(1px);
-  z-index: 998;
-}
+  /* Botones de acción */
+  .action-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    align-items: center;
+  }
 
-.modal-ficha {
-  position: fixed; inset: 50% auto auto 50%;
-  transform: translate(-50%, -50%);
-  width: min(520px, 92vw);
-  background: #2A4D31;          /* container background */
-  color: #E4B767;               /* golden text */
-  border: 2px solid #E4B767;
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.55);
-  padding: 20px 20px 16px;
-  z-index: 999;
-}
+  .status-btn, .action-buttons a {
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
+    text-align: center;
+    font-size: 0.8rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: block;
+    border: none;
+    min-width: 80px;
+  }
 
-.modal-ficha[hidden],
-.modal-overlay[hidden] { display: none; }
+  .status-btn {
+    background: #C73E3A;
+    color: white;
+    border: 1px solid #C73E3A;
+  }
 
-.modal-close {
-  position: absolute; top: 8px; right: 10px;
-  background: transparent; border: none;
-  font-size: 22px; line-height: 1; cursor: pointer;
-  color: #E4B767;
-}
+  .status-btn:hover {
+    background: #A33430;
+    transform: translateY(-1px);
+  }
 
-.ficha-header { margin-bottom: 10px; }
-.ficha-header h3 {
-  margin: 0; font-size: 1.25rem; letter-spacing: .3px;
-}
+  .action-buttons a:nth-of-type(1) {
+    background: #C73E3A;
+    color: white;
+  }
 
-.ficha-body { display: grid; gap: 10px; margin: 8px 0 14px; }
-.ficha-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
-.ficha-label { opacity: .9; }
-.ficha-value a, .ficha-value { color: #E4B767; text-decoration: none; word-break: break-all; }
+  .action-buttons a:nth-of-type(1):hover {
+    background: #A33430;
+  }
 
-.ficha-actions {
-  display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
-}
+  .action-buttons a:nth-of-type(2) {
+    background: #8B0000;
+    color: white;
+  }
 
-/* Botones */
-.btn {
-  padding: 8px 14px; font-weight: 600;
-  border-radius: 10px; border: 2px solid transparent;
-  background: #1A3623; color: #E4B767; cursor: pointer;
-  text-decoration: none; display: inline-block;
-}
-.btn:hover { filter: brightness(1.05); }
+  .action-buttons a:nth-of-type(2):hover {
+    background: #660000;
+  }
 
-.btn-primary {
-  border-color: #E4B767; background: transparent;
-}
-.btn-danger {
-  border-color: #b74040; background: transparent; color: #ffbdbd;
-}
-.btn-danger:hover { background: #b74040; color: #fff; }
-.btn-ghost {
-  background: transparent; border-color: #3b5b45;
-}
+  /* Estilos para notas con tooltip mejorado */
+  .notas-cell {
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    cursor: help;
+    position: relative;
+    font-size: 0.85rem;
+  }
 
-/* Evitar scroll del body con el modal abierto */
-.body-no-scroll { overflow: hidden; }
+  /* ----- Modal Ficha ----- */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,.6);
+    backdrop-filter: blur(2px);
+    z-index: 998;
+  }
+
+  .modal-ficha {
+    position: fixed;
+    inset: 50% auto auto 50%;
+    transform: translate(-50%, -50%);
+    width: min(520px, 92vw);
+    max-height: 90vh;
+    overflow-y: auto;
+    background: #C73E3A; /* Color del botón Guardar Venta */
+    color: white;
+    border: 2px solid white;
+    border-radius: 16px;
+    box-shadow: 0 20px 50px rgba(0,0,0,.55);
+    padding: 20px 20px 16px;
+    z-index: 999;
+  }
+
+  .modal-ficha[hidden],
+  .modal-overlay[hidden] { display: none; }
+
+  .modal-close {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    background: transparent;
+    border: none;
+    font-size: 26px;
+    line-height: 1;
+    cursor: pointer;
+    color: white;
+    transition: transform 0.2s ease;
+  }
+
+  .modal-close:hover {
+    transform: scale(1.2);
+  }
+
+  .ficha-header { margin-bottom: 15px; }
+  .ficha-header h3 {
+    margin: 0;
+    font-size: 1.35rem;
+    letter-spacing: .3px;
+  }
+
+  .ficha-body {
+    display: grid;
+    gap: 12px;
+    margin: 12px 0 18px;
+  }
+
+  .ficha-row {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px;
+    padding: 8px 0;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  }
+
+  .ficha-row:last-child {
+    border-bottom: none;
+  }
+
+  .ficha-label {
+    opacity: .9;
+    font-weight: 600;
+  }
+
+  .ficha-value a, .ficha-value {
+    color: white;
+    text-decoration: none;
+    word-break: break-word;
+  }
+
+  .ficha-actions {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    padding-top: 10px;
+    border-top: 1px solid rgba(255, 255, 255, 0.3);
+  }
+
+  /* Botones */
+  .btn {
+    padding: 10px 16px;
+    font-weight: 600;
+    border-radius: 10px;
+    border: 2px solid transparent;
+    background: #8B0000;
+    color: white;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-block;
+    transition: all 0.2s ease;
+  }
+
+  .btn:hover {
+    filter: brightness(1.15);
+    transform: translateY(-1px);
+  }
+
+  .btn-primary {
+    border-color: white;
+    background: transparent;
+  }
+
+  .btn-danger {
+    border-color: #FF6B6B;
+    background: transparent;
+    color: #FFB6B6;
+  }
+
+  .btn-danger:hover {
+    background: #8B0000;
+    color: #fff;
+  }
+
+  .btn-ghost {
+    background: transparent;
+    border-color: rgba(255, 255, 255, 0.5);
+  }
+
+  /* Evitar scroll del body con el modal abierto */
+  .body-no-scroll {
+    overflow: hidden;
+  }
+
+  /* Responsive para pantallas pequeñas */
+  @media (max-width: 1200px) {
+    table {
+      width: 100%;
+    }
+    
+    th, td {
+      padding: 8px 10px;
+      font-size: 0.85rem;
+    }
+  }
+
+  @media (max-width: 768px) {
+    .table-wrapper {
+      overflow-x: auto;
+      justify-content: flex-start;
+    }
+
+    table {
+      width: auto;
+      min-width: 100%;
+    }
+
+    th, td {
+      padding: 6px 8px;
+      font-size: 0.75rem;
+    }
+
+    .qr-zoom {
+      width: 40px;
+      height: 40px;
+    }
+
+    .ficha-row {
+      grid-template-columns: 1fr;
+      gap: 4px;
+    }
+
+    .ficha-label {
+      font-size: 0.85rem;
+    }
+
+    .action-buttons a, .status-btn {
+      font-size: 0.7rem;
+      padding: 4px 8px;
+      min-width: 70px;
+    }
+  }
 </style>
+
 <div class="table-wrapper">
 <table border="1">
-    <thead>
-        <tr>
-            <th>Cliente</th>
-            <th>Fecha</th>
-            <th>Subtotal</th>
-            <th>Descuento</th>
-            <th>Impuestos</th>
-            <th>Total</th>
-            <th>Estado</th>
-            <th>Método Pago</th>
-            <th>Notas</th>
-            <th>QR</th>
-            {{!-- Columna Acciones: SOLO ADMIN --}}
-            {{#if user.administrador}}
-            <th>Acciones</th>
-            {{/if}}
-        </tr>
-    </thead>
+    <thead>
+        <tr>
+            <th>CLIENTE</th>
+            <th>FECHA</th>
+            <th>SUBTOTAL</th>
+            <th>DESCUENTO</th>
+            <th>IMPUESTOS</th>
+            <th>TOTAL</th>
+            <th>ESTADO</th>
+            <th>MÉTODO PAGO</th>
+            <th>NOTAS</th>
+            <th>QR</th>
+            {{#if user.administrador}}
+            <th>ACCIONES</th>
+            {{/if}}
+        </tr>
+    </thead>
 
-    <tbody>
-        {{#each ventas}}
-        <tr>
-            <td>{{nombreCliente}}</td>
-            <td>{{formatDate fecha}}</td>
-            <td>{{formatCurrency subtotal}}</td>
-            <td>{{formatCurrency descuento}}</td>
-            <td>{{formatCurrency impuestos}}</td>
-            <td><strong>{{formatCurrency total}}</strong></td>
+    <tbody>
+        {{#each ventas}}
+        <tr>
+            <td>{{nombreCliente}}</td>
+            <td>{{formatDate fecha}}</td>
+            <td>{{formatCurrency subtotal}}</td>
+            <td>{{formatCurrency descuento}}</td>
+            <td>{{formatCurrency impuestos}}</td>
+            <td><strong>{{formatCurrency total}}</strong></td>
 
-            <td>
-                {{#if (eq estado "Pagado")}}
-                <span style="color: green; font-weight: bold;">● {{estado}}</span>
-                {{else if (eq estado "Pendiente")}}
-                <span style="color: orange; font-weight: bold;">● {{estado}}</span>
-                {{else}}
-                <span style="color: red; font-weight: bold;">● {{estado}}</span>
-                {{/if}}
-            </td>
+            <td>
+                {{#if (eq estado "Pagado")}}
+                <span style="color: green; font-weight: bold;">● {{estado}}</span>
+                {{else if (eq estado "Pendiente")}}
+                <span style="color: orange; font-weight: bold;">● {{estado}}</span>
+                {{else}}
+                <span style="color: red; font-weight: bold;">● {{estado}}</span>
+                {{/if}}
+            </td>
 
-            <td>{{metodo_pago}}</td>
+            <td>{{metodo_pago}}</td>
 
-            <td>
-                {{#if notas}}
-                <span title="{{notas}}" style="cursor: help; max-width: 200px; display: inline-block;">
-                    {{notas}}
-                </span>
-                {{else}}
-                <span style="color: #999;">-</span>
-                {{/if}}
-            </td>
+            <td>
+                {{#if notas}}
+                <span class="notas-cell" title="{{notas}}">{{notas}}</span>
+                {{else}}
+                <span style="color: #999;">Sin nota</span>
+                {{/if}}
+            </td>
 
-            <td>
-                {{#if qr}}
-                <img src="{{qr}}" alt="QR" class="qr-zoom" />
-                {{else}}
-                <span style="color: #999;">Sin QR</span>
-                {{/if}}
-            </td>
+            <td>
+                {{#if qr}}
+                <img src="{{qr}}" alt="QR" class="qr-zoom" />
+                {{else}}
+                <span style="color: #999;">Sin QR</span>
+                {{/if}}
+            </td>
 
-            {{!-- Celdas de Acciones: SOLO ADMIN --}}
-            {{#if ../user.administrador}} 
-            <td>
-                <button
-                    class="status-btn"
-                    data-id="{{_id}}"
-                    data-cliente="{{nombreCliente}}"
-                    data-fecha="{{formatDate fecha}}"
-                    data-subtotal="{{formatCurrency subtotal}}"
-                    data-descuento="{{formatCurrency descuento}}"
-                    data-impuestos="{{formatCurrency impuestos}}"
-                    data-total="{{formatCurrency total}}"
-                    data-estado="{{estado}}"
-                    data-metodo-pago="{{metodo_pago}}"
-                    data-notas="{{notas}}"
-                    data-qr="{{qr}}"
-                    data-edit="/editarVenta/{{_id}}"
-                    data-delete="/eliminarVenta/{{_id}}"
-                >Status</button>
-                <a href="/editarVenta/{{_id}}">Editar</a>
-                <a href="/eliminarVenta/{{_id}}">Eliminar</a>
-            </td>
-            {{/if}}
-        </tr>
-        {{/each}}
-    </tbody>
+            {{#if ../user.administrador}} 
+            <td>
+                <div class="action-buttons">
+                    <button
+                        class="status-btn"
+                        data-id="{{_id}}"
+                        data-cliente="{{nombreCliente}}"
+                        data-fecha="{{formatDate fecha}}"
+                        data-subtotal="{{formatCurrency subtotal}}"
+                        data-descuento="{{formatCurrency descuento}}"
+                        data-impuestos="{{formatCurrency impuestos}}"
+                        data-total="{{formatCurrency total}}"
+                        data-estado="{{estado}}"
+                        data-metodo-pago="{{metodo_pago}}"
+                        data-notas="{{notas}}"
+                        data-qr="{{qr}}"
+                        data-edit="/editarVenta/{{_id}}"
+                        data-delete="/eliminarVenta/{{_id}}"
+                    >🛒 Status</button>
+                    <a href="/editarVenta/{{_id}}">✏️ Editar</a>
+                    <a href="/eliminarVenta/{{_id}}">🗑️ Eliminar</a>
+                </div>
+            </td>
+            {{/if}}
+        </tr>
+        {{/each}}
+    </tbody>
 </table>
 </div>
 
@@ -252,8 +469,8 @@
         <div class="ficha-row qr-container">
             <span class="ficha-label">Código QR</span>
             <span id="ficha-qr-wrapper" class="ficha-value">
-                <img id="ficha-qr" src="#" alt="QR de la venta" style="max-width: 150px; height: auto;">
-                <span id="qr-no-disponible" style="color: #999; font-style: italic;">Sin QR</span>
+                <img id="ficha-qr" src="#" alt="QR de la venta" style="max-width: 200px; height: auto; border-radius: 8px;">
+                <span id="qr-no-disponible" style="color: #FFB6B6; font-style: italic;">Sin QR</span>
             </span>
         </div>
     </section>
@@ -264,6 +481,7 @@
         <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
     </footer>
 </div>
+
 <script>
     (function () {
     // 1. Elementos del Modal y Overlay
@@ -310,16 +528,16 @@
         elTotal.textContent      = total || '';
         elMetodoPago.textContent = metodoPago || '';
         elNotas.textContent      = notas || 'Sin notas';
-        elNotas.style.color      = notas ? 'initial' : '#999';
+        elNotas.style.color      = notas ? 'white' : '#FFB6B6';
 
         // Manejo del estado condicional (color)
         elEstado.textContent = estado || 'Desconocido';
         if (estado === "Pagado") {
-            elEstado.style.color = 'green';
+            elEstado.style.color = '#90EE90';
         } else if (estado === "Pendiente") {
-            elEstado.style.color = 'orange';
+            elEstado.style.color = '#FFA500';
         } else {
-            elEstado.style.color = 'red';
+            elEstado.style.color = '#FF6B6B';
         }
 
         // Manejo de la imagen QR

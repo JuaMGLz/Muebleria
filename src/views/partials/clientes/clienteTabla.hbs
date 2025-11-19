@@ -1,77 +1,177 @@
 <style>
-    /* puntos Sí / No en la tabla */
-.dot { font-weight: bold; }
-.dot.yes { color: green; }
-.dot.no  { color: red; }
+    :root {
+        --color-primary: #dc2626;
+        --color-primary-dark: #991b1b;
+        --color-primary-light: #fef2f2;
+        --color-secondary: #f59e0b;
+        --color-success: #10b981;
+        --color-text: #1f2937;
+        --color-text-light: #6b7280;
+        --color-bg: #f9fafb;
+        --color-card-bg: #ffffff;
+        --color-white: #ffffff;
+        --color-border: #e5e7eb;
+        --color-shadow: rgba(220, 38, 38, 0.08);
+        --color-shadow-lg: rgba(0, 0, 0, 0.1);
+        --color-danger: #ef4444;
+        --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
 
-/* ----- Modal Ficha ----- */
-.modal-overlay {
-  position: fixed; inset: 0;
-  background: rgba(0,0,0,.6);
-  backdrop-filter: blur(1px);
-  z-index: 998;
-}
+    * { margin: 0; padding: 0; box-sizing: border-box; }
 
-.modal-ficha {
-  position: fixed; inset: 50% auto auto 50%;
-  transform: translate(-50%, -50%);
-  width: min(520px, 92vw);
-  background: #2A4D31;          /* container background */
-  color: #E4B767;               /* golden text */
-  border: 2px solid #E4B767;
-  border-radius: 16px;
-  box-shadow: 0 20px 50px rgba(0,0,0,.55);
-  padding: 20px 20px 16px;
-  z-index: 999;
-}
+    body {
+        font-family: var(--font-family-primary);
+        background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20230720/pngtree-3d-rendered-red-sofa-and-chair-set-image_3725833.jpg');
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+        min-height: 100vh;
+        color: var(--color-text);
+        padding: 1rem;
+    }
 
-.modal-ficha[hidden],
-.modal-overlay[hidden] { display: none; }
+    .table-container {
+        background: var(--color-card-bg);
+        border-radius: 20px;
+        box-shadow: 0 8px 30px var(--color-shadow-lg);
+        overflow: hidden;
+        margin: 2rem auto;
+        max-width: 1200px;
+        animation: fadeIn 0.5s ease-out;
+        position: relative; 
+        z-index: 1;
+    }
 
-.modal-close {
-  position: absolute; top: 8px; right: 10px;
-  background: transparent; border: none;
-  font-size: 22px; line-height: 1; cursor: pointer;
-  color: #E4B767;
-}
+    table { width: 100%; border-collapse: collapse; }
 
-.ficha-header { margin-bottom: 10px; }
-.ficha-header h3 {
-  margin: 0; font-size: 1.25rem; letter-spacing: .3px;
-}
+    thead {
+        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+        color: var(--color-white);
+    }
 
-.ficha-body { display: grid; gap: 10px; margin: 8px 0 14px; }
-.ficha-row { display: grid; grid-template-columns: 1fr 2fr; gap: 8px; }
-.ficha-label { opacity: .9; }
-.ficha-value a, .ficha-value { color: #E4B767; text-decoration: none; word-break: break-all; }
+    thead th {
+        padding: 1.25rem 1.5rem;
+        text-align: left;
+        font-weight: 600;
+    }
 
-.ficha-actions {
-  display: flex; gap: 10px; justify-content: flex-end; flex-wrap: wrap;
-}
+    tbody tr {
+        border-bottom: 1px solid var(--color-border);
+        transition: var(--transition);
+    }
 
-/* Botones */
-.btn {
-  padding: 8px 14px; font-weight: 600;
-  border-radius: 10px; border: 2px solid transparent;
-  background: #1A3623; color: #E4B767; cursor: pointer;
-  text-decoration: none; display: inline-block;
-}
-.btn:hover { filter: brightness(1.05); }
+    tbody tr:hover { background-color: var(--color-primary-light); }
 
-.btn-primary {
-  border-color: #E4B767; background: transparent;
-}
-.btn-danger {
-  border-color: #b74040; background: transparent; color: #ffbdbd;
-}
-.btn-danger:hover { background: #b74040; color: #fff; }
-.btn-ghost {
-  background: transparent; border-color: #3b5b45;
-}
+    tbody td { padding: 1.125rem 1.5rem; font-size: 0.95rem; }
 
-/* Evitar scroll del body con el modal abierto */
-.body-no-scroll { overflow: hidden; }
+    .status-btn {
+        background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 8px;
+        border: none;
+        cursor: pointer;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    tbody td a {
+        color: var(--color-primary);
+        text-decoration: none;
+        padding: 0.375rem 0.75rem;
+        border-radius: 6px;
+        display: inline-block;
+    }
+
+    /* CENTRAR STATUS Y ACCIONES */
+    thead th:nth-child(6),
+    thead th:nth-child(7),
+    tbody td:nth-child(6),
+    tbody td:nth-child(7) {
+        text-align: center;
+    }
+
+    /* ===== MODAL ===== */
+
+    .modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 999;
+    }
+
+    .modal-ficha {
+        width: min(560px, 92vw);
+        background: white;
+        color: var(--color-text);
+        border-radius: 24px;
+        padding: 0;
+        box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+        overflow: hidden;
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    .modal-ficha::before {
+        content: '';
+        height: 6px;
+        width: 100%;
+        display: block;
+        background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+    }
+
+    .modal-close {
+        position: absolute;
+        top: 1.25rem;
+        right: 1.25rem;
+        background: rgba(220, 38, 38, 0.1);
+        border: none;
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        font-size: 1.5rem;
+        cursor: pointer;
+    }
+
+    .ficha-header { padding: 2rem; border-bottom: 1px solid var(--color-border); }
+    .ficha-body { padding: 2rem; display: grid; gap: 1.5rem; }
+
+    .ficha-row {
+        display: grid;
+        grid-template-columns: 140px 1fr;
+        gap: 1rem;
+    }
+
+    .ficha-actions {
+        display: flex;
+        justify-content: flex-end;
+        gap: 0.75rem;
+        padding: 1.5rem 2rem;
+        border-top: 1px solid var(--color-border);
+    }
+
+    .btn { padding: 0.75rem 1.5rem; border-radius: 10px; cursor: pointer; }
+    .btn-primary { background: var(--color-primary); color: white; }
+    .btn-danger { border: 2px solid var(--color-danger); color: var(--color-danger); }
+    .btn-ghost { border: 2px solid var(--color-border); }
+
+    [hidden] { display: none !important; }
+
+    @keyframes fadeIn {
+        from { opacity: 0; transform: translateY(20px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
 </style>
+
+
+<!-- ======================= TABLA ======================= -->
+
 <table>
     <thead>
         <tr>
@@ -99,9 +199,9 @@
                 <span style="color: red;">● Inactivo</span>
                 {{/if}}
             </td>
+
             <td>
-                <button
-                    class="status-btn"
+                <button class="status-btn"
                     data-id="{{_id}}"
                     data-nombre="{{nombre}}"
                     data-telefono="{{telefono}}"
@@ -111,8 +211,10 @@
                     data-estado="{{direccion.estado}}"
                     data-activo="{{#if activo}}Activo{{else}}Inactivo{{/if}}"
                     data-edit="/editarCliente/{{_id}}"
-                    data-delete="/eliminarCliente/{{_id}}"
-                >Status</button>
+                    data-delete="/eliminarCliente/{{_id}}">
+                    Status
+                </button>
+
                 <a href="/editarCliente/{{_id}}">Editar</a>
                 <a href="/eliminarCliente/{{_id}}">Eliminar</a>
             </td>
@@ -121,67 +223,53 @@
     </tbody>
 </table>
 
-<div id="overlay-modal-ficha" class="modal-overlay" hidden></div>
+<!-- ============= OVERLAY + MODAL (centrado) ============= -->
 
-<div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" aria-labelledby="ficha-title" hidden>
-    <button class="modal-close" type="button" aria-label="Cerrar">×</button>
+<div id="overlay-modal-ficha" class="modal-overlay" hidden>
+    <div id="modal-ficha" class="modal-ficha" role="dialog" aria-modal="true" hidden>
 
-    <header class="ficha-header">
-        <h3 id="ficha-title">Ficha de Cliente</h3>
-    </header>
+        <button class="modal-close" type="button">×</button>
 
-    <section class="ficha-body">
-        <div class="ficha-row">
-            <span class="ficha-label">Nombre</span>
-            <span id="ficha-nombre" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Teléfono</span>
-            <a id="ficha-telefono" class="ficha-value" href="#" target="_blank" rel="noopener"></a>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Email</span>
-            <a id="ficha-email" class="ficha-value" href="#" target="_blank" rel="noopener"></a>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">RFC</span>
-            <span id="ficha-rfc" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Ubicación</span>
-            <span id="ficha-ubicacion" class="ficha-value"></span>
-        </div>
-        <div class="ficha-row">
-            <span class="ficha-label">Estado</span>
-            <span id="ficha-activo" class="ficha-value"></span>
-        </div>
-    </section>
+        <header class="ficha-header">
+            <h3 id="ficha-title">Ficha de Cliente</h3>
+        </header>
 
-    <footer class="ficha-actions">
-        <a id="ficha-btn-editar" class="btn btn-primary" href="#">Editar</a>
-        <a id="ficha-btn-eliminar" class="btn btn-danger" href="#">Eliminar</a>
-        <button id="ficha-btn-cerrar" class="btn btn-ghost" type="button">Cerrar</button>
-    </footer>
+        <section class="ficha-body">
+            <div class="ficha-row"><span class="ficha-label">Nombre</span><span id="ficha-nombre"></span></div>
+            <div class="ficha-row"><span class="ficha-label">Teléfono</span><a id="ficha-telefono" href="#"></a></div>
+            <div class="ficha-row"><span class="ficha-label">Email</span><a id="ficha-email" href="#"></a></div>
+            <div class="ficha-row"><span class="ficha-label">RFC</span><span id="ficha-rfc"></span></div>
+            <div class="ficha-row"><span class="ficha-label">Ubicación</span><span id="ficha-ubicacion"></span></div>
+            <div class="ficha-row"><span class="ficha-label">Estado</span><span id="ficha-activo"></span></div>
+        </section>
+
+        <footer class="ficha-actions">
+            <a id="ficha-btn-editar" class="btn btn-primary">Editar</a>
+            <a id="ficha-btn-eliminar" class="btn btn-danger">Eliminar</a>
+            <button id="ficha-btn-cerrar" class="btn btn-ghost">Cerrar</button>
+        </footer>
+    </div>
 </div>
+
+<!-- ===================== JS ========================= -->
+
 <script>
-    (function () {
-    // 1. Elementos del Modal y Overlay
-    const overlay   = document.getElementById('overlay-modal-ficha');
-    const modal     = document.getElementById('modal-ficha');
-    const closeBtn  = modal.querySelector('.modal-close');
-    const cerrarBtn = document.getElementById('ficha-btn-cerrar');
+(function () {
 
-    // 2. Campos dentro de la Ficha (Modal)
-    const elNombre  = document.getElementById('ficha-nombre');
+    const overlay = document.getElementById('overlay-modal-ficha');
+    const modal   = document.getElementById('modal-ficha');
+    const closeX  = modal.querySelector('.modal-close');
+    const closeBtn = document.getElementById('ficha-btn-cerrar');
+
+    const elNombre = document.getElementById('ficha-nombre');
     const elTelefono = document.getElementById('ficha-telefono');
-    const elEmail   = document.getElementById('ficha-email');
-    const elRfc     = document.getElementById('ficha-rfc');
+    const elEmail = document.getElementById('ficha-email');
+    const elRfc = document.getElementById('ficha-rfc');
     const elUbicacion = document.getElementById('ficha-ubicacion');
-    const elActivo  = document.getElementById('ficha-activo');
-    const btnEdit   = document.getElementById('ficha-btn-editar');
-    const btnDel    = document.getElementById('ficha-btn-eliminar');
+    const elActivo = document.getElementById('ficha-activo');
+    const btnEdit = document.getElementById('ficha-btn-editar');
+    const btnDel = document.getElementById('ficha-btn-eliminar');
 
-    // Funciones para abrir y cerrar el modal
     function openModal() {
         overlay.hidden = false;
         modal.hidden = false;
@@ -194,40 +282,26 @@
         document.body.classList.remove('body-no-scroll');
     }
 
-    // Función para llenar la ficha con los datos del botón
-    function fillCard({ nombre, telefono, email, rfc, municipio, estado, activo, editUrl, deleteUrl }) {
-        elNombre.textContent = nombre || '';
-        
-        elTelefono.textContent = telefono || '';
-        elTelefono.href = telefono ? `tel:${telefono}` : '#';
+    function fillCard(data) {
+        elNombre.textContent = data.nombre;
+        elTelefono.textContent = data.telefono;
+        elTelefono.href = `tel:${data.telefono}`;
+        elEmail.textContent = data.email;
+        elEmail.href = `mailto:${data.email}`;
+        elRfc.textContent = data.rfc;
+        elUbicacion.textContent = `${data.municipio}, ${data.estado}`;
+        elActivo.textContent = data.activo;
+        elActivo.style.color = data.activo === "Activo" ? "green" : "red";
 
-        elEmail.textContent = email || '';
-        elEmail.href = email ? `mailto:${email}` : '#';
-        
-        elRfc.textContent = rfc || '';
-        
-        if (municipio && estado) {
-            elUbicacion.textContent = `${municipio}, ${estado}`;
-        } else {
-            elUbicacion.textContent = '';
-        }
-
-        // Aplicar estilos de color al estado activo/inactivo
-        elActivo.textContent = activo || 'Inactivo';
-        elActivo.style.color = activo === 'Activo' ? 'green' : 'red';
-        elActivo.style.fontWeight = 'bold';
-
-
-        btnEdit.href = editUrl || '#';
-        btnDel.href  = deleteUrl || '#';
+        btnEdit.href = data.editUrl;
+        btnDel.href = data.deleteUrl;
     }
 
-    // 3. Delegación de eventos para el botón "Status"
     document.addEventListener('click', function (e) {
         const btn = e.target.closest('.status-btn');
         if (!btn) return;
 
-        const payload = {
+        fillCard({
             nombre: btn.dataset.nombre,
             telefono: btn.dataset.telefono,
             email: btn.dataset.email,
@@ -237,26 +311,27 @@
             activo: btn.dataset.activo,
             editUrl: btn.dataset.edit,
             deleteUrl: btn.dataset.delete
-        };
+        });
 
-        fillCard(payload);
         openModal();
     });
 
-    // 4. Eventos para cerrar el modal
+    closeX.addEventListener('click', closeModal);
     closeBtn.addEventListener('click', closeModal);
-    cerrarBtn.addEventListener('click', closeModal);
-    overlay.addEventListener('click', closeModal);
 
-    // Cerrar con tecla Escape
-    document.addEventListener('keydown', function (e) {
-        if (e.key === 'Escape' && !modal.hidden) closeModal();
+    overlay.addEventListener('click', e => {
+        if (e.target === overlay) closeModal();
     });
 
-    // 5. Confirmación para eliminar
-    btnDel.addEventListener('click', function (e) {
-        const ok = confirm('¿Seguro que deseas eliminar este cliente?');
-        if (!ok) e.preventDefault();
+    document.addEventListener('keydown', e => {
+        if (e.key === "Escape") closeModal();
     });
+
+    btnDel.addEventListener('click', e => {
+        if (!confirm("¿Seguro que deseas eliminar este cliente?")) {
+            e.preventDefault();
+        }
+    });
+
 })();
 </script>

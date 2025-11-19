@@ -1,327 +1,316 @@
-<style>
-    :root {
-        --color-primary: #dc2626;
-        --color-primary-dark: #991b1b;
-        --color-primary-light: #fef2f2;
-        --color-secondary: #f59e0b;
-        --color-text: #333;
-        --color-text-light: #6b7280;
-        --color-bg: #f0f2f5;
-        --color-card-bg: #ffffff;
-        --color-white: #ffffff;
-        --color-border: #ddd;
-        --color-shadow: rgba(220, 38, 38, 0.1);
-        --font-family-primary: 'Helvetica Neue', Arial, sans-serif;
-        --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Inventario</title>
+    <style>
+        :root {
+            --color-primary: #dc2626;
+            --color-primary-dark: #991b1b;
+            --color-primary-light: #fef2f2;
+            --color-secondary: #f59e0b;
+            --color-text: #1f2937;
+            --color-text-light: #6b7280;
+            --color-bg: #f9fafb;
+            --color-card-bg: #ffffff;
+            --color-white: #ffffff;
+            --color-border: #e5e7eb;
+            --color-shadow: rgba(220, 38, 38, 0.08);
+            --color-shadow-lg: rgba(0, 0, 0, 0.1);
+            --font-family-primary: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Inter', 'Helvetica Neue', Arial, sans-serif;
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-    }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-        font-family: var(--font-family-primary);
-        background-color: var(--color-bg);
-        min-height: 100vh;
-        color: var(--color-text);
-        line-height: 1.6;
-    }
+        /* === 1. FONDO DE PANTALLA (SALA ROJA) === */
+        body {
+            font-family: var(--font-family-primary);
+            background-image: url('https://png.pngtree.com/thumb_back/fw800/background/20230720/pngtree-3d-rendered-red-sofa-and-chair-set-image_3725833.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            min-height: 100vh;
+            color: var(--color-text);
+            line-height: 1.6;
+        }
 
-    .header {
-        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-        color: var(--color-white);
-        padding: 1rem 2rem;
-        box-shadow: 0 4px 20px var(--color-shadow);
-        position: sticky;
-        top: 0;
-        z-index: 100;
-    }
+        /* Wrapper para centrar vertical y horizontalmente */
+        .page-wrapper {
+            width: 100%;
+            padding: 2rem 1rem;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            min-height: 100vh;
+        }
 
-    .header-content {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        max-width: 1400px;
-        margin: 0 auto;
-        position: relative;
-    }
+        /* === 2. CONTENEDOR BLANCO === */
+        .form-container {
+            width: 100%;
+            max-width: 1000px; /* Ancho amplio para aprovechar espacio */
+            background: var(--color-card-bg);
+            border-radius: 24px;
+            box-shadow: 0 20px 60px var(--color-shadow-lg);
+            padding: 3rem 2.5rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeIn 0.5s ease-out;
+            margin-bottom: 2rem;
+        }
 
-    .logo {
-        font-size: 1.8rem;
-        font-weight: bold;
-        color: var(--color-white);
-        margin: 0;
-    }
+        /* Barra superior de color */
+        .form-container::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 6px;
+            background: linear-gradient(90deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+        }
 
-    .menu-toggle {
-        position: absolute;
-        left: 2rem;
-        background: transparent;
-        border: none;
-        color: var(--color-white);
-        padding: 0.5rem;
-        border-radius: 8px;
-        cursor: pointer;
-        transition: var(--transition);
-        font-size: 1.8rem;
-    }
+        /* Encabezado con Icono */
+        .form-header {
+            text-align: center;
+            margin-bottom: 2.5rem;
+        }
 
-    .menu-toggle:hover {
-        background: rgba(255, 255, 255, 0.2);
-        transform: scale(1.1);
-    }
+        .icon-wrapper {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 1.25rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 8px 20px rgba(220, 38, 38, 0.25);
+            transform: rotate(-5deg);
+            transition: var(--transition);
+        }
 
-    .navbar {
-        position: fixed;
-        top: 0;
-        left: -350px;
-        width: 350px;
-        height: 100vh;
-        background-color: var(--color-card-bg);
-        box-shadow: 4px 0 20px rgba(0, 0, 0, 0.1);
-        transition: var(--transition);
-        z-index: 1000;
-        overflow-y: auto;
-    }
+        .icon-wrapper:hover { transform: rotate(0deg) scale(1.05); }
+        .icon-wrapper svg { width: 35px; height: 35px; color: var(--color-white); }
 
-    .navbar.active {
-        left: 0;
-    }
+        .form-title {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--color-text);
+            margin-bottom: 0.5rem;
+        }
 
-    .navbar-header {
-        background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
-        color: var(--color-white);
-        padding: 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        position: sticky;
-        top: 0;
-        z-index: 10;
-    }
+        .form-subtitle {
+            font-size: 1rem;
+            color: var(--color-text-light);
+        }
 
-    .navbar-title {
-        font-size: 1.4rem;
-        margin: 0;
-        color: var(--color-white);
-    }
+        /* === 3. GRID SYSTEM (2 COLUMNAS) === */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
 
-    .sidebar-close {
-        background: none;
-        border: none;
-        color: var(--color-white);
-        font-size: 1.8rem;
-        cursor: pointer;
-        transition: var(--transition);
-    }
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr; /* Dos columnas */
+                column-gap: 2rem;
+            }
+            .full-width {
+                grid-column: span 2; /* Para elementos anchos como el botón */
+            }
+        }
 
-    .sidebar-close:hover {
-        transform: rotate(90deg);
-    }
+        .form-group { margin-bottom: 0; } /* El gap del grid maneja el espacio */
 
-    .navbar-nav {
-        padding: 1.5rem;
-    }
+        .form-group label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.65rem;
+            font-weight: 600;
+            font-size: 0.95rem;
+            color: var(--color-text);
+        }
 
-    .navbar-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-    }
+        .label-icon {
+            width: 18px; height: 18px; color: var(--color-primary);
+        }
 
-    .navbar-item {
-        margin-bottom: 1rem;
-    }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid var(--color-border);
+            border-radius: 12px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: var(--transition);
+            background-color: var(--color-white);
+            color: var(--color-text);
+        }
 
-    .navbar-link {
-        text-decoration: none;
-        color: var(--color-text);
-        font-weight: 500;
-        display: block;
-        padding: 0.75rem 1rem;
-        border-radius: 6px;
-        transition: background-color 0.3s ease, color 0.3s ease, border-left-color 0.3s ease;
-        border-left: 4px solid transparent;
-    }
+        .form-group select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%23dc2626'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 18px;
+            padding-right: 2.5rem;
+            cursor: pointer;
+        }
 
-    .navbar-link:hover {
-        background-color: var(--color-primary-light);
-        color: var(--color-primary-dark);
-        border-left-color: var(--color-primary);
-    }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--color-primary);
+            box-shadow: 0 0 0 4px var(--color-shadow);
+        }
 
-    .navbar-link.active {
-        color: var(--color-primary-dark);
-        background-color: var(--color-primary-light);
-        border-left-color: var(--color-primary);
-        font-weight: 600;
-    }
-    
-    .sidebar-overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background: rgba(0, 0, 0, 0.5);
-        opacity: 0;
-        visibility: hidden;
-        transition: var(--transition);
-        z-index: 999;
-    }
+        /* Botón Guardar */
+        .btn-submit {
+            width: 100%;
+            padding: 1.1rem;
+            background: linear-gradient(135deg, var(--color-primary) 0%, #ef4444 100%);
+            color: var(--color-white);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            margin-top: 1rem;
+            box-shadow: 0 4px 14px rgba(220, 38, 38, 0.35);
+        }
 
-    .sidebar-overlay.active {
-        opacity: 1;
-        visibility: visible;
-    }
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.45);
+        }
 
-    .main-container {
-        max-width: 1400px;
-        margin: 2rem auto;
-        padding: 20px;
-    }
+        /* Botón Cancelar */
+        .btn-cancel {
+            display: block;
+            text-align: center;
+            margin-top: 1rem;
+            color: var(--color-text-light);
+            text-decoration: none;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+        .btn-cancel:hover { color: var(--color-primary); }
 
-    .content {
-        background-color: var(--color-card-bg);
-        border-radius: 8px;
-        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
-        padding: 2rem;
-        min-height: 600px;
-        position: relative;
-        overflow: hidden;
-        border-top: 4px solid var(--color-primary);
-    }
-    
-    .form-title {
-        text-align: center;
-        color: var(--color-primary);
-        font-size: 2rem;
-        margin-bottom: 2rem;
-    }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
 
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--color-text);
-        font-weight: 600;
-        font-size: 1rem;
-    }
-
-    .form-group input,
-    .form-group textarea,
-    .form-group select {
-        width: 100%;
-        padding: 0.8rem;
-        border: 1px solid var(--color-border);
-        border-radius: 8px;
-        font-size: 1rem;
-        transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        box-sizing: border-box;
-    }
-
-    .form-group input:focus,
-    .form-group textarea:focus,
-    .form-group select:focus {
-        outline: none;
-        border-color: var(--color-primary);
-        box-shadow: 0 0 0 3px var(--color-shadow);
-    }
-
-    .btn-submit {
-        display: block;
-        width: 100%;
-        padding: 1rem;
-        background-color: var(--color-primary);
-        color: var(--color-white);
-        border: none;
-        border-radius: 8px;
-        font-size: 1.1rem;
-        font-weight: 600;
-        cursor: pointer;
-        transition: background-color 0.3s ease, transform 0.2s ease;
-        margin-top: 1rem;
-    }
-
-    .btn-submit:hover {
-        background-color: var(--color-primary-dark);
-        transform: translateY(-2px);
-    }
-
-    .btn-submit:active {
-        transform: translateY(0);
-    }
-
-    .form-group select {
-        appearance: none;
-        -webkit-appearance: none;
-        background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23333'%3E%3Cpath d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
-        background-repeat: no-repeat;
-        background-position: right 0.7rem top 50%;
-        background-size: 1.2rem;
-        cursor: pointer;
-    }
-</style>
-
-<div class="form-container">
-    <h2 class="form-title">Editar Inventario</h2>
-
-    <form action="/editarInventario/{{inventario._id}}" method="POST">
-        <div class="form-group">
-            <label for="nombreProducto">Nombre del producto</label>
-            <select name="nombreProducto" id="nombreProducto" required>
-                <option value="" disabled>Selecciona un producto</option>
-                {{#each productos}}
-                    <option value="{{this.nombre}}" {{compare this.nombre ../inventario.nombreProducto}}>
-                        {{this.nombre}}
-                    </option>
-                {{/each}}
-            </select>
+<div class="page-wrapper">
+    <div class="form-container">
+        
+        <div class="form-header">
+            <div class="icon-wrapper">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+                </svg>
+            </div>
+            <h2 class="form-title">Editar Inventario</h2>
+            <p class="form-subtitle">Modifica los datos del registro de inventario seleccionado</p>
         </div>
 
-        <div class="form-group">
-            <label for="stock">Stock</label>
-            <input
-                type="number"
-                name="stock"
-                id="stock"
-                placeholder="Ej. 50"
-                min="0"
-                step="1"
-                value="{{inventario.stock}}"
-                required
-            />
-        </div>
+        <form action="/editarInventario/{{inventario._id}}" method="POST">
+            
+            <div class="form-grid">
+                
+                <div class="form-group">
+                    <label for="nombreProducto">
+                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+                        </svg>
+                        Nombre del producto
+                    </label>
+                    <select name="nombreProducto" id="nombreProducto" required>
+                        <option value="" disabled>Selecciona un producto</option>
+                        {{#each productos}}
+                            <option value="{{this.nombre}}" {{compare this.nombre ../inventario.nombreProducto}}>
+                                {{this.nombre}}
+                            </option>
+                        {{/each}}
+                    </select>
+                </div>
 
-        <div class="form-group">
-            <label for="ubicacion">Ubicación</label>
-            <input
-                type="text"
-                name="ubicacion"
-                id="ubicacion"
-                placeholder="Ej. Pasillo A, Estante 3"
-                value="{{inventario.ubicacion}}"
-                required
-            />
-        </div>
+                <div class="form-group">
+                    <label for="stock">
+                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" />
+                        </svg>
+                        Stock
+                    </label>
+                    <input
+                        type="number"
+                        name="stock"
+                        id="stock"
+                        placeholder="Ej. 50"
+                        min="0"
+                        step="1"
+                        value="{{inventario.stock}}"
+                        required
+                    />
+                </div>
 
-        <div class="form-group">
-            <label for="sucursal">Sucursal</label>
-            <input
-                type="text"
-                name="sucursal"
-                id="sucursal"
-                placeholder="Ej. Sucursal Centro, Sucursal Norte"
-                value="{{inventario.sucursal}}"
-                required
-            />
-        </div>
+                <div class="form-group">
+                    <label for="ubicacion">
+                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" />
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" />
+                        </svg>
+                        Ubicación
+                    </label>
+                    <input
+                        type="text"
+                        name="ubicacion"
+                        id="ubicacion"
+                        placeholder="Ej. Pasillo A, Estante 3"
+                        value="{{inventario.ubicacion}}"
+                        required
+                    />
+                </div>
 
-        <button type="submit" class="btn-submit">Guardar Cambios</button>
-    </form>
+                <div class="form-group">
+                    <label for="sucursal">
+                        <svg class="label-icon" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4" />
+                        </svg>
+                        Sucursal
+                    </label>
+                    <input
+                        type="text"
+                        name="sucursal"
+                        id="sucursal"
+                        placeholder="Ej. Sucursal Centro"
+                        value="{{inventario.sucursal}}"
+                        required
+                    />
+                </div>
+
+                <div class="full-width">
+                    <button type="submit" class="btn-submit">Guardar Cambios</button>
+                    
+                </div>
+            </div>
+
+        </form>
+    </div>
 </div>
+
+</body>
+</html>

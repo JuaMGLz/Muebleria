@@ -71,6 +71,321 @@
 
 /* Evitar scroll del body con el modal abierto */
 .body-no-scroll { overflow: hidden; }
+
+
+
+/* ============================== */
+/*      TABLA — ESTILO DORADO     */
+/* ============================== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #2A4D31;         /* verde oscuro del contenedor */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.45);
+}
+
+/* ------------------------------ */
+/*          ENCABEZADO           */
+/* ------------------------------ */
+thead {
+    background: #1A3623;         /* verde más oscuro */
+}
+
+thead th {
+    padding: 14px;
+    color: #E4B767;              /* dorado */
+    font-size: 0.95rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    border-bottom: 2px solid #E4B76744;
+}
+
+/* ------------------------------ */
+/*            FILAS              */
+/* ------------------------------ */
+tbody tr {
+    transition: .25s ease;
+    background: #2A4D31;
+}
+
+tbody tr:nth-child(even) {
+    background: #25452C; /* ligera variación */
+}
+
+tbody tr:hover {
+    background: #1A3623;
+    transform: scale(1.01);
+}
+
+/* ------------------------------ */
+/*            CELDAS             */
+/* ------------------------------ */
+tbody td {
+    padding: 12px 14px;
+    color: #E4B767;
+    font-size: 0.93rem;
+    text-align: center;
+    border-bottom: 1px solid #E4B76733;
+}
+
+/* Alinear la primera columna a la izquierda (nombre) */
+tbody td:first-child,
+thead th:first-child {
+    text-align: left;
+    padding-left: 18px;
+}
+
+/* ------------------------------ */
+/*         BOTÓN STATUS           */
+/* ------------------------------ */
+.status-btn {
+    background: transparent;
+    color: #E4B767;
+    border: 2px solid #E4B767;
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: .25s ease;
+}
+
+.status-btn:hover {
+    background: #E4B767;
+    color: #1A3623;
+    transform: translateY(-2px);
+}
+
+/* ------------------------------ */
+/*        BOTONES EDITAR          */
+/* ------------------------------ */
+tbody td a {
+    color: #E4B767;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #E4B767;
+    font-size: 0.8rem;
+    transition: .25s ease;
+}
+
+tbody td a:hover {
+    background: #E4B767;
+    color: #1A3623;
+}
+
+/* ------------------------------ */
+/*        PUNTOS Sí / No          */
+/* ------------------------------ */
+.dot.yes {
+    color: #10b981; /* verde éxito */
+    font-weight: bold;
+}
+
+.dot.no {
+    color: #ef4444; /* rojo error */
+    font-weight: bold;
+}
+
+/* ------------------------------ */
+/*          RESPONSIVE            */
+/* ------------------------------ */
+@media (max-width: 768px) {
+    table {
+        font-size: 0.8rem;
+    }
+
+    thead th,
+    tbody td {
+        padding: 10px;
+    }
+
+    tbody td:first-child {
+        padding-left: 12px;
+    }
+
+    .status-btn,
+    tbody td a {
+        font-size: 0.7rem;
+        padding: 5px 8px;
+    }
+}
+
+
+
+
+.btn-submit {
+    display: block;
+    width: 100%;
+    padding: 1rem;
+    background: #dc2626;                  /* 🔴 Rojo exacto */
+    color: #ffffff;
+    border: none;
+    border-radius: 10px;
+    font-size: 1.1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.25s ease-in-out;
+    margin-top: 1rem;
+}
+
+/* Hover igual al estilo real */
+.btn-submit:hover {
+    background: #ef4444;                  /* 🔴 Rojo más claro (hover) */
+    transform: translateY(-2px);
+}
+
+/* Efecto al hacer click */
+.btn-submit:active {
+    transform: translateY(0);
+}
+
+
+
+
+/* ============================== */
+/*      TABLA — ESTILO ROJO       */
+/* ============================== */
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #ffffff;                         /* fondo blanco */
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 8px 25px rgba(220, 38, 38, 0.25); /* sombra rojiza */
+}
+
+/* ------------------------------ */
+/*          ENCABEZADO           */
+/* ------------------------------ */
+thead {
+    background: linear-gradient(135deg, #dc2626 0%, #b91c1c 100%);
+}
+
+thead th {
+    padding: 14px;
+    color: #ffffff;                              /* texto blanco */
+    font-size: 0.95rem;
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    border-bottom: 2px solid rgba(255,255,255,0.25);
+}
+
+/* ------------------------------ */
+/*            FILAS              */
+/* ------------------------------ */
+tbody tr {
+    transition: .25s ease;
+    background: #ffffff;
+}
+
+tbody tr:nth-child(even) {
+    background: #fef2f2; /* rojo muy claro alterno */
+}
+
+tbody tr:hover {
+    background: #fee2e2; /* hover rojito suave */
+    transform: scale(1.01);
+}
+
+/* ------------------------------ */
+/*            CELDAS             */
+/* ------------------------------ */
+tbody td {
+    padding: 12px 14px;
+    color: #1f2937;
+    font-size: 0.93rem;
+    text-align: center;
+    border-bottom: 1px solid #fecaca; /* línea sutil roja */
+}
+
+/* Alinear la primera columna a la izquierda (nombre) */
+tbody td:first-child,
+thead th:first-child {
+    text-align: left;
+    padding-left: 18px;
+}
+
+/* ------------------------------ */
+/*         BOTÓN STATUS           */
+/* ------------------------------ */
+.status-btn {
+    background: transparent;
+    color: #dc2626;
+    border: 2px solid #dc2626;
+    padding: 6px 12px;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    transition: .25s ease;
+}
+
+.status-btn:hover {
+    background: #dc2626;
+    color: #ffffff;
+    transform: translateY(-2px);
+}
+
+/* ------------------------------ */
+/*        BOTONES EDITAR          */
+/* ------------------------------ */
+tbody td a {
+    color: #dc2626;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 8px;
+    border: 1px solid #dc2626;
+    font-size: 0.8rem;
+    transition: .25s ease;
+}
+
+tbody td a:hover {
+    background: #dc2626;
+    color: #ffffff;
+}
+
+/* ------------------------------ */
+/*        PUNTOS Sí / No          */
+/* ------------------------------ */
+.dot.yes {
+    color: #10b981; /* verde éxito */
+    font-weight: bold;
+}
+
+.dot.no {
+    color: #ef4444; /* rojo error */
+    font-weight: bold;
+}
+
+/* ------------------------------ */
+/*          RESPONSIVE            */
+/* ------------------------------ */
+@media (max-width: 768px) {
+    table {
+        font-size: 0.8rem;
+    }
+
+    thead th,
+    tbody td {
+        padding: 10px;
+    }
+
+    tbody td:first-child {
+        padding-left: 12px;
+    }
+
+    .status-btn,
+    tbody td a {
+        font-size: 0.7rem;
+        padding: 5px 8px;
+    }
+}
+
 </style>
 <table>
     <thead>
